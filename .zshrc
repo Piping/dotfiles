@@ -65,12 +65,7 @@ antigen bundle piping/fzf-zsh
 
 # syntax color definition
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
-
 typeset -A ZSH_HIGHLIGHT_STYLES
-
-# ZSH_HIGHLIGHT_STYLES[command]=fg=white,bold
-# ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
-
 ZSH_HIGHLIGHT_STYLES[default]=none
 ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=009
 ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=009,standout
@@ -93,7 +88,7 @@ ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=009
 ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=009
 ZSH_HIGHLIGHT_STYLES[assign]=none
 
-# enable syntax highlighting
+# enable syntax highlighting, use above customization
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen apply
@@ -277,7 +272,7 @@ alias -s py='python'
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export VIMRUNTIME="$HOME/.local/share/vim/vim81/"
-
+source ~/.antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
 # LuqidPrompt
 # set | grep ^LP_ENABLE_
 LP_ENABLE_SVN=0
