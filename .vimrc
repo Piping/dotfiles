@@ -1,6 +1,6 @@
-""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """" vim-plug for lazy loading plugin management
-"""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -14,12 +14,28 @@ call plug#begin('~/.vim/plugged')
 
 """"""""""""""""""""""""""""""
 Plug 'itchyny/lightline.vim'
-set laststatus=2 ""In order to show the lightline
+set laststatus=2 "In order to show the lightline
+set showcmd      "Always print current keystroke
+set ruler        "Always show current position
+set cmdheight=1  "Height of the command bar
+command! LightlineReload call LightlineReload()
+function! LightlineReload()
+    if exists('*lightline#init')
+        call lightline#init()
+        call lightline#colorscheme()
+        call lightline#update()
+    endif
+endfunction
+let g:lightline = {'active':{'left':[[ 'mode', 'paste' ],['readonly','modified' ]],'right':[['lineinfo'],['percent']]}}
+
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-"Plug 'crusoexia/vim-monokai'
-"colorscheme monokai
+Plug 'joeytwiddle/repmo.vim'
+let g:repmo_mapmotions = "j|k h|l zh|zl g;|g, <C-w>w|<C-w>W"
+let g:repmo_mapmotions .= " <C-w>+|<C-w>- <C-w>>|<C-w><"
+let g:repmo_key = ";"
+let g:repmo_revkey = ","
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -55,8 +71,7 @@ Plug 'w0rp/ale'
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Buffers','History','Ag']} ", 'do': ':Plug ''junegunn/fzf'' '}
-" Plug 'lvht/fzf-mru' , {'on': 'FZFMru'}
+Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Commands','Buffers','History','Files']} ", 'do': ':Plug ''junegunn/fzf'' '}
 """""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -66,36 +81,156 @@ nmap gcc <Plug>CommentaryLine
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/goyo.vim' , {'on': 'Goyo'}
-noremap <leader>z :Goyo<CR>
+Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
+map <leader>z :Goyo<cr>
 """"""""""""""""""""""""""""""
-
 Plug 'sheerun/vim-polyglot'
-
-""""""""""""""""""""""""""""""
-" Plug 'Houl/repmo-vim'
-" " map a motion and its reverse motion:
-" :noremap <expr> h repmo#SelfKey('h', 'l')|sunmap h
-" :noremap <expr> l repmo#SelfKey('l', 'h')|sunmap l
-" :noremap <expr> J repmo#SelfKey('J', 'K')|sunmap J
-" :noremap <expr> K repmo#SelfKey('K', 'J')|sunmap K
-" " if you like `:noremap j gj', you can keep that:
-" :map <expr> j repmo#Key('gj', 'gk')|sunmap j
-" :map <expr> k repmo#Key('gk', 'gj')|sunmap k
-" " repeat the last [count]motion or the last zap-key:
-" :map <expr> ; repmo#LastKey(';')|sunmap ;
-" :map <expr> . repmo#LastRevKey('.')|sunmap .
-" " add these mappings when repeating with `;' or `,':
-" :noremap <expr> f repmo#ZapKey('f')|sunmap f
-" :noremap <expr> F repmo#ZapKey('F')|sunmap F
-" :noremap <expr> t repmo#ZapKey('t')|sunmap t
-" :noremap <expr> T repmo#ZapKey('T')|sunmap T
-""""""""""""""""""""""""""""""
 
 call plug#end()
 
+" let mapleader = "\<tab>"
+" nmap ,  <leader>
+let mapleader = ","
+"""""""""""""""""""""""""""""""""""""""""
+""PLUGIN LEADER KEY MAPPING"
+"""""""""""""""""""""""""""""""""""""""""
+" Recently Used Files
+nmap   <leader>f   :History<Cr>
+map    <leader>ff  :FZF<Cr>,
+map    <leader>fff :FZF ~
+nmap   <leader>b   :Buffers<Cr>
+" Recently Used Cmd, Alt-Enter to execute command
+nmap   <leader>c   :History:<Cr>
+" Fuzzy Search Vim Commands
+nmap   <leader>cc  :Commands<Cr>
+vmap   <leader>a   :Tabularize /
+nmap   <leader>a   :Autoformat<Cr>
+"""""""""""""""""""""""""""""""""""""""""
+"" All leader key mapping
+"""""""""""""""""""""""""""""""""""""""""
+" Fast Normal Mode Cmd
+inoremap <leader>. <C-o>
+" Repeat Last Macro
+nnoremap <leader>. @@
+"repeat last typed command
+nnoremap <leader>; @:
+" Visual mode pressing * or # searches for the current selection
+nnoremap <leader>' ciw"<C-r>""<Esc>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General Vim Editor Setup
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Fast saving
+nmap <leader>w   :w!<Cr>
+nmap <leader>q   :q<Cr>
+nmap <leader>qq  :q!<Cr>
+nmap <leader>qa  :qa<Cr>
+nmap <leader>qaa :qa!<Cr>
+nmap <leader>nn  :Lexplore!<Cr>
+" set 'p' to paste before cursor
+nnoremap p P
+nnoremap P p
+"Join the line below with space
+nnoremap <leader>j J
+nnoremap <leader>k K
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Cursor Moving mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Keep the cursor at center they are and move whole page
+noremap J <C-e>j
+noremap K <C-y>k
+" some terminal send backsapce when C-h pressed before vim
+" inoremap <C-h> <Left>
+" inoremap <C-l> <Right>
+" inoremap <C-j> <Down>
+" inoremap <C-k> <Up>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""Join the line below with space => Code Development - TagBar
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>mm :TagbarToggle<CR>
+" Opens a new tab with the current buffer's path
+" Super useful when editing files in the same directory
+map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+map <leader>tt :tabnew <cr>
+" Switch CWD to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" Esc, Ctrl, :, ^W, ^s, Tab, Alt
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Spell checking
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Pressing ,ss will toggle and untoggle spell checking
+map <leader>ss :setlocal spell!<cr>
+
+" Shortcuts using <leader>
+map <leader>sn ]s
+map <leader>sp [s
+map <leader>sa zg
+map <leader>s? z=
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Misc
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+" Toggle paste mode on and off
+map <leader>pp :setlocal paste!<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Fast editing and reloading of vimrc configs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>e  :e! ~/.vimrc<cr>
+map <leader>et :e! ~/.tmux.conf<cr>
+map <leader>ez :e! ~/.zshrc<cr>
+autocmd! bufwritepost ~/.vimrc source ~/.vimrc | LightlineReload
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" cope displaying
+map <leader>co :botright cope<cr>
+" To go to the next search result do:
+map <leader>n :cn<cr>
+" To go to the previous search results do:
+map <leader>p :cp<cr>
+
+let s:statusline_mode = 0
+function! ToggleHiddenAll()
+    if s:statusline_mode  == 0
+        let s:statusline_mode = 1
+        set showmode
+        set noruler
+        set laststatus=0
+        set showcmd
+        set cmdheight=1
+        if mode() == 'n'
+            echohl ModeMsg
+            echomsg '-- NORMAL --'
+            echohl None
+        endif
+    elseif s:statusline_mode == 1
+        " nothing is show
+        set noshowmode
+        set noruler
+        set laststatus=0
+        set noshowcmd
+        set cmdheight=1
+        let s:statusline_mode = 2
+        " call feedkeys("1\<C-g>")
+        echo ''
+    elseif s:statusline_mode == 2
+        " default status line
+        let s:statusline_mode = 0
+        set showmode
+        set ruler
+        set laststatus=2
+        set showcmd
+        set cmdheight=1
+        echo ''
+    endif
+endfunction
+nnoremap <leader>h :call ToggleHiddenAll()<cr>
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
+" => General Options
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
 set history=500
@@ -106,40 +241,12 @@ filetype indent on
 
 " Set to auto read when a file is changed from the outside
 set autoread
-
-" With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-let mapleader = ","
-
-""PLUGIN LEADER KEY MAPPING"
-map    <C-f>       :FZF <Cr>
-map    <leader>ff  :FZF ~
-nmap   <leader>b   :Buffers<Cr>
-" Alt-Enter to execute command
-nmap   <leader>cf  :History:<Cr>
-" nmap   <leader>a   :Ag
-vmap   <leader>a   :Tabularize /
-map    <leader>f   :Autoformat<Cr>
-
-
-
-" Fast saving
-nmap <leader>w :w!<cr>
-" Fast Normal Mode Cmd
-inoremap <leader>. <C-o>
-" :W sudo saves the file
-" (useful for handling the permission-denied error)
-command! W w !sudo tee % > /dev/null
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the cursor - when moving vertically using j/k
-set so=7
-
 " Avoid garbled characters in Chinese language windows OS
-let $LANG='en'
-set langmenu=en
+let $LANG='cn'
+set langmenu=cn
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
@@ -153,12 +260,6 @@ if has("win16") || has("win32")
 else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
-
-"Always show current position
-set ruler
-
-" Height of the command bar
-set cmdheight=2
 
 " A buffer becomes hidden when it is abandoned
 set hid
@@ -201,16 +302,11 @@ if has("gui_macvim")
     autocmd GUIEnter * set vb t_vb=
 endif
 
-
-" Add a bit extra margin to the left
-set foldcolumn=1
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 colorscheme sublimemonokai
-" truecolor from iTerm2 etc
+" truecolor from supported terminal etc
 set termguicolors
 
 " Enable 256 colors palette in Gnome Terminal
@@ -241,7 +337,6 @@ set nobackup
 set nowb
 set noswapfile
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -263,35 +358,32 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-
-""""""""""""""""""""""""""""""
-" => Visual mode related
-""""""""""""""""""""""""""""""
-" Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Helper function
+" => Turn persistent undo on
+"    means that you can undo even when you close a buffer/vim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! VisualSelection(direction, extra_filter) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
+try
+    set undodir=~/.vim/temp_dirs/undodir
+    set undofile
+catch
+endtry
 
-    let l:pattern = escape(@", "\\/.*'$^~[]")
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
+set number
+set autowrite
+set mouse=a
+set ttymouse=xterm2
+set timeout
+set ttimeout
+set timeoutlen=300
+set ttimeoutlen=0
+set scrolloff=0 "allow cursor to be at top and bottom
+" set virtualedit=all "allow cursor to be anywhere
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+command! W w !sudo tee % > /dev/null
 
-    if a:direction == 'replace'
-        call feedkeys(":"."%s" . '/'. l:pattern . '/')
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
-
-vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
@@ -299,25 +391,12 @@ map <space> /
 map <c-space> ?
 
 " Disable highlight when <leader><cr> is pressed
-map <silent> <leader><cr> :noh<cr>
-
+nmap <silent> <leader><cr> :noh<cr>
 " Smart way to move between windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
-
-" Let 'tl' toggle between this and the last accessed tab
-let g:lasttab = 1
-nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Specify the behavior when switching between buffers
 try
@@ -330,80 +409,28 @@ endtry
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Delete trailing white space on save, useful for some filetypes ;)
-fun! CleanExtraSpaces()
+func! CleanExtraSpaces()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
     silent! %s/\s\+$//e
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfun
+" userful to redirect internal command output to paste buffer
+func! Exec(command)
+    redir =>output
+    silent exec a:command
+    redir END
+    return output
+endfunct!
 
 if has("autocmd")
     autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 endif
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Spell checking
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
-
-" Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Misc
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
-
-" Quickly open a markdown buffer for scribble
-map <leader>x :e ~/untitled.md<cr>
-
-" Toggle paste mode on and off
-map <leader>pp :setlocal paste!<cr>
 
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Fast editing and reloading of vimrc configs
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>e :e! ~/.vimrc<cr>
-autocmd! bufwritepost ~/.vimrc source ~/.vimrc
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Turn persistent undo on
-"    means that you can undo even when you close a buffer/VIM
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-try
-    set undodir=~/.vim/temp_dirs/undodir
-    set undofile
-catch
-endtry
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" cope displaying
-map <leader>cc :botright cope<cr>
-" To go to the next search result do:
-map <leader>n :cn<cr>
-" To go to the previous search results do:
-map <leader>p :cp<cr>
-
-set showcmd
-set number
-set mouse=a
-set ttymouse=xterm2
-set nottimeout
-set notimeout
-set scrolloff=0 "allow cursor to be at top and bottom
-" set virtualedit=all "allow cursor to be anywhere
-"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -411,6 +438,8 @@ set scrolloff=0 "allow cursor to be at top and bottom
 
 " Remap VIM = to line end $
 noremap = $
+" Map _ to be reverse of -, move cursor one line upward and beginning of the word
+" noremap _ ddkp
 " InsertMode with Emacs Shortcut Mapping
 inoremap <C-A> <Home>
 inoremap <C-E> <End>
@@ -426,34 +455,15 @@ inoremap <C-U> <Esc>ddi
 " Paste/Yank
 inoremap <C-Y> <Esc>Pa
 " Same as above, works for cmdline
-cnoremap <C-D> <S-Right><C-W>
-cnoremap <C-Z> <S-Left>
-cnoremap <C-X> <S-Right>
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
+cnoremap <C-Z> <S-Left>
+cnoremap <C-X> <S-Right>
+cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-K> <C-U>
+cnoremap <C-Y> <C-R>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General Vim Editor Setup
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>q  :q<Cr>
-map <leader>nn :Lexplore!<Cr>
-" set 'p' to paste before cursor
-nnoremap p P
-nnoremap P p
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Cursor Moving mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Keep the cursor at center they are and move whole page
-noremap J <C-e>j
-noremap K <C-y>k
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Code Development - TagBar
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>mm :TagbarToggle<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Code Development - Cscope
@@ -474,43 +484,24 @@ if has("cscope")
 
     " show msg when any other cscope db added
     set cscopeverbose
-    " search for C Symbol
-    map <leader>css :tab cs find s <C-R>=expand("<cword>")<CR><CR>
-    " seach for Global Definition
-    map <leader>csg :tab cs find g <C-R>=expand("<cword>")<CR><CR>
+    " search for c symbol
+    map <leader>gs :tab cs find s <c-r>=expand("<cword>")<cr><cr>
+    " seach for global definition
+    map <leader>gg :tab cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>csc :tab cs find c <C-R>=expand("<cword>")<CR><CR>
+    map <leader>gc :tab cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>cst :tab cs find t <C-R>=expand("<cword>")<CR><CR>
+    map <leader>gt :tab cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>cse :tab cs find e <C-R>=expand("<cword>")<CR><CR>
+    map <leader>ge :tab cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>csf :tab cs find f <C-R>=expand("<cfile>")<CR><CR>
+    map <leader>gf :tab cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>csi :tab cs find i <C-R>=expand("<cfile>")<CR><CR>
+    map <leader>gi :tab cs find i <c-r>=expand("<cfile>")<cr><cr>
     " search for functions are called by this function
-    map <leader>csd :tab cs find d <C-R>=expand("<cword>")<CR><CR>
+    map <leader>gd :tab cs find d <c-r>=expand("<cword>")<cr><cr>
 endif
 
-let s:hidden_all = 0
-function! ToggleHiddenAll()
-    if s:hidden_all  == 0
-        let s:hidden_all = 1
-        set noshowmode
-        set noruler
-        set laststatus=0
-        set noshowcmd
-        set cmdheight=1
-    else
-        let s:hidden_all = 0
-        set showmode
-        set ruler
-        set laststatus=2
-        set showcmd
-        set cmdheight=2
-    endif
-endfunction
-nnoremap <leader>h :call ToggleHiddenAll()<CR>
 
 " Special Configuration
 " augroup FastLeaderKeyInsertMode
@@ -519,9 +510,7 @@ nnoremap <leader>h :call ToggleHiddenAll()<CR>
 "   au TextChangedI * set timeoutlen=0
 " augroup END
 
-""""""""""""""""""""""""""""""""""""""""""""""""""
-" Add my script to toggle <C-f> fzf search type
-""""""""""""""""""""""""""""""""""""""""""""""""""
+
 
 
 

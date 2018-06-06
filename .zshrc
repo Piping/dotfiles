@@ -271,7 +271,6 @@ alias -s sh='bash'
 alias -s py='python'
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-export VIMRUNTIME="$HOME/.local/share/vim/vim81/"
 source ~/.antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
 # LuqidPrompt
 # set | grep ^LP_ENABLE_
