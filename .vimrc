@@ -371,7 +371,7 @@ endtry
 set number
 set autowrite
 set mouse=a
-set ttymouse=xterm2
+set ttymouse=xterm2 | if !$TMUX | set ttymouse=xterm | endif
 set timeout
 set ttimeout
 set timeoutlen=300

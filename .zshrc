@@ -6,26 +6,26 @@ ANTIGEN="$HOME/.local/bin/antigen.zsh"
 
 # Install antigen.zsh if not exist
 if [ ! -f "$ANTIGEN" ]; then
-	echo "Installing antigen ..."
-	[ ! -d "$HOME/.local" ] && mkdir -p "$HOME/.local" 2> /dev/null
-	[ ! -d "$HOME/.local/bin" ] && mkdir -p "$HOME/.local/bin" 2> /dev/null
-	URL="http://git.io/antigen"
-	TMPFILE="/tmp/antigen.zsh"
-	if [ -x "$(which curl)" ]; then
-		curl -L "$URL" -o "$TMPFILE" 
-	elif [ -x "$(which wget)" ]; then
-		wget "$URL" -O "$TMPFILE" 
-	else
-		echo "ERROR: please install curl or wget before installation !!"
-		exit
-	fi
-	if [ ! $? -eq 0 ]; then
-		echo ""
-		echo "ERROR: downloading antigen.zsh ($URL) failed !!"
-		exit
-	fi;
-	echo "move $TMPFILE to $ANTIGEN"
-	mv "$TMPFILE" "$ANTIGEN"
+    echo "Installing antigen ..."
+    [ ! -d "$HOME/.local" ] && mkdir -p "$HOME/.local" 2> /dev/null
+    [ ! -d "$HOME/.local/bin" ] && mkdir -p "$HOME/.local/bin" 2> /dev/null
+    URL="http://git.io/antigen"
+    TMPFILE="/tmp/antigen.zsh"
+    if [ -x "$(which curl)" ]; then
+        curl -L "$URL" -o "$TMPFILE"
+    elif [ -x "$(which wget)" ]; then
+        wget "$URL" -O "$TMPFILE"
+    else
+        echo "ERROR: please install curl or wget before installation !!"
+        exit
+    fi
+    if [ ! $? -eq 0 ]; then
+        echo ""
+        echo "ERROR: downloading antigen.zsh ($URL) failed !!"
+        exit
+    fi;
+    echo "move $TMPFILE to $ANTIGEN"
+    mv "$TMPFILE" "$ANTIGEN"
 fi
 
 export PATH="$PATH:$HOME/.bin"
@@ -230,24 +230,24 @@ autoload -Uz compinit && compinit -u
 
 # 空行(光标在行首)补全 "cd "
 user-complete() {
-    case $BUFFER in
-        "" )
-            # 空行填入 "cd "
-            BUFFER="cd "
-            zle end-of-line
-            zle expand-or-complete
-            ;;
+case $BUFFER in
+    "" )
+        # 空行填入 "cd "
+        BUFFER="cd "
+        zle end-of-line
+        zle expand-or-complete
+        ;;
 
-        " " )
-            BUFFER="!?"
-            zle end-of-line
-            zle expand-or-complete
-            ;;
+    " " )
+        BUFFER="!?"
+        zle end-of-line
+        zle expand-or-complete
+        ;;
 
-        * )
-            zle expand-or-complete
-            ;;
-    esac
+    * )
+        zle expand-or-complete
+        ;;
+esac
 }
 
 zle -N user-complete
@@ -271,7 +271,6 @@ alias -s sh='bash'
 alias -s py='python'
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-source ~/.antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
 # LuqidPrompt
 # set | grep ^LP_ENABLE_
 LP_ENABLE_SVN=0
@@ -279,14 +278,19 @@ LP_ENABLE_TEMP=0
 LP_ENABLE_GIT=0
 # disable Ctrl-S freeze
 stty -ixon
-
-if [ -x "$(command -v fzf)" ] && [ -x "$(command -v ag)" ]; then
-  export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
-  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
-  export FZF_DEFAULT_OPTS='
-  --color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108
-  --color info:108,prompt:109,spinner:108,pointer:168,marker:168
-  '
+# setup FZF path for zsh
+if [ ! -f ~/.local/bin/fzf ] && [ -f ~/.vim/plugged/fzf/bin/fzf ]; then
+    ln -s ~/.vim/plugged/fzf/bin/fzf ~/.local/bin/fzf
 fi
-
+if [ -x "$(command -v fzf)" ]; then
+    source ~/.antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
+    if [ -x "$(command -v ag)" ]; then
+        export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_DEFAULT_OPTS='
+        --color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108
+        --color info:108,prompt:109,spinner:108,pointer:168,marker:168
+        '
+    fi
+fi
