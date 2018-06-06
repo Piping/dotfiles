@@ -26,21 +26,27 @@ function! LightlineReload()
         call lightline#update()
     endif
 endfunction
-let g:lightline = {'active':{'left':[[ 'mode', 'paste' ],['readonly','modified' ]],'right':[['lineinfo'],['percent']]}}
-
+let g:lightline = 
+            \{'active':{'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
+            \'right': [['lineinfo'],['percent']]},
+            \'enable':{'tabline':1}}
+let g:lightline.tab = 
+            \{'active': [ 'tabnum', 'modified' ],
+            \ 'inactive': [ 'tabnum','modified'],}
 """"""""""""""""""""""""""""""
-
+Plug 'mhinz/vim-startify'
 """"""""""""""""""""""""""""""
 Plug 'joeytwiddle/repmo.vim'
-let g:repmo_mapmotions = "j|k h|l zh|zl g;|g, <C-w>w|<C-w>W"
-let g:repmo_mapmotions .= " <C-w>+|<C-w>- <C-w>>|<C-w><"
+let g:repmo_mapmotions = "j|k h|l zh|zl g;|g, \<C-w>w|\<C-w>W"
+let g:repmo_mapmotions .= " \<C-w>+|\<C-w>- \<C-w>>|\<C-w><"
 let g:repmo_key = ";"
 let g:repmo_revkey = ","
 """"""""""""""""""""""""""""""
-
+" Plug 'Houl/repmo-vim'
+" Plug 'Houl/repmohelper-vim'
 """"""""""""""""""""""""""""""
 Plug 'ErichDonGubler/vim-sublime-monokai'
-"colorscheme sublimemonokai "not ready here, set it later
+"colorscheme sublimemonokai "cannot be set here, set it later
 """"""""""""""""""""""""""""""
 
 Plug 'jiangmiao/auto-pairs'
@@ -82,7 +88,6 @@ nmap gcc <Plug>CommentaryLine
 
 """"""""""""""""""""""""""""""
 Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
-map <leader>z :Goyo<cr>
 """"""""""""""""""""""""""""""
 Plug 'sheerun/vim-polyglot'
 
@@ -105,6 +110,7 @@ nmap   <leader>c   :History:<Cr>
 nmap   <leader>cc  :Commands<Cr>
 vmap   <leader>a   :Tabularize /
 nmap   <leader>a   :Autoformat<Cr>
+nmap   <leader>z   :Goyo<cr>
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -148,8 +154,6 @@ noremap K <C-y>k
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>mm :TagbarToggle<CR>
 " Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 map <leader>tt :tabnew <cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -160,18 +164,16 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
-
-" Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
+" nmap z= provide a list of replacement
+" nmap zg add word to definition
+map <leader>sa ]s
+map <leader>sd [s
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
@@ -371,7 +373,7 @@ endtry
 set number
 set autowrite
 set mouse=a
-set ttymouse=xterm2 | if !$TMUX | set ttymouse=xterm | endif
+set ttymouse=xterm2 | if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
 set timeoutlen=300
@@ -382,16 +384,17 @@ set scrolloff=0 "allow cursor to be at top and bottom
 " (useful for handling the permission-denied error)
 command! W w !sudo tee % > /dev/null
 
-"
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Pattern Match, Search Highlight
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Map <Space> to / (search)
+map <space> /
+" Disable highlight when <leader><cr> is pressed
+nmap <silent> <leader><cr> :noh<cr>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
-map <c-space> ?
-
-" Disable highlight when <leader><cr> is pressed
-nmap <silent> <leader><cr> :noh<cr>
 " Smart way to move between windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
