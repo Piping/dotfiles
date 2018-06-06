@@ -37,8 +37,7 @@ let g:lightline.tab =
 Plug 'mhinz/vim-startify'
 """"""""""""""""""""""""""""""
 Plug 'joeytwiddle/repmo.vim'
-let g:repmo_mapmotions = "j|k h|l zh|zl g;|g, \<C-w>w|\<C-w>W"
-let g:repmo_mapmotions .= " \<C-w>+|\<C-w>- \<C-w>>|\<C-w><"
+let g:repmo_mapmotions = "j|k h|l zh|zl g;|g,"
 let g:repmo_key = ";"
 let g:repmo_revkey = ","
 """"""""""""""""""""""""""""""
@@ -77,7 +76,19 @@ Plug 'w0rp/ale'
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Commands','Buffers','History','Files']} ", 'do': ':Plug ''junegunn/fzf'' '}
+Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers','History','Files']}
+" CTRL-A CTRL-Q to select all and build quickfix list
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+let $FZF_DEFAULT_OPTS = '--bind ctrl-f:select-all,ctrl-g:deselect-all'
 """""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -103,6 +114,9 @@ let mapleader = ","
 nmap   <leader>f   :History<Cr>
 map    <leader>ff  :FZF<Cr>,
 map    <leader>fff :FZF ~
+map    <leader>fg  :Ag<Cr> 
+map    <leader>fgg :Ag 
+map    <leader>fm  :Marks<Cr>
 nmap   <leader>b   :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
 nmap   <leader>c   :History:<Cr>
@@ -472,9 +486,7 @@ cnoremap <C-N> <Down>
 " => Code Development - Cscope
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
-    set cscopetag   " 使支持用 Ctrl+]  和 Ctrl+t 快捷键在代码间跳来跳去
-    " check cscope for definition of a symbol before checking ctags:
-    " set to 1 if you want the reverse search order.
+    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set csto=1
 
     " add any cscope database in current directory
@@ -512,9 +524,5 @@ endif
 "   au TextChangedI * if strcharpart(getline('.')[col('.') - 1:], 0, 1) == ',' | set timeoutlen=200 | end
 "   au TextChangedI * set timeoutlen=0
 " augroup END
-
-
-
-
-
+" let query = input('Functions calling: ')
 
