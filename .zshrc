@@ -26,6 +26,7 @@ if [ ! -f "$ANTIGEN" ]; then
     fi;
     echo "move $TMPFILE to $ANTIGEN"
     mv "$TMPFILE" "$ANTIGEN"
+    touch ~/.z
 fi
 
 export PATH="$PATH:$HOME/.bin"
@@ -45,7 +46,7 @@ source "$ANTIGEN"
 # visit https://github.com/unixorn/awesome-zsh-plugins
 antigen bundle nojhan/liquidprompt
 
-# antigen bundle git
+antigen bundle git
 # antigen bundle heroku
 antigen bundle pip
 antigen bundle svn-fast-info
@@ -53,8 +54,8 @@ antigen bundle svn-fast-info
 antigen bundle colorize
 antigen bundle github
 antigen bundle python
-antigen bundle rupa/z z.sh
-# antigen bundle z
+# antigen bundle rupa/z z.sh
+antigen bundle z
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
 # antigen bundle supercrabtree/k
@@ -283,7 +284,7 @@ if [ ! -f ~/.local/bin/fzf ] && [ -f ~/.vim/plugged/fzf/bin/fzf ]; then
     ln -s ~/.vim/plugged/fzf/bin/fzf ~/.local/bin/fzf
 fi
 if [ -x "$(command -v fzf)" ]; then
-    source ~/.antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
+    source .antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
     if [ -x "$(command -v ag)" ]; then
         export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
