@@ -28,8 +28,7 @@ function! LightlineReload()
 endfunction
 let g:lightline =
             \{'active':{'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
-            \'right': [['lineinfo'],['percent']]},
-            \'enable':{'tabline':1}}
+            \'right': [['lineinfo'],['percent']]}, }
 let g:lightline.tab =
             \{'active': [ 'tabnum', 'modified' ],
             \ 'inactive': [ 'tabnum','modified'],}
@@ -89,9 +88,10 @@ let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
-let $FZF_DEFAULT_OPTS = '--bind ctrl-f:select-all,ctrl-g:deselect-all'
+let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ". 
+            \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit \n".
+            \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
-
 """"""""""""""""""""""""""""""
 Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
 map  gc  <Plug>Commentary
@@ -259,8 +259,8 @@ function! ToggleAutoNormalMode()
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
             au CursorHoldI  * echohl ModeMsg | echomsg '-- NORMAL --'| echohl None 
-            au CursorHoldI  * stopinsert "
-            au CursorMovedI * let updaterestore=&updatetime | set updatetime=1200
+            au CursorHoldI  * stopinsert 
+            au CursorMovedI * let updaterestore=&updatetime | set updatetime=1000
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=1000
             au InsertLeave  * let &updatetime=updaterestore
         augroup END
@@ -374,7 +374,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-colorscheme sublimemonokai
+silent! colorscheme sublimemonokai
 " truecolor from supported terminal etc
 set termguicolors
 
