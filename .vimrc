@@ -13,12 +13,27 @@ set viminfo+=n~/.vim/.viminfo
 call plug#begin('~/.vim/plugged')
 
 """"""""""""""""""""""""""""""
+"" LIGHTLINE PLUGIN
+""""""""""""""""""""""""""""""
 Plug 'itchyny/lightline.vim'
 set laststatus=2 "In order to show the lightline
 set showcmd      "Always print current keystroke
 set ruler        "Always show current position
 set cmdheight=1  "Height of the command bar
-command! LightlineReload call LightlineReload()
+let g:lightline = {'active':{
+            \ 'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
+            \ 'right': [['lineinfo'],['percent']]}, }
+let g:lightline.tabline = {
+		    \ 'left': [ [ 'my_text','tabs' ] ],
+		    \ 'right': [ [ 'close' ] ] }
+let g:lightline.tab =
+            \{'active': [ 'tabnum', 'modified' ],
+            \ 'inactive': [ 'tabnum','modified'],}
+let g:lightline.tabline_separator = {'left':'','right':''}
+let g:lightline.tabline_subseparator = {'left':'','right':''}
+let g:lightline.component = { 'my_text': 'Tab:', }
+" let g:lightline.component_visible_condition = { 'truncate_here': 0, }
+" let g:lightline.component_type = { 'truncate_here': 'raw', }
 function! LightlineReload()
     if exists('*lightline#init')
         call lightline#init()
@@ -26,12 +41,15 @@ function! LightlineReload()
         call lightline#update()
     endif
 endfunction
-let g:lightline =
-            \{'active':{'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
-            \'right': [['lineinfo'],['percent']]}, }
-let g:lightline.tab =
-            \{'active': [ 'tabnum', 'modified' ],
-            \ 'inactive': [ 'tabnum','modified'],}
+command! LightlineReload call LightlineReload()
+"the color scheme variable only available before VimEnter
+"Tab_FG_Color,Tab_BG_Color
+autocmd VimEnter * 
+    \ let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]] |
+    \ let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]] |
+    \ let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
+    \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] 
+" let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#303030', 252, 66, 'bold' ]]
 """"""""""""""""""""""""""""""
 Plug 'mhinz/vim-startify'
 """"""""""""""""""""""""""""""
@@ -42,7 +60,7 @@ let g:repmo_revkey = ","
 """"""""""""""""""""""""""""""
 " Plug 'Houl/repmo-vim'
 " Plug 'Houl/repmohelper-vim'
-""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""
 Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
 """"""""""""""""""""""""""""""
@@ -88,7 +106,7 @@ let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
-let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ". 
+let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ".
             \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit \n".
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
@@ -258,8 +276,8 @@ function! ToggleAutoNormalMode()
         let s:auto_normal_mode = 1
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
-            au CursorHoldI  * echohl ModeMsg | echomsg '-- NORMAL --'| echohl None 
-            au CursorHoldI  * stopinsert 
+            au CursorHoldI  * echohl ModeMsg | echomsg '-- NORMAL --'| echohl None
+            au CursorHoldI  * stopinsert
             au CursorMovedI * let updaterestore=&updatetime | set updatetime=1000
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=1000
             au InsertLeave  * let &updatetime=updaterestore
@@ -278,18 +296,18 @@ nmap  <leader>zz  :Goyo<cr>
 nmap  <leader>z   :call ToggleOnlyWindow()<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
-    if s:zoomed_windows_b == 0 
+    if s:zoomed_windows_b == 0
         let s:zoomed_windows_b = 1
         wincmd _ " slient call feedkeys('\<C-w>_')
         wincmd |
     else
         let s:zoomed_windows_b = 0
-        wincmd =       
+        wincmd =
     endif
-endfunction 
+endfunction
 "Not Used Anymore
 function! ToggleOnlyWindowUsingSession()
-    if s:zoomed_windows_b == 0 
+    if s:zoomed_windows_b == 0
         let s:zoomed_windows_b = 1
         mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
         wincmd o " slient call feedkeys('\<C-w>o')
@@ -297,7 +315,7 @@ function! ToggleOnlyWindowUsingSession()
         let s:zoomed_windows_b = 0
         source ~/.vim/zoom_windows_layout_session_tmp.vim
     endif
-endfunction 
+endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Options
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
