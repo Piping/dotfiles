@@ -144,8 +144,7 @@ nnoremap <leader>' ciw"<C-r>""<Esc>
 nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q<Cr>
 nmap <leader>qq  :q!<Cr>
-nmap <leader>qa  :qa<Cr>
-nmap <leader>qaa :qa!<Cr>
+nmap <leader>qa  :qa!<Cr>
 nmap <leader>nn  :Lexplore!<Cr>
 " set 'p' to paste before cursor
 nnoremap p P
@@ -201,12 +200,12 @@ map <leader>et :e! ~/.tmux.conf<cr>
 map <leader>ez :e! ~/.zshrc<cr>
 autocmd! bufwritepost ~/.vimrc source ~/.vimrc | LightlineReload
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" cope displaying
-map <leader>co  :botright cope<cr>
-map <leader>coc :ccl<cr>
-" To go to the next search result do:
+" quickfix window  displaying
+map <leader>co  :botright copen<cr>
+map <leader>coc :cclose<cr>
+" To go to the next quickfix result:
 map <leader>n :cn<cr>
-" To go to the previous search results do:
+" To go to the previous quickfix result:
 map <leader>p :cp<cr>
 
 map <leader>h :helpclose<cr>
@@ -259,8 +258,9 @@ function! ToggleAutoNormalMode()
         let s:auto_normal_mode = 1
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
-            au CursorHoldI  * stopinsert "| echohl ModeMsg | echomsg '-- NORMAL --'
-            au CursorMovedI * let updaterestore=&updatetime | set updatetime=1500
+            au CursorHoldI  * echohl ModeMsg | echomsg '-- NORMAL --'| echohl None 
+            au CursorHoldI  * stopinsert "
+            au CursorMovedI * let updaterestore=&updatetime | set updatetime=1200
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=1000
             au InsertLeave  * let &updatetime=updaterestore
         augroup END
