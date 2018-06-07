@@ -284,7 +284,7 @@ if [ ! -f ~/.local/bin/fzf ] && [ -f ~/.vim/plugged/fzf/bin/fzf ]; then
     ln -s ~/.vim/plugged/fzf/bin/fzf ~/.local/bin/fzf
 fi
 if [ -x "$(command -v fzf)" ]; then
-    source .antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
+    source ~/.antigen/bundles/piping/fzf-zsh/fzf-zsh.plugin.zsh
     if [ -x "$(command -v ag)" ]; then
         export FZF_DEFAULT_COMMAND='ag --nocolor -g ""'
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
