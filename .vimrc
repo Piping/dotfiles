@@ -506,8 +506,10 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " => InertMode/CMDline Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Remap VIM = to line end $
+" Remap = to line end $, like it, easier to press and remember
 noremap = $
+" Remap  = filter to |
+noremap \| =
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
 " InsertMode with Emacs Shortcut Mapping
