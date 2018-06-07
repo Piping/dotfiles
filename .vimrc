@@ -26,11 +26,11 @@ function! LightlineReload()
         call lightline#update()
     endif
 endfunction
-let g:lightline = 
+let g:lightline =
             \{'active':{'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
             \'right': [['lineinfo'],['percent']]},
             \'enable':{'tabline':1}}
-let g:lightline.tab = 
+let g:lightline.tab =
             \{'active': [ 'tabnum', 'modified' ],
             \ 'inactive': [ 'tabnum','modified'],}
 """"""""""""""""""""""""""""""
@@ -78,16 +78,17 @@ Plug 'w0rp/ale'
 """"""""""""""""""""""""""""""
 Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers','History','Files']}
 " CTRL-A CTRL-Q to select all and build quickfix list
+" location list is similar to quickfix, specific to each window
 function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
+    call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+    copen
+    cc
 endfunction
 let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
+            \ 'ctrl-q': function('s:build_quickfix_list'),
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit' }
 let $FZF_DEFAULT_OPTS = '--bind ctrl-f:select-all,ctrl-g:deselect-all'
 """""""""""""""""""""""""""""
 
@@ -114,17 +115,17 @@ let mapleader = ","
 nmap   <leader>f   :History<Cr>
 map    <leader>ff  :FZF<Cr>,
 map    <leader>fff :FZF ~
-map    <leader>fg  :Ag<Cr> 
-map    <leader>fgg :Ag 
+map    <leader>fg  :Ag<Cr>
+map    <leader>fgg :Ag
 map    <leader>fm  :Marks<Cr>
 nmap   <leader>b   :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
 nmap   <leader>c   :History:<Cr>
-" Fuzzy Search Vim Commands
+" Fuzzy Search ALL Vim Commands
 nmap   <leader>cc  :Commands<Cr>
 vmap   <leader>a   :Tabularize /
 nmap   <leader>a   :Autoformat<Cr>
-nmap   <leader>z   :Goyo<cr>
+
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -201,12 +202,14 @@ map <leader>ez :e! ~/.zshrc<cr>
 autocmd! bufwritepost ~/.vimrc source ~/.vimrc | LightlineReload
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " cope displaying
-map <leader>co :botright cope<cr>
+map <leader>co  :botright cope<cr>
+map <leader>coc :ccl<cr>
 " To go to the next search result do:
 map <leader>n :cn<cr>
 " To go to the previous search results do:
 map <leader>p :cp<cr>
 
+map <leader>h :helpclose<cr>
 let s:statusline_mode = 0
 function! ToggleHiddenAll()
     if s:statusline_mode  == 0
@@ -242,9 +245,59 @@ function! ToggleHiddenAll()
         echo ''
     endif
 endfunction
-nnoremap <leader>h :call ToggleHiddenAll()<cr>
+nnoremap <leader>hh :call ToggleHiddenAll()<cr>
 
+let s:auto_normal_mode = 0
+function! ToggleAutoNormalMode()
+    if s:auto_normal_mode == 1
+        let s:auto_normal_mode = 0
+        augroup AutoNormalMode
+            autocmd! *
+        augroup END
+        echohl ModeMsg | echo '-- NORMAL(PERSIST) --' | echohl None
+    else
+        let s:auto_normal_mode = 1
+        " Automitically enter the normal mode after sometime
+        augroup AutoNormalMode
+            au CursorHoldI  * stopinsert "| echohl ModeMsg | echomsg '-- NORMAL --'
+            au CursorMovedI * let updaterestore=&updatetime | set updatetime=1500
+            au InsertEnter  * let updaterestore=&updatetime | set updatetime=1000
+            au InsertLeave  * let &updatetime=updaterestore
+        augroup END
+        echohl ModeMsg | echo '-- NORMAL(AUTO) --' | echohl None
+    endif
+endfunction
+" I Use Auto-Normal Mode by Default
+silent call ToggleAutoNormalMode()
+nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Zoomed Window
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap  <leader>zz  :Goyo<cr>
+nmap  <leader>z   :call ToggleOnlyWindow()<cr>
+let s:zoomed_windows_b = 0
+function! ToggleOnlyWindow()
+    if s:zoomed_windows_b == 0 
+        let s:zoomed_windows_b = 1
+        wincmd _ " slient call feedkeys('\<C-w>_')
+        wincmd |
+    else
+        let s:zoomed_windows_b = 0
+        wincmd =       
+    endif
+endfunction 
+"Not Used Anymore
+function! ToggleOnlyWindowUsingSession()
+    if s:zoomed_windows_b == 0 
+        let s:zoomed_windows_b = 1
+        mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
+        wincmd o " slient call feedkeys('\<C-w>o')
+    else
+        let s:zoomed_windows_b = 0
+        source ~/.vim/zoom_windows_layout_session_tmp.vim
+    endif
+endfunction 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Options
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -525,4 +578,3 @@ endif
 "   au TextChangedI * set timeoutlen=0
 " augroup END
 " let query = input('Functions calling: ')
-
