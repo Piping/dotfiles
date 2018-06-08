@@ -378,6 +378,10 @@ source $VIMRUNTIME/menu.vim
 " Turn on the Wild menu
 set wildmenu
 
+" Show Hidden Chars 
+set list
+set listchars=tab:>-,eol:$,space:.,nbsp:.
+
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
@@ -499,7 +503,7 @@ set mouse=a
 set ttymouse=xterm2 | if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
-set timeoutlen=300
+set timeoutlen=300 " for <leader> mapping
 set ttimeoutlen=0
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
