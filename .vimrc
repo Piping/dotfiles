@@ -116,8 +116,8 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
 let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ".
-            \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit \n".
-            \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
+            \ "--header ':: Tip <C-t>TabSplit <C-x>split <C-v>vsplit \n".
+            \ ":: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -147,7 +147,7 @@ function! LazyLoadingVariousPlugin()
 endfunction
 
 augroup LazyLoading
-    autocmd CursorHold * call LazyLoadingVariousPlugin()
+    autocmd CursorHold * silent! call LazyLoadingVariousPlugin()
 augroup END
 
 " let mapleader = "\<tab>"
@@ -175,25 +175,13 @@ nmap <leader>a   :Autoformat<Cr>
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
-" Fast Normal Mode Cmd
-inoremap <leader>. <C-o>
 " Repeat Last Macro
 nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
 nnoremap <leader>' ciw"<C-r>""<Esc>
-" Visual mode pressing * or # searches for the current selection
+" normal mode pressing * or # searches for the current selection
 " Search for selected text, forwards or backwards.
-vnoremap <silent> * :<C-U>
-            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-            \gvy/<C-R><C-R>=substitute(
-            \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-            \gV:call setreg('"', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
-            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-            \gvy?<C-R><C-R>=substitute(
-            \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-            \gV:call setreg('"', old_reg, old_regtype)<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -326,7 +314,7 @@ function! ToggleAutoNormalMode()
     endif
 endfunction
 " I Use Auto-Normal Mode by Default
-silent call ToggleAutoNormalMode()
+" silent call ToggleAutoNormalMode()
 nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
