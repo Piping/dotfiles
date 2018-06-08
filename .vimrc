@@ -24,8 +24,8 @@ let g:lightline = {'active':{
             \ 'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
             \ 'right': [['lineinfo'],['percent']]}, }
 let g:lightline.tabline = {
-		    \ 'left': [ [ 'my_text','tabs' ] ],
-		    \ 'right': [ [ 'close' ] ] }
+            \ 'left': [ [ 'my_text','tabs' ] ],
+            \ 'right': [ [ 'close' ] ] }
 let g:lightline.tab =
             \{'active': [ 'tabnum', 'modified' ],
             \ 'inactive': [ 'tabnum','modified'],}
@@ -44,11 +44,11 @@ endfunction
 command! LightlineReload call LightlineReload()
 "the color scheme variable only available before VimEnter
 "Tab_FG_Color,Tab_BG_Color
-autocmd VimEnter * 
-    \ let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]] |
-    \ let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]] |
-    \ let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
-    \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] 
+autocmd VimEnter *
+            \ let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]] |
+            \ let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]] |
+            \ let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
+            \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
 " let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#303030', 252, 66, 'bold' ]]
 """"""""""""""""""""""""""""""
 Plug 'mhinz/vim-startify'
@@ -67,18 +67,20 @@ Plug 'ErichDonGubler/vim-sublime-monokai'
 
 Plug 'jiangmiao/auto-pairs'
 
-Plug 'majutsushi/tagbar'       , {'on': 'TagbarToggle'}
+Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 
 """"""""""""""""""""""""""""""
 "On demand loading
-Plug 'Chiel92/vim-autoformat'  , { 'on':  'Autoformat' }
+Plug 'Chiel92/vim-autoformat',  { 'on':  'Autoformat' }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'godlygeek/tabular'       , { 'on': 'Tabularize' }
+Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 """"""""""""""""""""""""""""""
 
-Plug 'ajh17/VimCompletesMe'
+" Plug 'ajh17/VimCompletesMe'
+Plug 'Valloric/YouCompleteMe',  { 'on': [],'do': './install.py --clang-completer --clang-tidy --quiet'}
+""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
 Plug 'terryma/vim-multiple-cursors', "{'on': ???? }
@@ -130,20 +132,20 @@ let mapleader = ","
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
-nmap   <leader>f   :History<Cr>
-map    <leader>ff  :FZF<Cr>,
-map    <leader>fff :FZF ~
-map    <leader>fg  :Ag<Cr>
-map    <leader>fgg :Ag
-map    <leader>fm  :Marks<Cr>
-nmap   <leader>b   :Buffers<Cr>
+nmap <leader>f   :History<Cr>
+map  <leader>ff  :FZF<Cr>,
+map  <leader>fff :FZF ~
+map  <leader>fg  :Ag<Cr>
+map  <leader>fgg :Ag
+map  <leader>fm  :Marks<Cr>
+nmap <leader>b   :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
-nmap   <leader>c   :History:<Cr>
+nmap <leader>c   :History:<Cr>
 " Fuzzy Search ALL Vim Commands
-nmap   <leader>cc  :Commands<Cr>
-vmap   <leader>a   :Tabularize /
-nmap   <leader>a   :Autoformat<Cr>
-
+nmap <leader>cc  :Commands<Cr>
+" easy-alignment no argument go to interactive mode
+vmap <leader>a   :EasyAlign
+nmap <leader>a   :Autoformat<Cr>
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -153,8 +155,19 @@ inoremap <leader>. <C-o>
 nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
-" Visual mode pressing * or # searches for the current selection
 nnoremap <leader>' ciw"<C-r>""<Esc>
+" Visual mode pressing * or # searches for the current selection
+" Search for selected text, forwards or backwards.
+vnoremap <silent> * :<C-U>
+            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+            \gvy/<C-R><C-R>=substitute(
+            \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+            \gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+            \gvy?<C-R><C-R>=substitute(
+            \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+            \gV:call setreg('"', old_reg, old_regtype)<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -168,8 +181,10 @@ nmap <leader>nn  :Lexplore!<Cr>
 nnoremap p P
 nnoremap P p
 "Join the line below with space
-nnoremap <leader>j J
-nnoremap <leader>k K
+nnoremap <leader>j  J
+"Reverse the join
+nnoremap <leader>jj v$hdO<Esc>pj
+nnoremap <leader>k  K
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Cursor Moving mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
