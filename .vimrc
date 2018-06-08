@@ -442,7 +442,7 @@ endif
 " Show Hidden Chars 
 " http://www.theasciicode.com.ar/extended-ascii-code/acute-accent-ascii-code-239.html
 set list
-set listchars=tab:>·,eol:■,nbsp:▓
+set listchars=tab:>-,eol:·,nbsp:▓
 " Overrite Color Scheme for the listchars "#649A9A
 " Two highlight group NonText & SpecialKey
 " EOL
