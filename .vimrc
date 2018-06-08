@@ -9,9 +9,10 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 set viminfo+=n~/.vim/.viminfo
+" set this time here to quickly load the ymc afterward
+set updatetime=100
 
 call plug#begin('~/.vim/plugged')
-
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
 """"""""""""""""""""""""""""""
@@ -53,6 +54,10 @@ autocmd VimEnter *
 """"""""""""""""""""""""""""""
 Plug 'mhinz/vim-startify'
 """"""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""
+Plug 'ErichDonGubler/vim-sublime-monokai'
+"colorscheme sublimemonokai "cannot be set here, set it later
+""""""""""""""""""""""""""""""
 Plug 'joeytwiddle/repmo.vim'
 let g:repmo_mapmotions = "j|k h|l zh|zl g;|g,"
 let g:repmo_key = ";"
@@ -60,14 +65,15 @@ let g:repmo_revkey = ","
 """"""""""""""""""""""""""""""
 " Plug 'Houl/repmo-vim'
 " Plug 'Houl/repmohelper-vim'
-"""""""""""""""""""""""""""""
-Plug 'ErichDonGubler/vim-sublime-monokai'
-"colorscheme sublimemonokai "cannot be set here, set it later
 """"""""""""""""""""""""""""""
 
+""""""""""""""""""""""""""""""
 Plug 'jiangmiao/auto-pairs'
+""""""""""""""""""""""""""""""
 
+""""""""""""""""""""""""""""""
 Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
+""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
 "On demand loading
@@ -112,6 +118,7 @@ let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ".
             \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit \n".
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
+
 """"""""""""""""""""""""""""""
 Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
 map  gc  <Plug>Commentary
@@ -124,6 +131,23 @@ Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
 Plug 'sheerun/vim-polyglot'
 
 call plug#end()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => YouCompleteMe Lazy Loading Support
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+function! LazyLoadingVariousPlugin()
+    call plug#load('YouCompleteMe') | call youcompleteme#Enable()
+    echo 'YouCompleteMe Lazy Loaded'
+    set updatetime=1000
+    augroup LazyLoading
+        autocmd!
+    augroup END
+endfunction
+
+augroup LazyLoading
+    autocmd CursorHold * call LazyLoadingVariousPlugin()
+augroup END
 
 " let mapleader = "\<tab>"
 " nmap ,  <leader>
@@ -145,6 +169,7 @@ nmap <leader>c   :History:<Cr>
 nmap <leader>cc  :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a   :EasyAlign
+vmap <leader>aa  :EasyAlign<Cr>
 nmap <leader>a   :Autoformat<Cr>
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
@@ -235,7 +260,7 @@ autocmd! bufwritepost ~/.vimrc source ~/.vimrc | LightlineReload
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
 map <leader>co  :botright copen<cr>
-map <leader>coc :cclose<cr>
+map <leader>coo :cclose<cr>
 " To go to the next quickfix result:
 map <leader>n :cn<cr>
 " To go to the previous quickfix result:
@@ -291,7 +316,6 @@ function! ToggleAutoNormalMode()
         let s:auto_normal_mode = 1
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
-            au CursorHoldI  * echohl ModeMsg | echomsg '-- NORMAL --'| echohl None
             au CursorHoldI  * stopinsert
             au CursorMovedI * let updaterestore=&updatetime | set updatetime=1000
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=1000
@@ -303,7 +327,6 @@ endfunction
 " I Use Auto-Normal Mode by Default
 silent call ToggleAutoNormalMode()
 nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -531,8 +554,6 @@ if has("autocmd")
     autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 endif
 
-
-
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -549,24 +570,26 @@ noremap \| =
 inoremap <C-A> <Home>
 inoremap <C-E> <End>
 " My Custom Emacs-Style Move Shortcut
-inoremap <C-Z> <Esc>bi
-inoremap <C-X> <Esc>wwi
+inoremap <C-Z> <S-Left>
+inoremap <C-X> <S-Right>
+inoremap <C-W> <Esc>ldbi
 " Delete/Cut forward word
-inoremap <C-D> <Esc>edbxxi
+inoremap <C-D> <Esc>dwi
 " Delete/Cut Word After Cursor
-inoremap <C-K> <Esc>lDai
+inoremap <C-K> <Esc>lDa
 " Delete/Cut Whole Line, mimic zsh
 inoremap <C-U> <Esc>ddi
-" Paste/Yank
-inoremap <C-Y> <Esc>Pa
+" Paste/Yank -- does not work with YMC??
+inoremap <C-Y> <C-r>"
 " Same as above, works for cmdline
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
 cnoremap <C-Z> <S-Left>
 cnoremap <C-X> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
-cnoremap <C-K> <C-U>
-cnoremap <C-Y> <C-R>"
+cnoremap <C-K> <C-u>
+" paste is not working properly
+cnoremap <C-Y> <C-r>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
