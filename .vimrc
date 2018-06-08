@@ -84,8 +84,9 @@ Plug 'Chiel92/vim-autoformat',  { 'on':  'Autoformat' }
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 """"""""""""""""""""""""""""""
 
-" Plug 'ajh17/VimCompletesMe'
+Plug 'ajh17/VimCompletesMe'
 Plug 'Valloric/YouCompleteMe',  { 'on': [],'do': './install.py --clang-completer --clang-tidy --quiet'}
+
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -226,7 +227,7 @@ noremap K <C-y>k
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>mm :TagbarToggle<CR>
 " Opens a new tab with the current buffer's path
-map <leader>tt :tabnew <cr>
+map <leader>t  :tabnew <cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
@@ -378,10 +379,6 @@ source $VIMRUNTIME/menu.vim
 " Turn on the Wild menu
 set wildmenu
 
-" Show Hidden Chars 
-set list
-set listchars=tab:>-,eol:$,space:.,nbsp:.
-
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
@@ -419,7 +416,7 @@ set magic
 set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=2
-
+	
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
@@ -442,7 +439,16 @@ set termguicolors
 if $COLORTERM == 'gnome-terminal'
     set t_Co=256
 endif
-
+" Show Hidden Chars 
+" http://www.theasciicode.com.ar/extended-ascii-code/acute-accent-ascii-code-239.html
+set list
+set listchars=tab:>-,eol:·,nbsp:▓
+" Overrite Color Scheme for the listchars "#649A9A
+" Two highlight group NonText & SpecialKey
+" EOL
+" TAB
+	
+highlight NonText ctermfg=238 guifg=#414141
 " Set extra options when running in GUI mode
 if has("gui_running")
     set guioptions-=T
@@ -450,13 +456,11 @@ if has("gui_running")
     set t_Co=256
     set guitablabel=%M\ %t
 endif
-
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
