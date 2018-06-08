@@ -21,28 +21,34 @@ set laststatus=2 "In order to show the lightline
 set showcmd      "Always print current keystroke
 set ruler        "Always show current position
 set cmdheight=1  "Height of the command bar
-let g:lightline = {'active':{
-            \ 'left' : [[ 'mode', 'paste' ],['filename','readonly','modified' ]],
-            \ 'right': [['lineinfo'],['percent']]}, }
-let g:lightline.tabline = {
-            \ 'left': [ [ 'my_text','tabs' ] ],
-            \ 'right': [ [ 'close' ] ] }
-let g:lightline.tab =
-            \{'active': [ 'tabnum', 'modified' ],
-            \ 'inactive': [ 'tabnum','modified'],}
-let g:lightline.tabline_separator = {'left':'','right':''}
-let g:lightline.tabline_subseparator = {'left':'','right':''}
-let g:lightline.component = { 'my_text': 'Tab:', }
+let g:lightline = {
+            \  'active': {
+            \     'left'  : [ [ 'mode', 'paste' ] , [ 'filename', 'readonly', 'modified', 'lineinfo' ] ],
+            \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'charvalue', 'charvaluehex' ] , ]
+            \  },
+            \  'inactive': {
+            \   'left': [ [ ] ],
+            \   'right': [ [ 'absolutepath' ]]
+            \  },
+            \  'tabline': {
+            \     'left': [ [ 'my_text','tabs' ],[ 'absolutepath' ]],
+            \     'right': [ [  ] ]
+            \  },
+            \  'tab': {
+            \     'active': [ 'tabnum', ],
+            \     'inactive': [ 'tabnum', ],
+            \  },
+            \  'tabline_separator': {
+            \     'left': '',
+            \     'right': '',
+            \  },
+            \  'component': {
+            \     'my_text': 'Tab:',
+            \  },
+            \  'component_visible_condition': {
+            \  },
+            \}
 " let g:lightline.component_visible_condition = { 'truncate_here': 0, }
-" let g:lightline.component_type = { 'truncate_here': 'raw', }
-function! LightlineReload()
-    if exists('*lightline#init')
-        call lightline#init()
-        call lightline#colorscheme()
-        call lightline#update()
-    endif
-endfunction
-command! LightlineReload call LightlineReload()
 "the color scheme variable only available before VimEnter
 "Tab_FG_Color,Tab_BG_Color
 autocmd VimEnter *
@@ -51,6 +57,14 @@ autocmd VimEnter *
             \ let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
             \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
 " let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#303030', 252, 66, 'bold' ]]
+function! LightlineReload()
+    if exists('*lightline#init')
+        call lightline#init()
+        call lightline#colorscheme()
+        call lightline#update()
+    endif
+endfunction
+command! LightlineReload call LightlineReload()
 """"""""""""""""""""""""""""""
 Plug 'mhinz/vim-startify'
 """"""""""""""""""""""""""""""
@@ -59,7 +73,7 @@ Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
 """"""""""""""""""""""""""""""
 Plug 'joeytwiddle/repmo.vim'
-let g:repmo_mapmotions = "j|k h|l zh|zl g;|g,"
+let g:repmo_mapmotions = "j|k h|l zh|zl"
 let g:repmo_key = ";"
 let g:repmo_revkey = ","
 """"""""""""""""""""""""""""""
@@ -85,7 +99,7 @@ Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 """"""""""""""""""""""""""""""
 
 Plug 'ajh17/VimCompletesMe'
-Plug 'Valloric/YouCompleteMe',  { 'on': [],'do': './install.py --clang-completer --clang-tidy --quiet'}
+" Plug 'Valloric/YouCompleteMe',  { 'on': [],'do': './install.py --clang-completer --clang-tidy --quiet'}
 
 """"""""""""""""""""""""""""""
 
@@ -133,22 +147,22 @@ Plug 'sheerun/vim-polyglot'
 
 call plug#end()
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => YouCompleteMe Lazy Loading Support
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-function! LazyLoadingVariousPlugin()
-    call plug#load('YouCompleteMe') | call youcompleteme#Enable()
-    echo 'YouCompleteMe Lazy Loaded'
-    set updatetime=1000
-    augroup LazyLoading
-        autocmd!
-    augroup END
-endfunction
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" => YouCompleteMe Lazy Loading Support
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+"function! LazyLoadingVariousPlugin()
+"    call plug#load('YouCompleteMe') | call youcompleteme#Enable()
+"    echo 'YouCompleteMe Lazy Loaded'
+"    set updatetime=1000
+"    augroup LazyLoading
+"        autocmd!
+"    augroup END
+"endfunction
 
-augroup LazyLoading
-    autocmd CursorHold * call LazyLoadingVariousPlugin()
-augroup END
+"augroup LazyLoading
+"    autocmd CursorHold * silent! call LazyLoadingVariousPlugin()
+"augroup END
 
 " let mapleader = "\<tab>"
 " nmap ,  <leader>
@@ -182,18 +196,7 @@ nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
 nnoremap <leader>' ciw"<C-r>""<Esc>
-" Visual mode pressing * or # searches for the current selection
-" Search for selected text, forwards or backwards.
-vnoremap <silent> * :<C-U>
-            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-            \gvy/<C-R><C-R>=substitute(
-            \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-            \gV:call setreg('"', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
-            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-            \gvy?<C-R><C-R>=substitute(
-            \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-            \gV:call setreg('"', old_reg, old_regtype)<CR>
+" Normal mode pressing * or # searches for the current selection
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -266,8 +269,8 @@ map <leader>coo :cclose<cr>
 map <leader>n :cn<cr>
 " To go to the previous quickfix result:
 map <leader>p :cp<cr>
-
 map <leader>h :helpclose<cr>
+
 let s:statusline_mode = 0
 function! ToggleHiddenAll()
     if s:statusline_mode  == 0
@@ -304,7 +307,7 @@ function! ToggleHiddenAll()
     endif
 endfunction
 nnoremap <leader>hh :call ToggleHiddenAll()<cr>
-
+" 中文输入
 let s:auto_normal_mode = 0
 function! ToggleAutoNormalMode()
     if s:auto_normal_mode == 1
@@ -326,7 +329,7 @@ function! ToggleAutoNormalMode()
     endif
 endfunction
 " I Use Auto-Normal Mode by Default
-silent call ToggleAutoNormalMode()
+" silent call ToggleAutoNormalMode()
 nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
@@ -344,17 +347,8 @@ function! ToggleOnlyWindow()
         wincmd =
     endif
 endfunction
-"Not Used Anymore
-function! ToggleOnlyWindowUsingSession()
-    if s:zoomed_windows_b == 0
-        let s:zoomed_windows_b = 1
-        mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
-        wincmd o " slient call feedkeys('\<C-w>o')
-    else
-        let s:zoomed_windows_b = 0
-        source ~/.vim/zoom_windows_layout_session_tmp.vim
-    endif
-endfunction
+" mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
+" wincmd o
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Options
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -416,7 +410,7 @@ set magic
 set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=2
-	
+
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
@@ -439,15 +433,18 @@ set termguicolors
 if $COLORTERM == 'gnome-terminal'
     set t_Co=256
 endif
-" Show Hidden Chars 
-" http://www.theasciicode.com.ar/extended-ascii-code/acute-accent-ascii-code-239.html
+
+set nonumber
+set foldcolumn=1
+" highlight
+" Show Hidden Chars
 set list
-set listchars=tab:>·,eol:■,nbsp:▓
+set listchars=tab:>-,eol:·,nbsp:▓
 " Overrite Color Scheme for the listchars "#649A9A
 " Two highlight group NonText & SpecialKey
 " EOL
 " TAB
-	
+
 highlight NonText ctermfg=238 guifg=#414141
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -501,7 +498,6 @@ try
 catch
 endtry
 
-set number
 set autowrite
 set mouse=a
 set ttymouse=xterm2 | if $TMUX=="" | set ttymouse=xterm | endif
