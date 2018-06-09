@@ -49,7 +49,7 @@ let g:lightline = {
             \     'truncate_here': '%<',
             \  },
             \  'component_function': {
-            \     'normal_submode': 'ShowAutoNormalMode',
+            \     'normal_submode': 'ShowExtraNormalMode',
             \  },
             \  'component_visible_condition': {
             \     'truncate_here': 0,
@@ -95,6 +95,7 @@ let g:repmo_revkey = ","
 " Plug 'Houl/repmohelper-vim'
 """"""""""""""""""""""""""""""
 Plug 'tpope/vim-surround'
+nmap gs ysiw
 """"""""""""""""""""""""""""""
 Plug 'jiangmiao/auto-pairs'
 """"""""""""""""""""""""""""""
@@ -334,27 +335,47 @@ function! ToggleAutoNormalMode()
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
             au CursorHoldI  * stopinsert
-            au CursorMovedI * let updaterestore=&updatetime | set updatetime=700
+            au CursorMovedI * let updaterestore=&updatetime | set updatetime=500
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=2000
             au InsertLeave  * let &updatetime=updaterestore
         augroup END
-        echohl ModeMsg | echo '-- NORMAL(AUTO_ESC) --' | echohl None
-        return ' [FAST]'
+        echohl ModeMsg | echo '-- NORMAL(AUTO-ESC) --' | echohl None
     endif
 endfunction
-function! ShowAutoNormalMode()
+let s:custom_mode_output = 0
+function! ShowExtraNormalMode()
     if  mode() != 'n'
         return ''
     endif
-    if s:auto_normal_mode == 0
-        return ''
-    else
-        return '[FAST] '
+    let s:custom_mode_output = ''
+    if s:auto_normal_mode != 0
+        let s:custom_mode_output .= '[esc] '
     endif
+    if s:hjkl_compatiable_mode != 1
+        let s:custom_mode_output .= '[jkil] '
+    endif
+    return s:custom_mode_output
 endfunction
 " I Use Auto-Normal Mode by Default
 " silent call ToggleAutoNormalMode()
 nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
+let s:hjkl_compatiable_mode = 1
+function! ToggleHJKLCompatiableMode()
+    if s:hjkl_compatiable_mode == 1
+        let s:hjkl_compatiable_mode = 0
+        nnoremap h i
+        nnoremap i k
+        nnoremap j h
+        nnoremap k j
+    else
+        let s:hjkl_compatiable_mode = 1
+        unmap h
+        unmap i
+        unmap j
+        unmap k
+    endif
+endfunction
+nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
