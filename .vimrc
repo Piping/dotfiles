@@ -23,8 +23,8 @@ set ruler        "Always show current position
 set cmdheight=1  "Height of the command bar
 let g:lightline = {
             \  'active': {
-            \     'left'  : [ [ 'mode', 'paste' ] , [ 'filename', 'readonly', 'modified', 'lineinfo' ] ],
-            \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'charvalue', 'charvaluehex' ] , ]
+            \     'left'  : [ [ 'mode', 'paste' ] , [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_here' ] ],
+            \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'charvalue', 'charvaluehex' ], ]
             \  },
             \  'inactive': {
             \   'left': [ [ ] ],
@@ -44,8 +44,13 @@ let g:lightline = {
             \  },
             \  'component': {
             \     'my_text': 'Tab:',
+            \     'truncate_here': '%<',
             \  },
             \  'component_visible_condition': {
+            \     'truncate_here': 0,
+            \  },
+            \  'component_type': {
+            \     'truncate_here': 'raw',
             \  },
             \}
 " let g:lightline.component_visible_condition = { 'truncate_here': 0, }
