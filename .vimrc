@@ -9,8 +9,8 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 set viminfo+=n~/.vim/.viminfo
-" set this time here to quickly load the ymc afterward
-set updatetime=100
+" set this time here to quickly load the youcompleteme afterward
+" set updatetime=100
 
 call plug#begin('~/.vim/plugged')
 """"""""""""""""""""""""""""""
@@ -23,8 +23,9 @@ set ruler        "Always show current position
 set cmdheight=1  "Height of the command bar
 let g:lightline = {
             \  'active': {
-            \     'left'  : [ [ 'mode', 'paste' ] , [ 'filename', 'readonly', 'modified', 'lineinfo' ] ],
-            \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'charvalue', 'charvaluehex' ] , ]
+            \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
+            \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_here' ] ],
+            \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
             \  },
             \  'inactive': {
             \   'left': [ [ ] ],
@@ -44,8 +45,21 @@ let g:lightline = {
             \  },
             \  'component': {
             \     'my_text': 'Tab:',
+            \     'my_charvaluehex': 'U+%B',
+            \     'truncate_here': '%<',
+            \  },
+            \  'component_function': {
+            \     'normal_submode': 'ShowAutoNormalMode',
             \  },
             \  'component_visible_condition': {
+            \     'truncate_here': 0,
+            \  },
+            \  'component_function_visible_condition': {
+            \     'normal_submode': 0,
+            \  },
+            \  'component_type': {
+            \     'normal_submode': 'raw',
+            \     'truncate_here': 'raw',
             \  },
             \}
 " let g:lightline.component_visible_condition = { 'truncate_here': 0, }
@@ -80,7 +94,7 @@ let g:repmo_revkey = ","
 " Plug 'Houl/repmo-vim'
 " Plug 'Houl/repmohelper-vim'
 """"""""""""""""""""""""""""""
-
+Plug 'tpope/vim-surround'
 """"""""""""""""""""""""""""""
 Plug 'jiangmiao/auto-pairs'
 """"""""""""""""""""""""""""""
@@ -122,7 +136,6 @@ Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers
 function! s:build_quickfix_list(lines)
     call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
     copen
-    cc
 endfunction
 let g:fzf_action = {
             \ 'ctrl-q': function('s:build_quickfix_list'),
@@ -130,7 +143,7 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
 let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ".
-            \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit \n".
+            \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
 
@@ -307,7 +320,7 @@ function! ToggleHiddenAll()
     endif
 endfunction
 nnoremap <leader>hh :call ToggleHiddenAll()<cr>
-" 中文输入
+"
 let s:auto_normal_mode = 0
 function! ToggleAutoNormalMode()
     if s:auto_normal_mode == 1
@@ -321,11 +334,22 @@ function! ToggleAutoNormalMode()
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
             au CursorHoldI  * stopinsert
-            au CursorMovedI * let updaterestore=&updatetime | set updatetime=1000
-            au InsertEnter  * let updaterestore=&updatetime | set updatetime=1000
+            au CursorMovedI * let updaterestore=&updatetime | set updatetime=700
+            au InsertEnter  * let updaterestore=&updatetime | set updatetime=2000
             au InsertLeave  * let &updatetime=updaterestore
         augroup END
-        echohl ModeMsg | echo '-- NORMAL(AUTO) --' | echohl None
+        echohl ModeMsg | echo '-- NORMAL(AUTO_ESC) --' | echohl None
+        return ' [FAST]'
+    endif
+endfunction
+function! ShowAutoNormalMode()
+    if  mode() != 'n'
+        return ''
+    endif
+    if s:auto_normal_mode == 0
+        return ''
+    else
+        return '[FAST] '
     endif
 endfunction
 " I Use Auto-Normal Mode by Default
@@ -372,7 +396,6 @@ source $VIMRUNTIME/menu.vim
 
 " Turn on the Wild menu
 set wildmenu
-
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
@@ -423,15 +446,14 @@ if has("gui_macvim")
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Colors and Fonts
+" => Colors , Fonts, Display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 silent! colorscheme sublimemonokai
-" truecolor from supported terminal etc
-set termguicolors
-
 " Enable 256 colors palette in Gnome Terminal
 if $COLORTERM == 'gnome-terminal'
     set t_Co=256
+else
+    set termguicolors
 endif
 
 set nonumber
@@ -439,11 +461,12 @@ set foldcolumn=1
 " highlight
 " Show Hidden Chars
 set list
-set listchars=tab:>-,eol:·,nbsp:▓
+set listchars=tab:>-,eol:ː,nbsp:▓
 " Overrite Color Scheme for the listchars "#649A9A
 " Two highlight group NonText & SpecialKey
 " EOL
 " TAB
+
 
 highlight NonText ctermfg=238 guifg=#414141
 " Set extra options when running in GUI mode
@@ -615,21 +638,21 @@ if has("cscope")
     " show msg when any other cscope db added
     set cscopeverbose
     " search for c symbol
-    map <leader>gs :tab cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs :cs find s <c-r>=expand("<cword>")<cr><cr>
     " seach for global definition
-    map <leader>gg :tab cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg :cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>gc :tab cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc :cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>gt :tab cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt :cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>ge :tab cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge :cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>gf :tab cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf :cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>gi :tab cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gi :cs find i <c-r>=expand("<cfile>")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd :tab cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd :cs find d <c-r>=expand("<cword>")<cr><cr>
 endif
 
 
