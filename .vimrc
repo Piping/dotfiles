@@ -95,7 +95,7 @@ Plug 'joeytwiddle/repmo.vim'
 " Plug 'Houl/repmohelper-vim'
 """"""""""""""""""""""""""""""
 Plug 'tpope/vim-surround'
-nmap gs ysiw
+nmap gs ysiw'
 """"""""""""""""""""""""""""""
 Plug 'jiangmiao/auto-pairs'
 """"""""""""""""""""""""""""""
@@ -120,6 +120,9 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion'
+nmap <leader><leader>f <Plug>(easymotion-overwin-f)
+nmap <leader><leader>s <Plug>(easymotion-sn)
+""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
 Plug 'w0rp/ale'
@@ -273,7 +276,7 @@ map <leader>pp :setlocal paste!<cr>
 map <leader>e  :e! ~/.vimrc<cr>
 map <leader>et :e! ~/.tmux.conf<cr>
 map <leader>ez :e! ~/.zshrc<cr>
-autocmd! bufwritepost ~/.vimrc source ~/.vimrc | LightlineReload
+autocmd! bufwritepost ~/.vimrc nested source ~/.vimrc | LightlineReload
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
 map <leader>co  :botright copen<cr>
