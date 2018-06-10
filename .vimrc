@@ -87,11 +87,8 @@ Plug 'ErichDonGubler/vim-sublime-monokai'
 """"""""""""""""""""""""""""""
 
 " Plug 'Piping/repeatable-motions'
-
+" Read Source Code
 Plug 'joeytwiddle/repmo.vim'
-let g:repmo_mapmotions = "j|k h|l zh|zl"
-let g:repmo_key = ";"
-let g:repmo_revkey = ","
 
 """""""""""""""""""""""""""""""
 " Plug 'Houl/repmo-vim'
@@ -116,18 +113,13 @@ Plug 'Chiel92/vim-autoformat',  { 'on':  'Autoformat' }
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 """"""""""""""""""""""""""""""
 
-Plug 'ajh17/VimCompletesMe'
-" Plug 'Valloric/YouCompleteMe',  { 'on': [],'do': './install.py --clang-completer --clang-tidy --quiet'}
-
+""""""""""""""""""""""""""""""
+Plug 'maralla/completor.vim'
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 """"""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""""
-"Plug 'terryma/vim-multiple-cursors', "{'on': ???? }
-"let g:multi_cursor_start_word_key = '<C-d>'
-"let g:multi_cursor_next_key       = '<C-d>'
-"let g:multi_cursor_start_key      = 'g<C-d>'
-"let g:multi_cursor_select_all_key = 'g<A-d>'
-"""""""""""""""""""""""""""""""
+Plug 'easymotion/vim-easymotion'
 
 """"""""""""""""""""""""""""""
 Plug 'w0rp/ale'
@@ -286,6 +278,8 @@ autocmd! bufwritepost ~/.vimrc source ~/.vimrc | LightlineReload
 " quickfix window  displaying
 map <leader>co  :botright copen<cr>
 map <leader>coo :cclose<cr>
+"Close Preview Windows
+map <leader>po  :pclose<cr>
 " To go to the next quickfix result:
 map <leader>n :cn<cr>
 " To go to the previous quickfix result:
@@ -626,21 +620,18 @@ noremap = $
 noremap \| =
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
-" InsertMode with Emacs Shortcut Mapping
+" InsertMode with Extra Emacs Shortcut Mapping
 inoremap <C-A> <Home>
 inoremap <C-E> <End>
 " My Custom Emacs-Style Move Shortcut
 inoremap <C-Z> <S-Left>
 inoremap <C-X> <S-Right>
-inoremap <C-W> <Esc>ldbi
 " Delete/Cut forward word
-inoremap <C-D> <Esc>dwi
-" Delete/Cut Word After Cursor
-inoremap <C-K> <Esc>lDa
-" Delete/Cut Whole Line, mimic zsh
-inoremap <C-U> <Esc>ddi
-" Paste/Yank -- does not work with YMC??
-inoremap <C-Y> <C-r>"
+inoremap <C-D> <C-O>dw
+inoremap <C-K> <C-O>D
+inoremap <C-W> <C-\><C-O>db
+inoremap <C-U> <C-\><C-O>d0
+inoremap <C-Y> <C-R>"
 " Same as above, works for cmdline
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
@@ -648,7 +639,6 @@ cnoremap <C-Z> <S-Left>
 cnoremap <C-X> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-K> <C-u>
-" paste is not working properly
 cnoremap <C-Y> <C-r>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
@@ -658,7 +648,7 @@ cnoremap <C-N> <Down>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
-    set csto=1
+    set csto=1 " search tag files first"
 
     " add any cscope database in current directory
     if filereadable("cscope.out")
@@ -667,7 +657,6 @@ if has("cscope")
     elseif $CSCOPE_DB !=""
         cs add $CSCOPE_DB/cscope.out $CSCOPE_DB
     endif
-
     " show msg when any other cscope db added
     set cscopeverbose
     " search for c symbol
