@@ -9,8 +9,6 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 set viminfo+=n~/.vim/.viminfo
-" set this time here to quickly load the youcompleteme afterward
-" set updatetime=100
 
 call plug#begin('~/.vim/plugged')
 """"""""""""""""""""""""""""""
@@ -87,11 +85,15 @@ Plug 'mhinz/vim-startify'
 Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
 """"""""""""""""""""""""""""""
+
+" Plug 'Piping/repeatable-motions'
+
 Plug 'joeytwiddle/repmo.vim'
 let g:repmo_mapmotions = "j|k h|l zh|zl"
 let g:repmo_key = ";"
 let g:repmo_revkey = ","
-""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""
 " Plug 'Houl/repmo-vim'
 " Plug 'Houl/repmohelper-vim'
 """"""""""""""""""""""""""""""
@@ -158,13 +160,15 @@ nmap gcc <Plug>CommentaryLine
 """"""""""""""""""""""""""""""
 Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
 """"""""""""""""""""""""""""""
-Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot', {'do': './build'}
 
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" => YouCompleteMe Lazy Loading Support
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" set this time here to quickly load the youcompleteme afterward
+" set updatetime=100
 "let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 "function! LazyLoadingVariousPlugin()
 "    call plug#load('YouCompleteMe') | call youcompleteme#Enable()
@@ -182,6 +186,7 @@ call plug#end()
 " let mapleader = "\<tab>"
 " nmap ,  <leader>
 let mapleader = ","
+
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
@@ -201,6 +206,7 @@ nmap <leader>cc  :Commands<Cr>
 vmap <leader>a   :EasyAlign
 vmap <leader>aa  :EasyAlign<Cr>
 nmap <leader>a   :Autoformat<Cr>
+
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -665,21 +671,21 @@ if has("cscope")
     " show msg when any other cscope db added
     set cscopeverbose
     " search for c symbol
-    map <leader>gs :cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs :pedit cs find s <c-r>=expand("<cword>")<cr><cr>
     " seach for global definition
-    map <leader>gg :cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg :pedit cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>gc :cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc :pedit cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>gt :cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt :pedit cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>ge :cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge :pedit cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>gf :cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf :pedit cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>gi :cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gi :pedit cs find i <c-r>=expand("<cfile>")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd :cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd :pedit cs find d <c-r>=expand("<cword>")<cr><cr>
 endif
 
 
