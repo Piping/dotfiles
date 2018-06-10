@@ -24,16 +24,16 @@ set cmdheight=1  "Height of the command bar
 let g:lightline = {
             \  'active': {
             \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
-            \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_here' ] ],
+            \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start' ] ],
             \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
-            \  },
+            \  }, 
             \  'inactive': {
             \   'left': [ [ ] ],
             \   'right': [ [ 'absolutepath' ]]
             \  },
             \  'tabline': {
-            \     'left': [ [ 'my_text','tabs' ],[ 'absolutepath' ]],
-            \     'right': [ [  ] ]
+            \     'left': [ [ 'my_text','tabs' ],[ 'absolutepath', ] ],
+            \     'right': [ [ 'vim_pwd', ] ]
             \  },
             \  'tab': {
             \     'active': [ 'tabnum', ],
@@ -46,23 +46,24 @@ let g:lightline = {
             \  'component': {
             \     'my_text': 'Tab:',
             \     'my_charvaluehex': 'U+%B',
-            \     'truncate_here': '%<',
+            \     'truncate_start': '%<',
             \  },
             \  'component_function': {
             \     'normal_submode': 'ShowExtraNormalMode',
+            \     'vim_pwd': 'getcwd',
             \  },
             \  'component_visible_condition': {
-            \     'truncate_here': 0,
+            \     'truncate_start': 0,
             \  },
             \  'component_function_visible_condition': {
             \     'normal_submode': 0,
             \  },
             \  'component_type': {
             \     'normal_submode': 'raw',
-            \     'truncate_here': 'raw',
+            \     'truncate_start': 'raw',
             \  },
             \}
-" let g:lightline.component_visible_condition = { 'truncate_here': 0, }
+" let g:lightline.component_visible_condition = { 'truncate_start': 0, }
 "the color scheme variable only available before VimEnter
 "Tab_FG_Color,Tab_BG_Color
 autocmd VimEnter *
@@ -118,13 +119,13 @@ Plug 'ajh17/VimCompletesMe'
 
 """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
-Plug 'terryma/vim-multiple-cursors', "{'on': ???? }
-let g:multi_cursor_start_word_key = '<C-d>'
-let g:multi_cursor_next_key       = '<C-d>'
-let g:multi_cursor_start_key      = 'g<C-d>'
-let g:multi_cursor_select_all_key = 'g<A-d>'
-""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""
+"Plug 'terryma/vim-multiple-cursors', "{'on': ???? }
+"let g:multi_cursor_start_word_key = '<C-d>'
+"let g:multi_cursor_next_key       = '<C-d>'
+"let g:multi_cursor_start_key      = 'g<C-d>'
+"let g:multi_cursor_select_all_key = 'g<A-d>'
+"""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
 Plug 'w0rp/ale'
@@ -263,7 +264,7 @@ map <leader>sd [s
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
-noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+" noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
@@ -344,15 +345,12 @@ function! ToggleAutoNormalMode()
 endfunction
 let s:custom_mode_output = 0
 function! ShowExtraNormalMode()
-    if  mode() != 'n'
-        return ''
-    endif
     let s:custom_mode_output = ''
-    if s:auto_normal_mode != 0
-        let s:custom_mode_output .= '[esc] '
-    endif
     if s:hjkl_compatiable_mode != 1
-        let s:custom_mode_output .= '[jkil] '
+        let s:custom_mode_output .= '[ijkl] '
+    endif
+    if s:auto_normal_mode != 0 && mode() == 'n'
+        let s:custom_mode_output .= '[esc] '
     endif
     return s:custom_mode_output
 endfunction
@@ -363,16 +361,24 @@ let s:hjkl_compatiable_mode = 1
 function! ToggleHJKLCompatiableMode()
     if s:hjkl_compatiable_mode == 1
         let s:hjkl_compatiable_mode = 0
+        vnoremap h i
+        vnoremap i k
+        vnoremap j h
+        vnoremap k j
         nnoremap h i
         nnoremap i k
         nnoremap j h
         nnoremap k j
     else
         let s:hjkl_compatiable_mode = 1
-        unmap h
-        unmap i
-        unmap j
-        unmap k
+        vunmap h
+        vunmap i
+        vunmap j
+        vunmap k
+        nunmap h
+        nunmap i
+        nunmap j
+        nunmap k
     endif
 endfunction
 nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
@@ -684,3 +690,18 @@ endif
 "   au TextChangedI * set timeoutlen=0
 " augroup END
 " let query = input('Functions calling: ')
+" " Search for selected text, forwards or backwards.
+" Paste matching text of last search
+" maygn`ap
+" enable * # for visual selected text, whitespace match any whitespace in potential result
+function! s:getSelectedText()
+  let l:old_reg = getreg('"')
+  let l:old_regtype = getregtype('"')
+  norm gvy
+  let l:ret = getreg('"')
+  call setreg('"', l:old_reg, l:old_regtype)
+  exe "norm \<Esc>"
+  return l:ret
+endfunction
+vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
+vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
