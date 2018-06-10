@@ -617,7 +617,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
 " Remap  = filter to |
-noremap \| =
+noremap \ =
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
 " InsertMode with Extra Emacs Shortcut Mapping
