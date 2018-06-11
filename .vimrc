@@ -14,6 +14,7 @@ call plug#begin('~/.vim/plugged')
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
 """"""""""""""""""""""""""""""
+ 
 Plug 'itchyny/lightline.vim'
 set laststatus=2 "In order to show the lightline
 set showcmd      "Always print current keystroke
@@ -84,6 +85,8 @@ Plug 'mhinz/vim-startify'
 """""""""""""""""""""""""""""
 Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
+Plug 'chrisbra/Colorizer'
+let g:colorizer_auto_filetype='css,html,tmux,vim'
 """"""""""""""""""""""""""""""
 
 " Plug 'Piping/repeatable-motions'
@@ -117,6 +120,7 @@ Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 Plug 'maralla/completor.vim'
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion'
@@ -155,7 +159,7 @@ nmap gcc <Plug>CommentaryLine
 """"""""""""""""""""""""""""""
 Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
 """"""""""""""""""""""""""""""
-Plug 'sheerun/vim-polyglot', {'do': './build'}
+" Plug 'sheerun/vim-polyglot', {'do': './build'}
 
 call plug#end()
 
@@ -556,8 +560,8 @@ set mouse=a
 set ttymouse=xterm2 | if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
-set timeoutlen=300 " for <leader> mapping
-set ttimeoutlen=0
+set timeoutlen=300 " For <leader> mapping
+set ttimeoutlen=0 " No keycode delay
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 " :W sudo saves the file
@@ -634,7 +638,7 @@ inoremap <C-D> <C-O>dw
 inoremap <C-K> <C-O>D
 inoremap <C-W> <C-\><C-O>db
 inoremap <C-U> <C-\><C-O>d0
-inoremap <C-Y> <C-R>"
+" inoremap <C-Y> <C-R>"
 " Same as above, works for cmdline
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
