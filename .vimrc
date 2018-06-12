@@ -122,10 +122,10 @@ nmap <leader>u :UndotreeToggle<Cr>
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'zeekay/vim-beautify', { 'on': 'Beautify' }
+" Plug 'zeekay/vim-beautify', { 'on': 'Beautify' }
 
-let g:beautify = { "beauifiers": { "c": ["clang-format"], },
-                 \ "definitions": { "atyle": {"args": "--style=Mozilla",} } }
+" let g:beautify = { "beauifiers": { "c": ["clang-format"], },
+"                  \ "definitions": { "atyle": {"args": "--style=Webkit",} } }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -240,8 +240,6 @@ nmap <leader>c   :History:<Cr>
 nmap <leader>cc  :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a   :EasyAlign
-nmap <leader>a   :Autoformat<Cr>
-
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -250,6 +248,13 @@ nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
 " Normal mode pressing * or # searches for the current selection
+
+"""""""""""""""""""""""""""""""""""""""""
+"" Code/Text AutoFormat
+"""""""""""""""""""""""""""""""""""""""""
+set equalprg="clang-format --style=Webkit"
+nnoremap <leader>a   gg=G''
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
