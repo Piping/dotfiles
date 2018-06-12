@@ -11,6 +11,10 @@ endif
 set viminfo+=n~/.vim/.viminfo
 
 call plug#begin('~/.vim/plugged')
+
+
+
+
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
 """"""""""""""""""""""""""""""
@@ -105,10 +109,8 @@ Plug 'joeytwiddle/repmo.vim'
 " Plug 'Houl/repmo-vim'
 " Plug 'Houl/repmohelper-vim'
 """"""""""""""""""""""""""""""
-Plug 'tpope/vim-surround'
-nmap gs ysiw'
-""""""""""""""""""""""""""""""
-" Plug 'jiangmiao/auto-pairs'
+" Plug 'tpope/vim-surround'
+" nmap gs ysiw'
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -116,8 +118,14 @@ Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+nmap <leader>u :UndotreeToggle<Cr>
+""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""
 "On demand loading
 Plug 'Chiel92/vim-autoformat',  { 'on':  'Autoformat' }
+" Plug 'jiangmiao/auto-pairs'
+Plug 'zeekay/vim-beautify'
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -144,7 +152,7 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-" nmap <leader>d  <Plug>(easymotion-prefix)
+nmap <leader>m  <Plug>(easymotion-prefix)
 map  <c-f>    <Plug>(easymotion-overwin-f)
 map  <space>  <Plug>(easymotion-sn)
 
