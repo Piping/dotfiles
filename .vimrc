@@ -82,15 +82,18 @@ command! LightlineReload call LightlineReload()
 """"""""""""""""""""""""""""""
 Plug 'mhinz/vim-startify'
 """"""""""""""""""""""""""""""
+
 """""""""""""""""""""""""""""
 Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
-Plug 'chrisbra/Colorizer'
-let g:colorizer_auto_filetype='tmux'
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'posva/vim-vue'
+Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
+""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""
+Plug 'posva/vim-vue', { 'for': 'vue' }
 """"""""""""""""""""""""""""""
 
 " Plug 'Piping/repeatable-motions'
@@ -104,7 +107,7 @@ Plug 'joeytwiddle/repmo.vim'
 Plug 'tpope/vim-surround'
 nmap gs ysiw'
 """"""""""""""""""""""""""""""
-Plug 'jiangmiao/auto-pairs'
+" Plug 'jiangmiao/auto-pairs'
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -139,10 +142,11 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
-Plug 'easymotion/vim-easymotion'
-nmap <leader>d <Plug>(easymotion-prefix)
-map  <space>   <Plug>(easymotion-sn)
-map  f         <Plug>(easymotion-overwin-f)
+Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
+" nmap <leader>d  <Plug>(easymotion-prefix)
+map  <space>    <Plug>(easymotion-sn)
+map  <leader>d  <Plug>(easymotion-overwin-f)
+
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -163,9 +167,9 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
 if $FZF_DEFAULT_COMMAND == ""
-    let $FZF_DEFAULT_COMMAND = 'fd --type f --height 40%'
+    let $FZF_DEFAULT_COMMAND = 'find . -path '*/\.*' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
 endif
-let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ".
+let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
             \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
