@@ -144,17 +144,18 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
 " nmap <leader>d  <Plug>(easymotion-prefix)
-map  <space>    <Plug>(easymotion-sn)
-map  <leader>d  <Plug>(easymotion-overwin-f)
+map  <c-f>    <Plug>(easymotion-overwin-f)
+map  <space>  <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'w0rp/ale'
+Plug 'w0rp/ale', { 'for': 'cpp,c,js,html'  }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers','History','Files']}
+Plug 'junegunn/fzf', {'on': ['Ag','Commands','Buffers','History','Files']}
+Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers','History','Files']}
 " CTRL-A CTRL-Q to select all and build quickfix list
 " location list is similar to quickfix, specific to each window
 function! s:build_quickfix_list(lines)
@@ -167,13 +168,14 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
 if $FZF_DEFAULT_COMMAND == ""
-    let $FZF_DEFAULT_COMMAND = 'find . -path '*/\.*' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
+        let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
 endif
 let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
             \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
 
+""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""
 Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
 map  gc  <Plug>Commentary
@@ -206,9 +208,11 @@ call plug#end()
 "    autocmd CursorHold * silent! call LazyLoadingVariousPlugin()
 "augroup END
 
-" let mapleader = "\<tab>"
-" nmap ,  <leader>
+"""""""""""""""""""""""""""""""""""""""""
+""PLUGIN LEADER KEY MAPPING"
+"""""""""""""""""""""""""""""""""""""""""
 let mapleader = ","
+" nmap ,  <leader>
 
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
@@ -227,19 +231,15 @@ nmap <leader>c   :History:<Cr>
 nmap <leader>cc  :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a   :EasyAlign
-vmap <leader>aa  :EasyAlign<Cr>
 nmap <leader>a   :Autoformat<Cr>
 
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
-" Fast Normal Mode Cmd
-inoremap <leader>. <C-o>
 " Repeat Last Macro
 nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
-nnoremap <leader>' ciw"<C-r>""<Esc>
 " Normal mode pressing * or # searches for the current selection
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -249,14 +249,14 @@ nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q<Cr>
 nmap <leader>qq  :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
-nmap <leader>nn  :Lexplore!<Cr>
+nmap <leader>nn  :silent! Lexplore!<Cr>
 " set 'p' to paste before cursor
 nnoremap p P
 nnoremap P p
 "Join the line below with space
 nnoremap <leader>j  J
-"Reverse the join
-nnoremap <leader>jj v$hdO<Esc>pj
+"Split the line and move it upward
+nnoremap <leader>jk v$hdO<Esc>pj
 nnoremap <leader>k  K
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Cursor Moving mappings
