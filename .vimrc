@@ -12,8 +12,7 @@ set viminfo+=n~/.vim/.viminfo
 
 call plug#begin('~/.vim/plugged')
 
-
-
+"On demand loading
 
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
@@ -121,11 +120,12 @@ Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 nmap <leader>u :UndotreeToggle<Cr>
 """"""""""""""""""""""""""""""
+
 """"""""""""""""""""""""""""""
-"On demand loading
-Plug 'Chiel92/vim-autoformat',  { 'on':  'Autoformat' }
-" Plug 'jiangmiao/auto-pairs'
-Plug 'zeekay/vim-beautify'
+Plug 'zeekay/vim-beautify', { 'on': 'Beautify' }
+
+let g:beautify = { "beauifiers": { "c": ["clang-format"], },
+                 \ "definitions": { "atyle": {"args": "--style=Mozilla",} } }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -159,7 +159,7 @@ map  <space>  <Plug>(easymotion-sn)
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'w0rp/ale', { 'for': 'cpp,c,js,html'  }
+Plug 'w0rp/ale', { 'on': 'ALEEnable', 'for': 'cpp,c,js,html' }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
