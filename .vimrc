@@ -28,7 +28,7 @@ let g:lightline = {
             \  },
             \  'inactive': {
             \   'left': [ [ ] ],
-            \   'right': [ [ 'relativepath', ],['bufnum']]
+            \   'right': [ ['bufnum'], [ 'relativepath', ] ]
             \  },
             \  'tabline': {
             \     'left': [ [ 'my_text','tabs' ],[ 'relativepath', ] ],
@@ -62,15 +62,16 @@ let g:lightline = {
             \     'truncate_start': 'raw',
             \  },
             \}
-" let g:lightline.component_visible_condition = { 'truncate_start': 0, }
+
 "the color scheme variable only available before VimEnter
 "Tab_FG_Color,Tab_BG_Color
 autocmd VimEnter *
             \ let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]] |
             \ let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]] |
             \ let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
-            \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
-" let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#303030', 252, 66, 'bold' ]]
+            \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
+            \ let g:lightline#colorscheme#default#palette.inactive.right   = [[ '#606060', '#202020', 252, 66, 'bold' ]]
+
 function! LightlineReload()
     if exists('*lightline#init')
         call lightline#init()
