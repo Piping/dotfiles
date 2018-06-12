@@ -14,7 +14,7 @@ call plug#begin('~/.vim/plugged')
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
 """"""""""""""""""""""""""""""
- 
+
 Plug 'itchyny/lightline.vim'
 set laststatus=2 "In order to show the lightline
 set showcmd      "Always print current keystroke
@@ -25,13 +25,13 @@ let g:lightline = {
             \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
             \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start' ] ],
             \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
-            \  }, 
+            \  },
             \  'inactive': {
             \   'left': [ [ ] ],
-            \   'right': [ [ 'absolutepath' ]]
+            \   'right': [ [ 'relativepath', ],['bufnum']]
             \  },
             \  'tabline': {
-            \     'left': [ [ 'my_text','tabs' ],[ 'absolutepath', ] ],
+            \     'left': [ [ 'my_text','tabs' ],[ 'relativepath', ] ],
             \     'right': [ [ 'vim_pwd', ] ]
             \  },
             \  'tab': {
@@ -86,7 +86,11 @@ Plug 'mhinz/vim-startify'
 Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
 Plug 'chrisbra/Colorizer'
-let g:colorizer_auto_filetype='css,html,tmux,vim'
+let g:colorizer_auto_filetype='tmux'
+""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""
+Plug 'posva/vim-vue'
 """"""""""""""""""""""""""""""
 
 " Plug 'Piping/repeatable-motions'
@@ -114,6 +118,18 @@ Plug 'Chiel92/vim-autoformat',  { 'on':  'Autoformat' }
 
 """"""""""""""""""""""""""""""
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
+
+" Option name      	 Shortcut key    	 Abbreviated 	 Global variable
+" filter           	 CTRL-F          	 [gv]/.*/
+" left_margin      	 CTRL-L          	 l[0-9]+
+" right_margin     	 CTRL-R          	 r[0-9]+
+" stick_to_left    	 <Left>, <Right> 	 < or >
+" ignore_groups    	 CTRL-G          	 ig\[.*\]    	 g:easy_align_ignore_groups
+" ignore_unmatched 	 CTRL-U          	 iu[01]      	 g:easy_align_ignore_unmatched
+" indentation      	 CTRL-I          	 i[ksdn]     	 g:easy_align_indentation
+" delimiter_align  	 CTRL-D          	 d[lrc]      	 g:easy_align_delimiter_align
+" align            	 CTRL-A          	 a[lrc*]*
+
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -124,8 +140,9 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion'
-nmap <leader><leader>f <Plug>(easymotion-overwin-f)
-nmap <leader><leader>s <Plug>(easymotion-sn)
+nmap <leader>d <Plug>(easymotion-prefix)
+map  <space>   <Plug>(easymotion-sn)
+map  f         <Plug>(easymotion-overwin-f)
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -145,6 +162,9 @@ let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
+if $FZF_DEFAULT_COMMAND == ""
+    let $FZF_DEFAULT_COMMAND = 'fd --type f --height 40%'
+endif
 let $FZF_DEFAULT_OPTS  = "--bind ctrl-f:select-all,ctrl-g:deselect-all ".
             \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
@@ -372,20 +392,24 @@ function! ToggleHJKLCompatiableMode()
         vnoremap i k
         vnoremap j h
         vnoremap k j
+        vnoremap l l
         nnoremap h i
         nnoremap i k
         nnoremap j h
         nnoremap k j
+        nnoremap l l
     else
         let s:hjkl_compatiable_mode = 1
         vunmap h
         vunmap i
         vunmap j
         vunmap k
+        vunmap l
         nunmap h
         nunmap i
         nunmap j
         nunmap k
+        nunmap l
     endif
 endfunction
 nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
@@ -419,6 +443,12 @@ filetype indent on
 
 " Set to auto read when a file is changed from the outside
 set autoread
+
+" Set utf8 as standard encoding and en_US as the standard language
+set encoding=utf8
+
+" Use Unix as the standard file type
+set ffs=unix,dos,mac
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -510,11 +540,6 @@ if has("gui_running")
     set t_Co=256
     set guitablabel=%M\ %t
 endif
-" Set utf8 as standard encoding and en_US as the standard language
-set encoding=utf8
-
-" Use Unix as the standard file type
-set ffs=unix,dos,mac
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
@@ -571,8 +596,6 @@ command! W w !sudo tee % > /dev/null
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Pattern Match, Search Highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Map <Space> to / (search)
-map <space> /
 " Disable highlight when <leader><cr> is pressed
 nmap <silent> <leader><cr> :noh<cr>
 
@@ -667,21 +690,21 @@ if has("cscope")
     " show msg when any other cscope db added
     set cscopeverbose
     " search for c symbol
-    map <leader>gs :pedit cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs :cs find s <c-r>=expand("<cword>")<cr><cr>
     " seach for global definition
-    map <leader>gg :pedit cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg :cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>gc :pedit cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc :cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>gt :pedit cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt :cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>ge :pedit cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge :cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>gf :pedit cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf :cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>gi :pedit cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gi :cs find i <c-r>=expand("<cfile>")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd :pedit cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd :cs find d <c-r>=expand("<cword>")<cr><cr>
 endif
 
 
@@ -697,13 +720,13 @@ endif
 " maygn`ap
 " enable * # for visual selected text, whitespace match any whitespace in potential result
 function! s:getSelectedText()
-  let l:old_reg = getreg('"')
-  let l:old_regtype = getregtype('"')
-  norm gvy
-  let l:ret = getreg('"')
-  call setreg('"', l:old_reg, l:old_regtype)
-  exe "norm \<Esc>"
-  return l:ret
+    let l:old_reg = getreg('"')
+    let l:old_regtype = getregtype('"')
+    norm gvy
+    let l:ret = getreg('"')
+    call setreg('"', l:old_reg, l:old_regtype)
+    exe "norm \<Esc>"
+    return l:ret
 endfunction
 vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
 vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
