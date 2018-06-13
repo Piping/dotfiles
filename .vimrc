@@ -12,7 +12,6 @@ set viminfo+=n~/.vim/.viminfo
 
 call plug#begin('~/.vim/plugged')
 
-"On demand loading
 
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
@@ -92,7 +91,7 @@ Plug 'ErichDonGubler/vim-sublime-monokai'
 "colorscheme sublimemonokai "cannot be set here, set it later
 """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""" "On demand loading
 Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
 """"""""""""""""""""""""""""""
 
@@ -104,15 +103,6 @@ Plug 'posva/vim-vue', { 'for': 'vue' }
 " Read Source Code
 Plug 'joeytwiddle/repmo.vim'
 
-"""""""""""""""""""""""""""""""
-" Plug 'Houl/repmo-vim'
-" Plug 'Houl/repmohelper-vim'
-
-""""""""""""""""""""""""""""""
-" Plug 'tpope/vim-surround'
-" nmap gs ysiw'
-""""""""""""""""""""""""""""""
-
 """"""""""""""""""""""""""""""
 Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 """"""""""""""""""""""""""""""
@@ -120,13 +110,6 @@ Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 """"""""""""""""""""""""""""""
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 nmap <leader>u :UndotreeToggle<Cr>
-""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""
-" Plug 'zeekay/vim-beautify', { 'on': 'Beautify' }
-
-" let g:beautify = { "beauifiers": { "c": ["clang-format"], },
-"                  \ "definitions": { "atyle": {"args": "--style=Webkit",} } }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -244,6 +227,7 @@ nmap <leader>b   :Buffers<Cr>
 nmap <leader>c   :History:<Cr>
 " Fuzzy Search ALL Vim Commands
 nmap <leader>cm  :Commands<Cr>
+nnoremap q: <Esc>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a   :EasyAlign
 """""""""""""""""""""""""""""""""""""""""
@@ -254,14 +238,6 @@ nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
 " Normal mode pressing * or # searches for the current selection
-
-"""""""""""""""""""""""""""""""""""""""""
-"" Code/Text AutoFormat
-"""""""""""""""""""""""""""""""""""""""""
-if executable('clang-format')
-    set equalprg="clang-format --style=Webkit"
-endif
-" autocmd FileType javascript setlocal equalprg='js-beautify -f -'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -457,6 +433,153 @@ function! ToggleOnlyWindow()
 endfunction
 " mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
 " wincmd o
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => InertMode/CMDline Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Remap = to line end $, like it, easier to press and remember
+noremap = $
+" Remap  = filter to |
+noremap \ =
+noremap \\ gg=G''
+" Map _ to be reverse of -, move cursor one line upward and beginning of the word
+" noremap _ ddkp
+" InsertMode with Extra Emacs Shortcut Mapping
+inoremap <C-A> <Home>
+inoremap <C-E> <End>
+" My Custom Emacs-Style Move Shortcut
+inoremap <C-Z> <S-Left>
+inoremap <C-X> <S-Right>
+" Delete/Cut forward word
+inoremap <C-D> <C-O>dw
+inoremap <C-K> <C-O>D
+inoremap <C-W> <C-\><C-O>db
+inoremap <C-U> <C-\><C-O>d0
+" inoremap <C-Y> <C-R>"
+" Same as above, works for cmdline
+cnoremap <C-A> <Home>
+cnoremap <C-E> <End>
+cnoremap <C-Z> <S-Left>
+cnoremap <C-X> <S-Right>
+cnoremap <C-D> <S-Right><C-W>
+cnoremap <C-K> <C-u>
+cnoremap <C-Y> <C-r>"
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Code Development - Cscope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cscope")
+    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+    set csto=1 " search tag files first if it exists"
+
+    " add any cscope database in current directory
+    if filereadable("cscope.out")
+        cs add cscope.out
+        " else add the database pointed to by environment variable
+    elseif $CSCOPE_DIR !=""
+        cs add $CSCOPE_DIR/cscope.out $CSCOPE_DIR
+    endif
+    " show msg when any other cscope db added
+    set cscopeverbose
+
+    " search for c symbol
+    map <leader>gs  :copen <bar> AsyncRun cs find s <c-r>=expand("<cword>")<cr><cr>
+    " seach for global definition
+    map <leader>gg  :copen <bar> AsyncRun cs find g <c-r>=expand("<cword>")<cr><cr>
+    " search functions that call this function
+    map <leader>gc  :copen <bar> AsyncRun cs find c <c-r>=expand("<cword>")<cr><cr>
+    " search this string
+    map <leader>gt  :copen <bar> AsyncRun cs find t <c-r>=expand("<cword>")<cr><cr>
+    " egrep pattern matching
+    map <leader>ge  :copen <bar> AsyncRun cs find e <c-r>=expand("<cword>")<cr><cr>
+    " search this file
+    map <leader>gf  :copen <bar> AsyncRun cs find f <c-r>=expand("<cfile>")<cr><cr>
+    " search files that include this file
+    map <leader>gi  :copen <bar> AsyncRun cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gii :copen <bar> AsyncRun cs find i <c-r>=expand("%:t")<cr><cr>
+    " search for functions are called by this function
+    map <leader>gd  :copen <bar> AsyncRun cs find d <c-r>=expand("<cword>")<cr><cr>
+
+endif
+
+
+" Special Configuration
+" augroup FastLeaderKeyInsertMode
+"   autocmd!
+"   au TextChangedI * if strcharpart(getline('.')[col('.') - 1:], 0, 1) == ',' | set timeoutlen=200 | end
+"   au TextChangedI * set timeoutlen=0
+" augroup END
+" let query = input('Functions calling: ')
+" " Search for selected text, forwards or backwards.
+" Paste matching text of last search
+" maygn`ap
+" enable * # for visual selected text, whitespace match any whitespace in potential result
+function! s:getSelectedText()
+    let l:old_reg = getreg('"')
+    let l:old_regtype = getregtype('"')
+    norm gvy
+    let l:ret = getreg('"')
+    call setreg('"', l:old_reg, l:old_regtype)
+    exe "norm \<Esc>"
+    return l:ret
+endfunction
+vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
+vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+command! W w !sudo tee % > /dev/null
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Pattern Match, Search Highlight
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Disable highlight when <leader><cr> is pressed
+nmap <silent> <leader><cr> :noh<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Moving around, tabs, windows and buffers
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Return to last edit position when opening files (You want this!)
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Delete trailing white space on save, useful for some filetypes ;)
+func! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
+" userful to redirect internal command output to paste buffer
+func! Exec(command)
+    redir =>output
+    silent exec a:command
+    redir END
+    return output
+endfunct!
+
+if has("autocmd")
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+endif
+
+iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""    SET VIM OPTIONS      """""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Options
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -576,6 +699,16 @@ set nowb
 set noswapfile
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Turn persistent undo on
+"    means that you can undo even when you close a buffer/vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+try
+    set undodir=~/.vim/temp_dirs/undodir
+    set undofile
+catch
+endtry
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Use spaces instead of tabs
@@ -596,13 +729,10 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Turn persistent undo on
-"    means that you can undo even when you close a buffer/vim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Specify the behavior when switching between buffers
 try
-    set undodir=~/.vim/temp_dirs/undodir
-    set undofile
+    set switchbuf=useopen,usetab,newtab
+    set stal=2
 catch
 endtry
 
@@ -615,148 +745,19 @@ set timeoutlen=300 " For <leader> mapping
 set ttimeoutlen=0 " No keycode delay
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
-" :W sudo saves the file
-" (useful for handling the permission-denied error)
-command! W w !sudo tee % > /dev/null
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Pattern Match, Search Highlight
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Disable highlight when <leader><cr> is pressed
-nmap <silent> <leader><cr> :noh<cr>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Smart way to move between windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
-
-" Specify the behavior when switching between buffers
-try
-    set switchbuf=useopen,usetab,newtab
-    set stal=2
-catch
-endtry
-
-" Return to last edit position when opening files (You want this!)
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-" Delete trailing white space on save, useful for some filetypes ;)
-func! CleanExtraSpaces()
-    let save_cursor = getpos(".")
-    let old_query = getreg('/')
-    silent! %s/\s\+$//e
-    call setpos('.', save_cursor)
-    call setreg('/', old_query)
-endfun
-" userful to redirect internal command output to paste buffer
-func! Exec(command)
-    redir =>output
-    silent exec a:command
-    redir END
-    return output
-endfunct!
-
-if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+"""""""""""""""""""""""""""""""""""""""""
+"" Code/Text AutoFormat
+"""""""""""""""""""""""""""""""""""""""""
+if executable('clang-format')
+    set equalprg="clang-format --style=Webkit"
 endif
+" autocmd FileType javascript setlocal equalprg='js-beautify -f -'
 
-iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => InertMode/CMDline Editing mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Remap = to line end $, like it, easier to press and remember
-noremap = $
-" Remap  = filter to |
-noremap \ =
-noremap \\ gg=G''
-" Map _ to be reverse of -, move cursor one line upward and beginning of the word
-" noremap _ ddkp
-" InsertMode with Extra Emacs Shortcut Mapping
-inoremap <C-A> <Home>
-inoremap <C-E> <End>
-" My Custom Emacs-Style Move Shortcut
-inoremap <C-Z> <S-Left>
-inoremap <C-X> <S-Right>
-" Delete/Cut forward word
-inoremap <C-D> <C-O>dw
-inoremap <C-K> <C-O>D
-inoremap <C-W> <C-\><C-O>db
-inoremap <C-U> <C-\><C-O>d0
-" inoremap <C-Y> <C-R>"
-" Same as above, works for cmdline
-cnoremap <C-A> <Home>
-cnoremap <C-E> <End>
-cnoremap <C-Z> <S-Left>
-cnoremap <C-X> <S-Right>
-cnoremap <C-D> <S-Right><C-W>
-cnoremap <C-K> <C-u>
-cnoremap <C-Y> <C-r>"
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Code Development - Cscope
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("cscope")
-    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
-    set csto=1 " search tag files first if it exists"
-
-    " add any cscope database in current directory
-    if filereadable("cscope.out")
-        cs add cscope.out
-        " else add the database pointed to by environment variable
-    elseif $CSCOPE_DIR !=""
-        cs add $CSCOPE_DIR/cscope.out $CSCOPE_DIR
-    endif
-    " show msg when any other cscope db added
-    set cscopeverbose
-
-    " search for c symbol
-    map <leader>gs  :copen <bar> AsyncRun cs find s <c-r>=expand("<cword>")<cr><cr>
-    " seach for global definition
-    map <leader>gg  :copen <bar> AsyncRun cs find g <c-r>=expand("<cword>")<cr><cr>
-    " search functions that call this function
-    map <leader>gc  :copen <bar> AsyncRun cs find c <c-r>=expand("<cword>")<cr><cr>
-    " search this string
-    map <leader>gt  :copen <bar> AsyncRun cs find t <c-r>=expand("<cword>")<cr><cr>
-    " egrep pattern matching
-    map <leader>ge  :copen <bar> AsyncRun cs find e <c-r>=expand("<cword>")<cr><cr>
-    " search this file
-    map <leader>gf  :copen <bar> AsyncRun cs find f <c-r>=expand("<cfile>")<cr><cr>
-    " search files that include this file
-    map <leader>gi  :copen <bar> AsyncRun cs find i <c-r>=expand("<cfile>")<cr><cr>
-    map <leader>gii :copen <bar> AsyncRun cs find i <c-r>=expand("%:t")<cr><cr>
-    " search for functions are called by this function
-    map <leader>gd  :copen <bar> AsyncRun cs find d <c-r>=expand("<cword>")<cr><cr>
-
-endif
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-" Special Configuration
-" augroup FastLeaderKeyInsertMode
-"   autocmd!
-"   au TextChangedI * if strcharpart(getline('.')[col('.') - 1:], 0, 1) == ',' | set timeoutlen=200 | end
-"   au TextChangedI * set timeoutlen=0
-" augroup END
-" let query = input('Functions calling: ')
-" " Search for selected text, forwards or backwards.
-" Paste matching text of last search
-" maygn`ap
-" enable * # for visual selected text, whitespace match any whitespace in potential result
-function! s:getSelectedText()
-    let l:old_reg = getreg('"')
-    let l:old_regtype = getregtype('"')
-    norm gvy
-    let l:ret = getreg('"')
-    call setreg('"', l:old_reg, l:old_regtype)
-    exe "norm \<Esc>"
-    return l:ret
-endfunction
-vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
-vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
