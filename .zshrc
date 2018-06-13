@@ -29,7 +29,7 @@ if [ ! -f "$ANTIGEN" ]; then
     touch ~/.z
 fi
 
-export PATH="$PATH:$HOME/.bin"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export EDITOR=vim
 export PAGER='less -irf'
 export GREP_COLOR='40;33;01'
@@ -271,7 +271,6 @@ alias -s xz='tar -xf'
 alias -s sh='bash'
 alias -s py='python'
 
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 # LuqidPrompt
 # set | grep ^LP_ENABLE_
 LP_ENABLE_SVN=0
