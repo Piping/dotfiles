@@ -486,22 +486,22 @@ if has("cscope")
     set cscopeverbose
 
     " search for c symbol
-    map <leader>gs  :copen <bar> AsyncRun cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs  :botright copen  <bar> AsyncRun cs find s <c-r>=expand("<cword>")<cr><cr>
     " seach for global definition
-    map <leader>gg  :copen <bar> AsyncRun cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg  :botright copen  <bar> AsyncRun cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>gc  :copen <bar> AsyncRun cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc  :botright copen  <bar> AsyncRun cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>gt  :copen <bar> AsyncRun cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt  :botright copen  <bar> AsyncRun cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>ge  :copen <bar> AsyncRun cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge  :botright copen  <bar> AsyncRun cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>gf  :copen <bar> AsyncRun cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf  :botright copen  <bar> AsyncRun cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>gi  :copen <bar> AsyncRun cs find i <c-r>=expand("<cfile>")<cr><cr>
-    map <leader>gii :copen <bar> AsyncRun cs find i <c-r>=expand("%:t")<cr><cr>
+    map <leader>gi  :botright copen  <bar> AsyncRun cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gii :botright copen  <bar> AsyncRun cs find i <c-r>=expand("%:t")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd  :copen <bar> AsyncRun cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd  :botright copen  <bar> AsyncRun cs find d <c-r>=expand("<cword>")<cr><cr>
 
 endif
 
