@@ -131,6 +131,7 @@ nmap <leader>u :UndotreeToggle<Cr>
 """"""""""""""""""""""""""""""
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 
+" Command Line Maunal
 " Option name      	 Shortcut key    	 Abbreviated 	 Global variable
 " filter           	 CTRL-F          	 [gv]/.*/
 " left_margin      	 CTRL-L          	 l[0-9]+
@@ -156,6 +157,10 @@ nmap <leader>m  <Plug>(easymotion-prefix)
 map  <c-f>    <Plug>(easymotion-overwin-f)
 map  <space>  <Plug>(easymotion-sn)
 
+""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""
+Plug 'skywind3000/asyncrun.vim', {'on' : [ 'AsyncRun' ]}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -237,7 +242,7 @@ nmap <leader>b   :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
 nmap <leader>c   :History:<Cr>
 " Fuzzy Search ALL Vim Commands
-nmap <leader>cc  :Commands<Cr>
+nmap <leader>cm  :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a   :EasyAlign
 """""""""""""""""""""""""""""""""""""""""
@@ -321,8 +326,8 @@ map <leader>ez :e! ~/.zshrc<cr>
 autocmd! bufwritepost ~/.vimrc nested source ~/.vimrc | LightlineReload
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
-map <leader>co  :botright copen<cr>
-map <leader>coo :cclose<cr>
+map <leader>cc  :botright copen<cr>
+map <leader>co  :cclose<cr>
 "Close Preview Windows
 map <leader>po  :pclose<cr>
 " To go to the next quickfix result:
