@@ -107,6 +107,7 @@ Plug 'joeytwiddle/repmo.vim'
 """""""""""""""""""""""""""""""
 " Plug 'Houl/repmo-vim'
 " Plug 'Houl/repmohelper-vim'
+
 """"""""""""""""""""""""""""""
 " Plug 'tpope/vim-surround'
 " nmap gs ysiw'
@@ -182,7 +183,7 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
 if $FZF_DEFAULT_COMMAND == ""
-        let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
+    let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
 endif
 let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
             \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
@@ -257,8 +258,10 @@ nnoremap <leader>; @:
 """""""""""""""""""""""""""""""""""""""""
 "" Code/Text AutoFormat
 """""""""""""""""""""""""""""""""""""""""
-set equalprg="clang-format --style=Webkit"
-nnoremap <leader>a   gg=G''
+if executable('clang-format')
+    set equalprg="clang-format --style=Webkit"
+endif
+" autocmd FileType javascript setlocal equalprg='js-beautify -f -'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -605,7 +608,7 @@ endtry
 
 set autowrite
 set mouse=a
-set ttymouse=xterm2 | if $TMUX=="" | set ttymouse=xterm | endif
+set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
 set timeoutlen=300 " For <leader> mapping
@@ -671,6 +674,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 noremap = $
 " Remap  = filter to |
 noremap \ =
+noremap \\ gg=G''
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
 " InsertMode with Extra Emacs Shortcut Mapping
@@ -701,33 +705,36 @@ cnoremap <C-N> <Down>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
-    set csto=1 " search tag files first"
+    set csto=1 " search tag files first if it exists"
 
     " add any cscope database in current directory
     if filereadable("cscope.out")
         cs add cscope.out
         " else add the database pointed to by environment variable
-    elseif $CSCOPE_DB !=""
-        cs add $CSCOPE_DB/cscope.out $CSCOPE_DB
+    elseif $CSCOPE_DIR !=""
+        cs add $CSCOPE_DIR/cscope.out $CSCOPE_DIR
     endif
     " show msg when any other cscope db added
     set cscopeverbose
+
     " search for c symbol
-    map <leader>gs :cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs  :copen <bar> AsyncRun cs find s <c-r>=expand("<cword>")<cr><cr>
     " seach for global definition
-    map <leader>gg :cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg  :copen <bar> AsyncRun cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>gc :cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc  :copen <bar> AsyncRun cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>gt :cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt  :copen <bar> AsyncRun cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>ge :cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge  :copen <bar> AsyncRun cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>gf :cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf  :copen <bar> AsyncRun cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>gi :cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gi  :copen <bar> AsyncRun cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gii :copen <bar> AsyncRun cs find i <c-r>=expand("%:t")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd :cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd  :copen <bar> AsyncRun cs find d <c-r>=expand("<cword>")<cr><cr>
+
 endif
 
 
