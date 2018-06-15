@@ -673,6 +673,12 @@ if has("gui_macvim")
     autocmd GUIEnter * set vb t_vb=
 endif
 
+set cursorline
+highlight cursorline cterm=none term=none
+autocmd WinEnter * setlocal cursorline
+autocmd WinLeave * setlocal nocursorline
+highlight CursorLine guibg=#303000 ctermbg=234
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors , Fonts, Display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
