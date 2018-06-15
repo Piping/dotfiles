@@ -1,3 +1,10 @@
+" ███████╗██╗  ██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗
+" ██╔════╝██║  ╚██╗ ██╔╝████╗ ████║██╔══██╗████╗  ██║
+" █████╗  ██║   ╚████╔╝ ██╔████╔██║███████║██╔██╗ ██║
+" ██╔══╝  ██║    ╚██╔╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║
+" ██║By   ███████╗██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
+" ╚═╝ROBIN╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """" vim-plug for lazy loading plugin management
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -138,7 +145,8 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
 nmap <leader>m  <Plug>(easymotion-prefix)
-map  <c-f>    <Plug>(easymotion-overwin-f)
+map  f    <Plug>(easymotion-overwin-f)
+noremap <c-f> f
 map  <space>  <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
@@ -440,9 +448,16 @@ endfunction
 
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
-" Remap  = filter to |
-noremap \ =
+noremap \ %
 noremap \\ gg=G''
+" for practice vim way of operating
+" noremap <up> <nop>
+" noremap <down> <nop>
+" noremap <left> <nop>
+" noremap <right> <nop>
+
+autocmd CursorHold * :call feedkeys('mz')
+
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
 " InsertMode with Extra Emacs Shortcut Mapping
@@ -486,22 +501,22 @@ if has("cscope")
     set cscopeverbose
 
     " search for c symbol
-    map <leader>gs  :botright copen  <bar> AsyncRun cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs  :botright copen  <bar> cs find s <c-r>=expand("<cword>")<cr><cr>
     " seach for global definition
-    map <leader>gg  :botright copen  <bar> AsyncRun cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg  :botright copen  <bar> cs find g <c-r>=expand("<cword>")<cr><cr>
     " search functions that call this function
-    map <leader>gc  :botright copen  <bar> AsyncRun cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc  :botright copen  <bar> cs find c <c-r>=expand("<cword>")<cr><cr>
     " search this string
-    map <leader>gt  :botright copen  <bar> AsyncRun cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt  :botright copen  <bar> cs find t <c-r>=expand("<cword>")<cr><cr>
     " egrep pattern matching
-    map <leader>ge  :botright copen  <bar> AsyncRun cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge  :botright copen  <bar> cs find e <c-r>=expand("<cword>")<cr><cr>
     " search this file
-    map <leader>gf  :botright copen  <bar> AsyncRun cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf  :botright copen  <bar> cs find f <c-r>=expand("<cfile>")<cr><cr>
     " search files that include this file
-    map <leader>gi  :botright copen  <bar> AsyncRun cs find i <c-r>=expand("<cfile>")<cr><cr>
-    map <leader>gii :botright copen  <bar> AsyncRun cs find i <c-r>=expand("%:t")<cr><cr>
+    map <leader>gii :botright copen  <bar> cs find i <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gi  :botright copen  <bar> cs find i <c-r>=expand("%:t")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd  :botright copen  <bar> AsyncRun cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd  :botright copen  <bar> cs find d <c-r>=expand("<cword>")<cr><cr>
 
 endif
 
