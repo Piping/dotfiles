@@ -261,6 +261,7 @@ bindkey "\t" user-complete
 alias ls='ls --color=auto'
 alias ll='ls -altr --color=auto'
 alias vi='vim'
+alias vimnn='vim -i NONE -u NONE -N'
 
 # 文件别名
 alias -s gz='tar -xzvf'

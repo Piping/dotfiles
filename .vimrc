@@ -34,7 +34,7 @@ set cmdheight=1  "Height of the command bar
 let g:lightline = {
             \  'active': {
             \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
-            \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start' ] ],
+            \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
             \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
             \  },
             \  'inactive': {
@@ -49,9 +49,12 @@ let g:lightline = {
             \     'active': [ 'tabnum', ],
             \     'inactive': [ 'tabnum', ],
             \  },
-            \  'tabline_separator': {
+            \  'tabline_subseparator': {
             \     'left': '',
             \     'right': '',
+            \  },
+            \  'tab_component': {
+            \     'my_path': '%F',
             \  },
             \  'component': {
             \     'my_text': 'Tab:',
@@ -64,6 +67,7 @@ let g:lightline = {
             \  },
             \  'component_visible_condition': {
             \     'truncate_start': 0,
+            \     'tabs': 0,
             \  },
             \  'component_function_visible_condition': {
             \     'normal_submode': 0,
@@ -137,7 +141,8 @@ Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'maralla/completor.vim'
+Plug 'maralla/completor.vim' ", {'on': 'CompletorEnable'}
+" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<C-o>:CompletorEnable<cr>\<Tab>"
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
@@ -145,9 +150,8 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
 nmap <leader>m  <Plug>(easymotion-prefix)
-map  f    <Plug>(easymotion-overwin-f)
-noremap <c-f> f
-map  <space>  <Plug>(easymotion-sn)
+map  f<cr>      <Plug>(easymotion-overwin-f)
+map  <space>    <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 
@@ -160,7 +164,7 @@ Plug 'w0rp/ale', { 'on': 'ALEEnable', 'for': 'cpp,c,js,html' }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/limelight.vim', {'on': 'LimeLight'}
+Plug 'junegunn/limelight.vim', {'on': 'Limelight'}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -453,7 +457,7 @@ nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap  <leader>zz  :Goyo<cr>
+nmap  <leader>zz  :Goyo 108<cr>
 nmap  <leader>z   :call ToggleOnlyWindow()<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
@@ -722,11 +726,11 @@ if has("gui_macvim")
 endif
 
 set cursorline
-highlight cursorline cterm=none term=none
+highlight cursorline cterm=underline gui=underline term=underline
 autocmd WinEnter * setlocal cursorline
 autocmd WinLeave * setlocal nocursorline
 highlight CursorLine guibg=#303000 ctermbg=234
-
+" hi clear CursorLine <cr> hi CursorLine gui=underline cterm=underline ctermfg=None guifg=None
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors , Fonts, Display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
