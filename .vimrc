@@ -109,8 +109,6 @@ Plug 'posva/vim-vue', { 'for': 'vue' }
 """"""""""""""""""""""""""""""
 
 " Plug 'Piping/repeatable-motions'
-" Read Source Code
-Plug 'joeytwiddle/repmo.vim'
 
 """"""""""""""""""""""""""""""
 Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
@@ -421,12 +419,14 @@ let s:hjkl_compatiable_mode = 1
 function! ToggleHJKLCompatiableMode()
     if s:hjkl_compatiable_mode == 1
         let s:hjkl_compatiable_mode = 0
-        vnoremap h i
+        vnoremap h o
+        vnoremap o i
         vnoremap i k
         vnoremap j h
         vnoremap k j
         vnoremap l l
-        nnoremap h i
+        nnoremap h o
+        nnoremap o i
         nnoremap i k
         nnoremap j h
         nnoremap k j
@@ -434,10 +434,12 @@ function! ToggleHJKLCompatiableMode()
     else
         let s:hjkl_compatiable_mode = 1
         vunmap h
+        vunmap o
         vunmap i
         vunmap j
         vunmap k
         vunmap l
+        nunmap o
         nunmap h
         nunmap i
         nunmap j
@@ -481,6 +483,13 @@ noremap \\ gg=G''
 " noremap <left> <nop>
 " noremap <right> <nop>
 
+" Quickly add empty lines
+nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
+
+" Quickly move current line
+nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
+nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
@@ -614,11 +623,14 @@ if has("autocmd")
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     autocmd CursorHold * :call feedkeys('mz')
-    
+
     autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-    
+
     autocmd BufWinLeave * silent! mkview
     autocmd BufWinEnter * silent! loadview
+    "Quickly jump to header or source file
+    autocmd BufLeave *.{c,cpp} mark C
+    autocmd BufLeave *.h       mark H
 endif
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
@@ -737,13 +749,13 @@ set listchars=tab:>-,eol:ː,nbsp:▓
 
 " Change cursor style dependent on mode
 if empty($TMUX)
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-  let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
 else
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-  let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
 endif
 
 highlight NonText ctermfg=238 guifg=#414141
