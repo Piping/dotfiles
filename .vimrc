@@ -80,12 +80,15 @@ let g:lightline = {
 
 "the color scheme variable only available before VimEnter
 "Tab_FG_Color,Tab_BG_Color
-autocmd VimEnter *
-            \ let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]] |
-            \ let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]] |
-            \ let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
-            \ let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]] |
-            \ let g:lightline#colorscheme#default#palette.inactive.right   = [[ '#606060', '#202020', 252, 66, 'bold' ]]
+function! LightlineTabLineTheme()
+    let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]]
+    let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]]
+    let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
+    let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
+    let g:lightline#colorscheme#default#palette.inactive.right = [[ '#606060', '#202020', 252, 66, 'bold' ]]
+endfunction
+command! LightlineTabLineTheme call LightlineTabLineTheme()
+autocmd VimEnter * silent! LightlineTabLineTheme
 
 function! LightlineReload()
     if exists('*lightline#init')
