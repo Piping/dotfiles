@@ -1,3 +1,4 @@
+
 " ███████╗██╗  ██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗
 " ██╔════╝██║  ╚██╗ ██╔╝████╗ ████║██╔══██╗████╗  ██║
 " █████╗  ██║   ╚████╔╝ ██╔████╔██║███████║██╔██╗ ██║
@@ -17,8 +18,9 @@ endif
 
 set viminfo+=n~/.vim/.viminfo
 
-call plug#begin('~/.vim/plugged')
+" PLUGIN MANAGER START {
 
+call plug#begin('~/.vim/plugged')
 
 """"""""""""""""""""""""""""""
 "" LIGHTLINE PLUGIN
@@ -160,6 +162,14 @@ Plug 'w0rp/ale', { 'on': 'ALEEnable', 'for': 'cpp,c,js,html' }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
+Plug 'junegunn/limelight.vim', {'on': 'LimeLight'}
+""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""
+Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
+""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""
 Plug 'junegunn/fzf', {'on': ['Ag','Commands','Buffers','History','Files']}
 Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers','History','Files']}
 " CTRL-A CTRL-Q to select all and build quickfix list
@@ -181,19 +191,21 @@ let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-
             \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
 """""""""""""""""""""""""""""
 
+" Plug 'tmux-plugins/vim-tmux-focus-events'
+
 """"""""""""""""""""""""""""""
+" VIM's OPERATOR/TEXT OBJECT "
 """"""""""""""""""""""""""""""
 Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
 map  gc  <Plug>Commentary
 nmap gcc <Plug>CommentaryLine
 """"""""""""""""""""""""""""""
-
+Plug 'michaeljsmith/vim-indent-object'
 """"""""""""""""""""""""""""""
-Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
-""""""""""""""""""""""""""""""
-" Plug 'sheerun/vim-polyglot', {'do': './build'}
 
 call plug#end()
+
+"PLUGIN MANAGER END } 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" => YouCompleteMe Lazy Loading Support
@@ -261,8 +273,8 @@ nnoremap p P
 nnoremap P p
 "Join the line below with space
 nnoremap <leader>j  J
-"Split the line and move it upward
-nnoremap <leader>jk v$hdO<Esc>pj
+" Reverse of J
+nnoremap <leader>jj v$hdO<Esc>pj
 nnoremap <leader>k  K
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Cursor Moving mappings
@@ -278,9 +290,6 @@ noremap K <C-y>k
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ""Join the line below with space => Code Development - TagBar
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>mm :TagbarToggle<CR>
-" Opens a new tab with the current buffer's path
-map <leader>t  :tabnew <cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
@@ -310,18 +319,32 @@ map <leader>pp :setlocal paste!<cr>
 map <leader>e  :e! ~/.vimrc<cr>
 map <leader>et :e! ~/.tmux.conf<cr>
 map <leader>ez :e! ~/.zshrc<cr>
-autocmd! bufwritepost ~/.vimrc nested source ~/.vimrc | LightlineReload
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""      Buffer, Tab, Window Management   """"""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>m  :TagbarToggle<cr>:wincmd = <cr>
+map <leader>t  :tabnew<cr>
+map <leader>tc :tabclose<cr>
+nnoremap <leader>tt gT
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""        Special Windows Shortcuts    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
-map <leader>cc  :botright copen<cr>
-map <leader>co  :cclose<cr>
+map <leader>cc :botright copen<cr>
+map <leader>co :cclose<cr>
 "Close Preview Windows
-map <leader>po  :pclose<cr>
-" To go to the next quickfix result:
-map <leader>n :cn<cr>
-" To go to the previous quickfix result:
-map <leader>p :cp<cr>
-map <leader>h :helpclose<cr>
+map <leader>po :pclose<cr>
+" To go to the next/previous quickfix entry:
+map <leader>n  :cn<cr>
+map <leader>p  :cp<cr>
+" To go to the next/previous quickfix list
+map <leader>nc :cnewer<cr>
+map <leader>pc :colder<cr>
+" Help Windows
+map <leader>h  :helpclose<cr>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let s:statusline_mode = 0
 function! ToggleHiddenAll()
@@ -423,6 +446,8 @@ function! ToggleHJKLCompatiableMode()
     endif
 endfunction
 nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -456,7 +481,6 @@ noremap \\ gg=G''
 " noremap <left> <nop>
 " noremap <right> <nop>
 
-autocmd CursorHold * :call feedkeys('mz')
 
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
@@ -488,7 +512,6 @@ cnoremap <C-N> <Down>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
-    set csto=1 " search tag files first if it exists"
 
     " add any cscope database in current directory
     if filereadable("cscope.out")
@@ -501,22 +524,22 @@ if has("cscope")
     set cscopeverbose
 
     " search for c symbol
-    map <leader>gs  :botright copen  <bar> cs find s <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gs  :vertical scs find s <c-r>=expand("<cword>")<cr>:botright copen<cr>
     " seach for global definition
-    map <leader>gg  :botright copen  <bar> cs find g <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gg  :vertical scs find g <c-r>=expand("<cword>")<cr>:botright copen<cr>
     " search functions that call this function
-    map <leader>gc  :botright copen  <bar> cs find c <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gc  :vertical scs find c <c-r>=expand("<cword>")<cr>:botright copen<cr>
     " search this string
-    map <leader>gt  :botright copen  <bar> cs find t <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gt  :vertical scs find t <c-r>=expand("<cword>")<cr>:botright copen<cr>
     " egrep pattern matching
-    map <leader>ge  :botright copen  <bar> cs find e <c-r>=expand("<cword>")<cr><cr>
+    map <leader>ge  :vertical scs find e <c-r>=expand("<cword>")<cr>:botright copen<cr>
     " search this file
-    map <leader>gf  :botright copen  <bar> cs find f <c-r>=expand("<cfile>")<cr><cr>
+    map <leader>gf  :vertical scs find f <c-r>=expand("<cfile>")<cr>:botright copen<cr>
     " search files that include this file
-    map <leader>gii :botright copen  <bar> cs find i <c-r>=expand("<cfile>")<cr><cr>
-    map <leader>gi  :botright copen  <bar> cs find i <c-r>=expand("%:t")<cr><cr>
+    map <leader>gii :vertical scs find i <c-r>=expand("<cfile>")<cr>:botright copen<cr>
+    map <leader>gi  :vertical scs find i <c-r>=expand("%:t")    <cr>:botright copen<cr>
     " search for functions are called by this function
-    map <leader>gd  :botright copen  <bar> cs find d <c-r>=expand("<cword>")<cr><cr>
+    map <leader>gd  :vertical scs find d <c-r>=expand("<cword>")<cr>:botright copen<cr>
 
 endif
 
@@ -563,8 +586,6 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" Return to last edit position when opening files (You want this!)
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Delete trailing white space on save, useful for some filetypes ;)
 func! CleanExtraSpaces()
@@ -582,11 +603,26 @@ func! Exec(command)
     return output
 endfunct!
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""    AUTO COMMANDS         """""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 if has("autocmd")
+    autocmd! BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+    " Return to last edit position when opening files (You want this!)
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+    autocmd CursorHold * :call feedkeys('mz')
+    
     autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+    
+    autocmd BufWinLeave * silent! mkview
+    autocmd BufWinEnter * silent! loadview
 endif
 
-iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+iab xdate2 <c-r>=strftime("%F")<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -673,12 +709,6 @@ if has("gui_macvim")
     autocmd GUIEnter * set vb t_vb=
 endif
 
-set cursorline
-highlight cursorline cterm=none term=none
-autocmd WinEnter * setlocal cursorline
-autocmd WinLeave * setlocal nocursorline
-highlight CursorLine guibg=#303000 ctermbg=234
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors , Fonts, Display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -698,9 +728,17 @@ set list
 set listchars=tab:>-,eol:ː,nbsp:▓
 " Overrite Color Scheme for the listchars "#649A9A
 " Two highlight group NonText & SpecialKey
-" EOL
-" TAB
 
+" Change cursor style dependent on mode
+if empty($TMUX)
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+  let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+else
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+  let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+endif
 
 highlight NonText ctermfg=238 guifg=#414141
 " Set extra options when running in GUI mode
@@ -775,6 +813,7 @@ if executable('clang-format')
 endif
 " autocmd FileType javascript setlocal equalprg='js-beautify -f -'
 
+set splitright
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
