@@ -125,7 +125,7 @@ Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 nmap <leader>u :UndotreeToggle<Cr>
 """"""""""""""""""""""""""""""
-
+Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle' }
 """"""""""""""""""""""""""""""
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 
@@ -256,7 +256,7 @@ nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q<Cr>
 nmap <leader>qq  :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
-nmap <leader>l   :silent! Lexplore!<Cr>:vertical resize 35<cr>
+nmap <leader>l   :silent! NERDTreeToggle<Cr>:wincmd L<cr>:vertical resize 35<cr>
 " set 'p' to paste before cursor
 nnoremap p P
 nnoremap P p
