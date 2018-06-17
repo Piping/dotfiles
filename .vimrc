@@ -34,7 +34,7 @@ set cmdheight=1  "Height of the command bar
 let g:lightline = {
             \  'active': {
             \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
-            \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
+            \                 [ 'relativepath', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
             \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
             \  },
             \  'inactive': {
@@ -42,11 +42,11 @@ let g:lightline = {
             \   'right': [ ['bufnum'], [ 'relativepath', ] ]
             \  },
             \  'tabline': {
-            \     'left': [ [ 'my_text','tabs' ],[ 'relativepath', ] ],
+            \     'left': [ [ 'my_text','tabs' ], ],
             \     'right': [ [ 'vim_pwd', ] ]
             \  },
             \  'tab': {
-            \     'active': [ 'tabnum', ],
+            \     'active': [ 'tabnum', 'filename' ],
             \     'inactive': [ 'tabnum', ],
             \  },
             \  'tabline_subseparator': {
@@ -123,9 +123,8 @@ Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
 
 """"""""""""""""""""""""""""""
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-nmap <leader>u :UndotreeToggle<Cr>
 """"""""""""""""""""""""""""""
-Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle' }
+" Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle' }
 """"""""""""""""""""""""""""""
 Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 
@@ -256,7 +255,9 @@ nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q<Cr>
 nmap <leader>qq  :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
-nmap <leader>l   :silent! NERDTreeToggle<Cr>:wincmd L<cr>:vertical resize 35<cr>
+nmap <leader>u   :UndotreeToggle<Cr>:normal! zz<cr>
+nmap <silent> <leader>l :silent! Lexplore!<cr>:vertical resize 35<cr>:normal! zz<cr>
+
 " set 'p' to paste before cursor
 nnoremap p P
 nnoremap P p
@@ -311,7 +312,7 @@ map <leader>ez :e! ~/.zshrc<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""      Buffer, Tab, Window Management   """"""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>m  :TagbarToggle<cr>:wincmd = <cr>
+map <leader>m  :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 map <leader>t  :tabnew<cr>
 map <leader>tc :tabclose<cr>
 nnoremap <leader>tt gT
@@ -445,7 +446,7 @@ nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap  <silent> <leader>zz  :Goyo 108<cr>:normal! zz<cr>
-nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>
+nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>:normal! zz<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
     if s:zoomed_windows_b == 0
@@ -470,11 +471,12 @@ endfunction
 noremap = $
 noremap \ %
 noremap \\ gg=G''
+
 " for practice vim way of operating
 noremap <up>    <C-u><C-u>
 noremap <down>  <C-d><c-d>
-noremap <left>  <C-o>
-noremap <right> <C-i>
+noremap <left>  :bprevious<cr>
+noremap <right> :bnext<cr>
 
 " Quickly add empty lines
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
@@ -612,8 +614,6 @@ if has("autocmd")
         autocmd! BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-        autocmd CursorHold * :call feedkeys('mz')
 
         autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
