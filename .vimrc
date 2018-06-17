@@ -151,9 +151,9 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-nmap <leader>m  <Plug>(easymotion-prefix)
-map  f<cr>      <Plug>(easymotion-overwin-f)
-map  <space>    <Plug>(easymotion-sn)
+nmap <leader>easy  <Plug>(easymotion-prefix)
+map  f<cr>         <Plug>(easymotion-overwin-f)
+map  <space>       <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 
@@ -473,10 +473,10 @@ noremap \ %
 noremap \\ gg=G''
 
 " for practice vim way of operating
-noremap <up>    <C-u><C-u>
-noremap <down>  <C-d><c-d>
-noremap <left>  :bprevious<cr>
-noremap <right> :bnext<cr>
+noremap <silent> <up>    <C-u><C-u>
+noremap <silent> <down>  <C-d><c-d>
+noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
+noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
