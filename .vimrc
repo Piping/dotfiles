@@ -86,9 +86,9 @@ function! LightlineTabLineTheme()
     let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
     let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
     let g:lightline#colorscheme#default#palette.inactive.right = [[ '#606060', '#202020', 252, 66, 'bold' ]]
+    let g:lightline#colorscheme#default#palette.inactive.middle = [[ '#606060', '#202020', 252, 66, 'bold' ]]
 endfunction
 command! LightlineTabLineTheme call LightlineTabLineTheme()
-autocmd VimEnter * silent! LightlineTabLineTheme
 
 function! LightlineReload()
     if exists('*lightline#init')
@@ -175,8 +175,8 @@ Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/fzf', {'on': ['Ag','Commands','Buffers','History','Files']}
-Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands','Buffers','History','Files']}
+Plug 'junegunn/fzf', {'on': ['Ag','Commands','Commits', 'Buffers','History','Files']}
+Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands', 'Commits', 'Buffers','History','Files']}
 " CTRL-A CTRL-Q to select all and build quickfix list
 " location list is similar to quickfix, specific to each window
 function! s:build_quickfix_list(lines)
@@ -188,6 +188,9 @@ let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
+let g:fzf_layout = {'left': '~0%'}
+" let g:fzf_layout = { 'window': 'left vertical new' }
+
 if $FZF_DEFAULT_COMMAND == ""
     let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
 endif
@@ -212,49 +215,30 @@ call plug#end()
 
 "PLUGIN MANAGER END } 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" => YouCompleteMe Lazy Loading Support
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" set this time here to quickly load the youcompleteme afterward
-" set updatetime=100
-"let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-"function! LazyLoadingVariousPlugin()
-"    call plug#load('YouCompleteMe') | call youcompleteme#Enable()
-"    echo 'YouCompleteMe Lazy Loaded'
-"    set updatetime=1000
-"    augroup LazyLoading
-"        autocmd!
-"    augroup END
-"endfunction
-
-"augroup LazyLoading
-"    autocmd CursorHold * silent! call LazyLoadingVariousPlugin()
-"augroup END
-
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = ","
-" nmap ,  <leader>
 
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
-nmap <leader>f   :History<Cr>
-map  <leader>ff  :FZF<Cr>,
-map  <leader>fff :FZF ~
-map  <leader>fg  :Ag<Cr>
-map  <leader>fgg :Ag
-map  <leader>fm  :Marks<Cr>
-nmap <leader>b   :Buffers<Cr>
+nmap <leader>f    :History<Cr>
+map  <leader>ff   :FZF<Cr>
+map  <leader>fa   :FZF ~
+map  <leader>fg   :Ag<Cr>
+map  <leader>fgg  :Ag
+map  <leader>fm   :Marks<Cr>
+nmap <leader>b    :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
-nmap <leader>c   :History:<Cr>
+nmap <leader>c    :History:<Cr>
 " Fuzzy Search ALL Vim Commands
-nmap <leader>cm  :Commands<Cr>
-nnoremap q: <Esc>
+nmap <leader>cm   :Commits<Cr>
+nmap <leader>co   :Commands<Cr>
 " easy-alignment no argument go to interactive mode
-vmap <leader>a   :EasyAlign
+vmap <leader>a    :EasyAlign
+nnoremap q: <Esc>
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -272,7 +256,7 @@ nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q<Cr>
 nmap <leader>qq  :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
-nmap <leader>nn  :silent! Lexplore!<Cr>
+nmap <leader>l   :silent! Lexplore!<Cr>:vertical resize 35<cr>
 " set 'p' to paste before cursor
 nnoremap p P
 nnoremap P p
@@ -287,11 +271,6 @@ nnoremap <leader>k  K
 " Keep the cursor at center they are and move whole page
 noremap J <C-e>j
 noremap K <C-y>k
-" some terminal send backsapce when C-h pressed before vim
-" inoremap <C-h> <Left>
-" inoremap <C-l> <Right>
-" inoremap <C-j> <Down>
-" inoremap <C-k> <Up>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ""Join the line below with space => Code Development - TagBar
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -337,8 +316,8 @@ nnoremap <leader>tt gT
 """"""""        Special Windows Shortcuts    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
-map <leader>cc :botright copen<cr>
-map <leader>co :cclose<cr>
+let g:quickfix_opened = 0
+map <expr> <leader>cc  g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 "Close Preview Windows
 map <leader>po :pclose<cr>
 " To go to the next/previous quickfix entry:
@@ -400,6 +379,7 @@ function! ToggleAutoNormalMode()
         let s:auto_normal_mode = 1
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
+            autocmd! *
             au CursorHoldI  * stopinsert
             au CursorMovedI * let updaterestore=&updatetime | set updatetime=500
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=2000
@@ -485,10 +465,10 @@ noremap = $
 noremap \ %
 noremap \\ gg=G''
 " for practice vim way of operating
-" noremap <up> <nop>
-" noremap <down> <nop>
-" noremap <left> <nop>
-" noremap <right> <nop>
+noremap <up>    <C-u><C-u>
+noremap <down>  <C-d><c-d>
+noremap <left>  <C-o>
+noremap <right> <C-i>
 
 " Quickly add empty lines
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
@@ -511,15 +491,15 @@ inoremap <C-D> <C-O>dw
 inoremap <C-K> <C-O>D
 inoremap <C-W> <C-\><C-O>db
 inoremap <C-U> <C-\><C-O>d0
-" inoremap <C-Y> <C-R>"
+inoremap <C-Y> <C-R>"
 " Same as above, works for cmdline
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
 cnoremap <C-Z> <S-Left>
 cnoremap <C-X> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
-cnoremap <C-K> <C-u>
-cnoremap <C-Y> <C-r>"
+cnoremap <C-K> <C-U>
+cnoremap <C-Y> <C-R>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
@@ -560,13 +540,6 @@ if has("cscope")
 endif
 
 
-" Special Configuration
-" augroup FastLeaderKeyInsertMode
-"   autocmd!
-"   au TextChangedI * if strcharpart(getline('.')[col('.') - 1:], 0, 1) == ',' | set timeoutlen=200 | end
-"   au TextChangedI * set timeoutlen=0
-" augroup END
-" let query = input('Functions calling: ')
 " " Search for selected text, forwards or backwards.
 " Paste matching text of last search
 " maygn`ap
@@ -628,19 +601,35 @@ noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=N
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("autocmd")
-    autocmd! BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
-    " Return to last edit position when opening files (You want this!)
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    augroup MYGROUP
+        autocmd! *
+        autocmd! BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+        " Return to last edit position when opening files (You want this!)
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-    autocmd CursorHold * :call feedkeys('mz')
+        autocmd CursorHold * :call feedkeys('mz')
 
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
-    autocmd BufWinLeave * silent! mkview
-    autocmd BufWinEnter * silent! loadview
-    "Quickly jump to header or source file
-    autocmd BufLeave *.{c,cpp} mark C
-    autocmd BufLeave *.h       mark H
+        autocmd BufWinLeave * silent! mkview
+        autocmd BufWinEnter * silent! loadview
+        "Quickly jump to header or source file
+        autocmd BufLeave *.{c,cpp} mark C
+        autocmd BufLeave *.h       mark H
+        autocmd VimEnter * silent! LightlineTabLineTheme
+        " Properly disable sound on errors on MacVim
+        if has("gui_macvim")
+            autocmd GUIEnter * set vb t_vb=
+        endif
+
+        "{{
+        set cursorline
+        highlight cursorline cterm=none gui=none term=none
+        autocmd WinEnter * setlocal cursorline
+        autocmd WinLeave * setlocal nocursorline
+        highlight CursorLine guibg=#303000 ctermbg=234
+        "}}
+    augroup END
 endif
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
@@ -726,29 +715,13 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" Properly disable sound on errors on MacVim
-if has("gui_macvim")
-    autocmd GUIEnter * set vb t_vb=
-endif
-
-"{{
-
-set cursorline
-highlight cursorline cterm=none gui=none term=none
-autocmd WinEnter * setlocal cursorline
-autocmd WinLeave * setlocal nocursorline
-highlight CursorLine guibg=#303000 ctermbg=234
-
-"}}
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Colors , Fonts, Display
+" => colors , fonts, display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 silent! colorscheme sublimemonokai
-" Enable 256 colors palette in Gnome Terminal
-if $COLORTERM == 'gnome-terminal'
-    set t_Co=256
+" enable 256 colors palette in gnome terminal
+if $colorterm == 'gnome-terminal'
+    set t_co=256
 else
     set termguicolors
 endif
@@ -756,36 +729,36 @@ endif
 set nonumber
 set foldcolumn=1
 " highlight
-" Show Hidden Chars
+" show hidden chars
 set list
 set listchars=tab:>-,eol:ː,nbsp:▓
-" Overrite Color Scheme for the listchars "#649A9A
-" Two highlight group NonText & SpecialKey
+" overrite color scheme for the listchars "#649a9a
+" two highlight group nontext & specialkey
 
-" Change cursor style dependent on mode
-if empty($TMUX)
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" change cursor style dependent on mode
+if empty($tmux)
+    let &t_si = "\<esc>]50;cursorshape=1\x7"
+    let &t_ei = "\<esc>]50;cursorshape=0\x7"
+    let &t_sr = "\<esc>]50;cursorshape=2\x7"
 else
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+    let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
+    let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
+    let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
 endif
 
-highlight NonText ctermfg=238 guifg=#414141
-" Set extra options when running in GUI mode
+highlight nontext ctermfg=238 guifg=#414141
+" set extra options when running in gui mode
 if has("gui_running")
-    set guioptions-=T
+    set guioptions-=t
     set guioptions-=e
-    set t_Co=256
-    set guitablabel=%M\ %t
+    set t_co=256
+    set guitablabel=%m\ %t
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Files, backups and undo
+" => files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
+" turn backup off, since most stuff is in svn, git et.c anyway...
 set nobackup
 set nowb
 set noswapfile
