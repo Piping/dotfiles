@@ -619,7 +619,10 @@ func! Exec(command)
     return output
 endfunct!
 
-
+noremap <leader>r  :source $MYVIMRC<cr>
+noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=NONE guibg=NONE<cr>:hi clear CursorLine<cr>:hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE<cr>
+"{{ " the line below set cursorline to underline style
+"}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -728,12 +731,17 @@ if has("gui_macvim")
     autocmd GUIEnter * set vb t_vb=
 endif
 
+"{{
+
 set cursorline
-highlight cursorline cterm=underline gui=underline term=underline
+highlight cursorline cterm=none gui=none term=none
 autocmd WinEnter * setlocal cursorline
 autocmd WinLeave * setlocal nocursorline
 highlight CursorLine guibg=#303000 ctermbg=234
-" hi clear CursorLine <cr> hi CursorLine gui=underline cterm=underline ctermfg=None guifg=None
+
+"}}
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors , Fonts, Display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
