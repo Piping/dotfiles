@@ -188,7 +188,7 @@ let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
-let g:fzf_layout = {'left': '~0%'}
+let g:fzf_layout = {'left': '~40%'}
 " let g:fzf_layout = { 'window': 'left vertical new' }
 
 if $FZF_DEFAULT_COMMAND == ""
