@@ -86,7 +86,7 @@ function! LightlineTabLineTheme()
     let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
     let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
     let g:lightline#colorscheme#default#palette.inactive.right = [[ '#606060', '#202020', 252, 66, 'bold' ]]
-    let g:lightline#colorscheme#default#palette.inactive.middle = [[ '#606060', '#202020', 252, 66, 'bold' ]]
+    let g:lightline#colorscheme#default#palette.inactive.middle = [[ '#606060', '#000000', 252, 66, 'bold' ]]
 endfunction
 command! LightlineTabLineTheme call LightlineTabLineTheme()
 
@@ -260,6 +260,10 @@ nmap <leader>l   :silent! NERDTreeToggle<Cr>:wincmd L<cr>:vertical resize 35<cr>
 " set 'p' to paste before cursor
 nnoremap p P
 nnoremap P p
+" swap cursor and next char
+nnoremap Xp Xp
+" swap cursor and previous char
+nnoremap xp xp
 "Join the line below with space
 nnoremap <leader>j  J
 " Reverse of J
@@ -440,17 +444,19 @@ nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap  <leader>zz  :Goyo 108<cr>
-nmap  <leader>z   :call ToggleOnlyWindow()<cr>
+nmap  <silent> <leader>zz  :Goyo 108<cr>:normal! zz<cr>
+nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
     if s:zoomed_windows_b == 0
         let s:zoomed_windows_b = 1
         wincmd _ " slient call feedkeys('\<C-w>_')
-        wincmd |
+        vertical resize 100
+        normal! zz
     else
         let s:zoomed_windows_b = 0
         wincmd =
+        normal! zz
     endif
 endfunction
 " mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
