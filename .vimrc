@@ -162,7 +162,7 @@ Plug 'skywind3000/asyncrun.vim', {'on' : [ 'AsyncRun' ]}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'w0rp/ale', { 'on': 'ALEEnable', 'for': 'cpp,c,js,html' }
+Plug 'w0rp/ale', { 'on': [ 'ALENext', 'ALEPrevious', 'ALEEnable' ] , 'for': 'cpp,c,js,html' }
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -325,9 +325,11 @@ let g:quickfix_opened = 0
 map <expr> <leader>cc  g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 "Close Preview Windows
 map <leader>po :pclose<cr>
+
 " To go to the next/previous quickfix entry:
-map <leader>n  :cn<cr>
-map <leader>p  :cp<cr>
+map <expr> <leader>n  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cn<cr>" : ":ALENext<cr>"
+map <expr> <leader>p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cp<cr>" : ":ALEPrevious<cr>"
+
 " To go to the next/previous quickfix list
 map <leader>nc :cnewer<cr>
 map <leader>pc :colder<cr>
@@ -827,7 +829,7 @@ set mouse=a
 set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
-set timeoutlen=500 " For <leader> mapping
+set timeoutlen=300 " For <leader> mapping
 set ttimeoutlen=0 " No keycode delay
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
