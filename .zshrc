@@ -145,12 +145,6 @@ setopt complete_in_word
 bindkey -e
 # 100 = 1 second for key sequences
 KEYTIMEOUT=10
-bindkey '^Z' backward-word
-bindkey '^X' forward-word
-bindkey '^|' quote-line
-bindkey '^]' quote-region
-bindkey '^W' backward-kill-word
-bindkey '^D' kill-word
 #设置 [DEL]键 为向后删除
 bindkey "^[[3~" backward-delete-char
 #以下字符视为单词的一部分
