@@ -151,9 +151,9 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-nmap <leader>easy  <Plug>(easymotion-prefix)
-map  f<cr>         <Plug>(easymotion-overwin-f)
-map  <space>       <Plug>(easymotion-sn)
+nmap <leader>easy   <Plug>(easymotion-prefix)
+map  <space>        <Plug>(easymotion-overwin-f)
+map  <space><space> <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 
@@ -217,7 +217,7 @@ call plug#end()
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
-let mapleader = ","
+let mapleader = "\<space>"
 
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
@@ -827,7 +827,7 @@ set mouse=a
 set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
-set timeoutlen=300 " For <leader> mapping
+set timeoutlen=500 " For <leader> mapping
 set ttimeoutlen=0 " No keycode delay
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
