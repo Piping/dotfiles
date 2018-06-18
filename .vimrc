@@ -151,9 +151,9 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-nmap <leader>easy   <Plug>(easymotion-prefix)
-map  <space>        <Plug>(easymotion-overwin-f)
-map  <space><space> <Plug>(easymotion-sn)
+map  <leader>easymotio <Plug>(easymotion-prefix)
+map  <leader><leader>  <Plug>(easymotion-overwin-f)
+map  <leader>/         <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 

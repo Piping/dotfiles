@@ -45,24 +45,23 @@ source "$ANTIGEN"
 
 # visit https://github.com/unixorn/awesome-zsh-plugins
 antigen bundle nojhan/liquidprompt
-
-antigen bundle git
-# antigen bundle heroku
-antigen bundle pip
-antigen bundle svn-fast-info
-# antigen bundle command-not-find
-antigen bundle colorize
-antigen bundle github
-antigen bundle python
-# antigen bundle rupa/z z.sh
-antigen bundle z
+antigen bundle rupa/z z.sh
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
+antigen bundle piping/fzf-zsh
+
+# antigen bundle git
+# antigen bundle heroku
+# antigen bundle pip
+# antigen bundle svn-fast-info
+# antigen bundle command-not-find
+# antigen bundle colorize
+# antigen bundle github
+# antigen bundle python
 # antigen bundle supercrabtree/k
 # antigen bundle Vifon/deer
-antigen bundle willghatch/zsh-cdr
+# antigen bundle willghatch/zsh-cdr
 # antigen bundle zsh-users/zaw
-antigen bundle piping/fzf-zsh
 
 # syntax color definition
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
