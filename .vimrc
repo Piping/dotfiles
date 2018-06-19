@@ -223,18 +223,17 @@ let mapleader = "\<space>"
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
-nmap <leader>f    :History<Cr>
-map  <leader>ff   :FZF<Cr>
-map  <leader>fa   :FZF ~
-map  <leader>fg   :Ag<Cr>
-map  <leader>fgg  :Ag
-map  <leader>fm   :Marks<Cr>
-nmap <leader>b    :Buffers<Cr>
-" Recently Used Cmd, Alt-Enter to execute command
-nmap <leader>c    :History:<Cr>
-" Fuzzy Search ALL Vim Commands
-nmap <leader>cm   :Commits<Cr>
-nmap <leader>co   :Commands<Cr>
+nmap <leader>f    :History<Cr><C-w>l<C-w>=<C-w>h
+map  <leader>ff   :FZF<Cr><C-w>l<C-w>=<C-w>h
+map  <leader>fd   :FZF ~
+map  <leader>fg   :Ag
+map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
+" Recently Used Cmd, Alt-Enter to execute command<C-w>l<C-w>=<C-w>h
+nmap <leader>c    :History:<Cr><C-w>l<C-w>=<C-w>h
+" Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
+nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
 nnoremap q: <Esc>
@@ -829,7 +828,7 @@ set mouse=a
 set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
-set timeoutlen=300 " For <leader> mapping
+set timeoutlen=200 " For <leader> mapping
 set ttimeoutlen=0 " No keycode delay
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
