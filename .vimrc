@@ -152,8 +152,8 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
 map  <leader>easymotio <Plug>(easymotion-prefix)
-map  <leader><leader>  <Plug>(easymotion-overwin-f)
-map  <leader>/         <Plug>(easymotion-sn)
+map  <space><space>    <Plug>(easymotion-overwin-f)
+map  <space>/          <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 
@@ -174,8 +174,8 @@ Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-Plug 'junegunn/fzf', {'on': ['Ag','Commands','Commits', 'Buffers','History','Files']}
-Plug 'junegunn/fzf.vim' , {'on': ['Ag','Commands', 'Commits', 'Buffers','History','Files']}
+Plug 'junegunn/fzf', {'on': ['FZF','Ag','Commands','Commits', 'Buffers','History','Files']}
+Plug 'junegunn/fzf.vim' , {'on': ['FZF','Ag','Commands', 'Commits', 'Buffers','History','Files']}
 " CTRL-A CTRL-Q to select all and build quickfix list
 " location list is similar to quickfix, specific to each window
 function! s:build_quickfix_list(lines)
@@ -223,9 +223,10 @@ let mapleader = "\<space>"
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
+" Overwrite default gf - open file under the cursor
+map  gf           :FZF <C-r>=getcwd()<cr>
 nmap <leader>f    :History<Cr><C-w>l<C-w>=<C-w>h
-map  <leader>ff   :FZF<Cr><C-w>l<C-w>=<C-w>h
-map  <leader>fd   :FZF ~
+map  <leader>fl   :FZF <cr>
 map  <leader>fg   :Ag
 map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
 nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
@@ -250,7 +251,7 @@ nnoremap <leader>; @:
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Fast saving
-nmap <leader>w   :w!<Cr>
+" nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q<Cr>
 nmap <leader>qq  :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
@@ -405,6 +406,7 @@ function! ShowExtraNormalMode()
     endif
     return s:custom_mode_output
 endfunction
+
 " I Use Auto-Normal Mode by Default
 " silent call ToggleAutoNormalMode()
 nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
@@ -489,13 +491,20 @@ noremap \ %
 noremap \\ gg=G''
 
 " for practice vim way of operating
-noremap <silent> <up>    <C-u><C-u>
-noremap <silent> <down>  <C-d><c-d>
-noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
-noremap <silent> <right> :normal! zz<cr>:bnext<cr>
+noremap <silent> <up>    <NOP>
+noremap <silent> <down>  <NOP>
+noremap <silent> <left>  <NOP>
+noremap <silent> <right> <NOP>
+
+" " USEFUL page up and page down mapping 
+" noremap <silent> <up>    <C-u><C-u>
+" noremap <silent> <down>  <C-d><c-d>
+" noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
+" noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
-nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+
+nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>
 nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 
 " Quickly move current line
@@ -593,12 +602,6 @@ nmap <silent> <leader><cr> :noh<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Smart way to move between windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
-
 
 " Delete trailing white space on save, useful for some filetypes ;)
 func! CleanExtraSpaces()
@@ -627,7 +630,9 @@ noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=N
 if has("autocmd")
     augroup MYGROUP
         autocmd! *
-        autocmd! BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
@@ -643,6 +648,11 @@ if has("autocmd")
         if has("gui_macvim")
             autocmd GUIEnter * set vb t_vb=
         endif
+
+        " auto save
+        autocmd TextChanged  * silent! write
+        autocmd TextChangedI * silent! write
+        autocmd InsertLeave  * silent! write
 
         "{{
         set cursorline
@@ -829,7 +839,7 @@ set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
 set timeoutlen=200 " For <leader> mapping
-set ttimeoutlen=0 " No keycode delay
+set ttimeoutlen=0 " No keycode dealy - no esc dealy 
 set scrolloff=0 "allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
