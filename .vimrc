@@ -151,9 +151,9 @@ inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 """"""""""""""""""""""""""""""
 
 Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-map  <leader>easymotio <Plug>(easymotion-prefix)
-map  <space><space>    <Plug>(easymotion-overwin-f)
-map  <space>/          <Plug>(easymotion-sn)
+nmap  <leader>easymotio <Plug>(easymotion-prefix)
+nmap  <space>f    <Plug>(easymotion-overwin-f)
+nmap  <space>/    <Plug>(easymotion-sn)
 
 """"""""""""""""""""""""""""""
 
@@ -224,20 +224,17 @@ let mapleader = "\<space>"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
 " Overwrite default gf - open file under the cursor
-map  gf           :FZF <C-r>=getcwd()<cr>
-nmap <leader>f    :History<Cr><C-w>l<C-w>=<C-w>h
-map  <leader>fl   :FZF <cr>
-map  <leader>fg   :Ag
+map  gff          :FZF <C-r>=getcwd()<cr>
+nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
 map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
 nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
 " Recently Used Cmd, Alt-Enter to execute command<C-w>l<C-w>=<C-w>h
-nmap <leader>c    :History:<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
 nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
 nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
-nnoremap q: <Esc>
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -252,8 +249,7 @@ nnoremap <leader>; @:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Fast saving
 " nmap <leader>w   :w!<Cr>
-nmap <leader>q   :q<Cr>
-nmap <leader>qq  :q!<Cr>
+nmap <leader>q   :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
 nmap <leader>u   :UndotreeToggle<Cr>:normal! zz<cr>
 nmap <silent> <leader>l :silent! Lexplore!<cr>:vertical resize 35<cr>:normal! zz<cr>
@@ -315,20 +311,18 @@ map <leader>ez :e! ~/.zshrc<cr>
 map <leader>m  :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 map <leader>t  :tabnew<cr>
 map <leader>tc :tabclose<cr>
-nnoremap <leader>tt gT
+nnoremap [t gT
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""        Special Windows Shortcuts    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
 let g:quickfix_opened = 0
-map <expr> <leader>cc  g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
-"Close Preview Windows
-map <leader>po :pclose<cr>
+map <expr> <leader>c   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " To go to the next/previous quickfix entry:
-map <expr> <leader>n  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cn<cr>" : ":ALENext<cr>"
-map <expr> <leader>p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cp<cr>" : ":ALEPrevious<cr>"
+map <expr> ]p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cn<cr>" : ":ALENext<cr>"
+map <expr> [p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cp<cr>" : ":ALEPrevious<cr>"
 
 " To go to the next/previous quickfix list
 map <leader>nc :cnewer<cr>
@@ -447,23 +441,23 @@ nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
 
 command! CloseHiddenBuffers call s:CloseHiddenBuffers()
 function! s:CloseHiddenBuffers()
-  let open_buffers = []
+    let open_buffers = []
 
-  for i in range(tabpagenr('$'))
-    call extend(open_buffers, tabpagebuflist(i + 1))
-  endfor
+    for i in range(tabpagenr('$'))
+        call extend(open_buffers, tabpagebuflist(i + 1))
+    endfor
 
-  for num in range(1, bufnr("$") + 1)
-    if buflisted(num) && index(open_buffers, num) == -1
-      exec "bdelete ".num
-    endif
-  endfor
+    for num in range(1, bufnr("$") + 1)
+        if buflisted(num) && index(open_buffers, num) == -1
+            exec "bdelete ".num
+        endif
+    endfor
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap  <silent> <leader>zz  :Goyo 108<cr>:normal! zz<cr>
+nmap  <silent> <leader>zz  :Goyo<cr>:normal! zz<cr>
 nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>:normal! zz<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
@@ -479,7 +473,7 @@ function! ToggleOnlyWindow()
     endif
 endfunction
 " mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
-" wincmd o
+" wincmd o "only windows
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -491,10 +485,10 @@ noremap \ %
 noremap \\ gg=G''
 
 " for practice vim way of operating
-noremap <silent> <up>    <NOP>
-noremap <silent> <down>  <NOP>
-noremap <silent> <left>  <NOP>
-noremap <silent> <right> <NOP>
+nnoremap <silent> <up>    <NOP>
+nnoremap <silent> <down>  <NOP>
+nnoremap <silent> <left>  <NOP>
+nnoremap <silent> <right> <NOP>
 
 " " USEFUL page up and page down mapping 
 " noremap <silent> <up>    <C-u><C-u>
@@ -553,22 +547,22 @@ if has("cscope")
     set cscopeverbose
 
     " search for c symbol
-    map <leader>gs  :vertical scs find s <c-r>=expand("<cword>")<cr>:botright copen<cr>
+    map <leader>gs  :vertical scs find s <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
     " seach for global definition
-    map <leader>gg  :vertical scs find g <c-r>=expand("<cword>")<cr>:botright copen<cr>
+    map <leader>gg  :vertical scs find g <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
     " search functions that call this function
-    map <leader>gc  :vertical scs find c <c-r>=expand("<cword>")<cr>:botright copen<cr>
+    map <leader>gc  :vertical scs find c <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
     " search this string
-    map <leader>gt  :vertical scs find t <c-r>=expand("<cword>")<cr>:botright copen<cr>
+    map <leader>gt  :vertical scs find t <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
     " egrep pattern matching
-    map <leader>ge  :vertical scs find e <c-r>=expand("<cword>")<cr>:botright copen<cr>
+    map <leader>ge  :vertical scs find e <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
     " search this file
-    map <leader>gf  :vertical scs find f <c-r>=expand("<cfile>")<cr>:botright copen<cr>
+    map <leader>gf  :vertical scs find f <c-r>=expand("<cfile>")<cr><cr>:botright copen<cr>
     " search files that include this file
-    map <leader>gii :vertical scs find i <c-r>=expand("<cfile>")<cr>:botright copen<cr>
-    map <leader>gi  :vertical scs find i <c-r>=expand("%:t")    <cr>:botright copen<cr>
+    map <leader>gii :vertical scs find i <c-r>=expand("<cfile>")<cr><cr>:botright copen<cr>
+    map <leader>gi  :vertical scs find i <c-r>=expand("%:t")    <cr><cr>:botright copen<cr>
     " search for functions are called by this function
-    map <leader>gd  :vertical scs find d <c-r>=expand("<cword>")<cr>:botright copen<cr>
+    map <leader>gd  :vertical scs find d <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
 
 endif
 
@@ -640,19 +634,17 @@ if has("autocmd")
 
         autocmd BufWinLeave * silent! mkview
         autocmd BufWinEnter * silent! loadview
-        "Quickly jump to header or source file
-        autocmd BufLeave *.{c,cpp} mark C
-        autocmd BufLeave *.h       mark H
+
         autocmd VimEnter * silent! LightlineTabLineTheme
         " Properly disable sound on errors on MacVim
         if has("gui_macvim")
             autocmd GUIEnter * set vb t_vb=
         endif
 
-        " auto save
-        autocmd TextChanged  * silent! write
-        autocmd TextChangedI * silent! write
-        autocmd InsertLeave  * silent! write
+        " auto save 
+        autocmd TextChanged  * :silent! write | echo 'saved to disk!'
+        autocmd TextChangedI * :silent! write | echo 'saved to disk!'
+        autocmd InsertLeave  * :silent! write | echo 'saved to disk!'
 
         "{{
         set cursorline
@@ -846,12 +838,23 @@ set scrolloff=0 "allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""
 "" Code/Text AutoFormat
 """""""""""""""""""""""""""""""""""""""""
-if executable('clang-format')
-    set equalprg="clang-format --style=Webkit"
-endif
-" autocmd FileType javascript setlocal equalprg='js-beautify -f -'
+function! SetAutoFormatProgram()
+    if &filetype == 'c'
+        if executable('clang-format')
+            if empty(glob('~/.clang-format'))
+                setlocal equalprg=clang-format\ --style='Webkit'
+            else
+                setlocal equalprg=clang-format\ --style='file'
+            endif
+        endif
+    elseif &ft  == 'javascript'
+        setlocal equalprg='js-beautify -f -'
+    endif
+endfunction
+autocmd FileType * :call SetAutoFormatProgram()
 
 set splitright
+set splitbelow
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
