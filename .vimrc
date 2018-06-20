@@ -16,225 +16,243 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-set viminfo+=n~/.vim/.viminfo
 
 " PLUGIN MANAGER START {
+if !empty(glob('~/.vim/autoload/plug.vim'))
 
-call plug#begin('~/.vim/plugged')
-
-""""""""""""""""""""""""""""""
-"" LIGHTLINE PLUGIN
-""""""""""""""""""""""""""""""
-
-Plug 'itchyny/lightline.vim'
-set laststatus=2 "In order to show the lightline
-set showcmd      "Always print current keystroke
-set ruler        "Always show current position
-set cmdheight=1  "Height of the command bar
-let g:lightline = {
-            \  'active': {
-            \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
-            \                 [ 'relativepath', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
-            \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
-            \  },
-            \  'inactive': {
-            \   'left': [ [ ] ],
-            \   'right': [ ['bufnum'], [ 'relativepath', ] ]
-            \  },
-            \  'tabline': {
-            \     'left': [ [ 'my_text','tabs' ], ],
-            \     'right': [ [ 'vim_pwd', ] ]
-            \  },
-            \  'tab': {
-            \     'active': [ 'tabnum', 'filename' ],
-            \     'inactive': [ 'tabnum', ],
-            \  },
-            \  'tabline_subseparator': {
-            \     'left': '',
-            \     'right': '',
-            \  },
-            \  'tab_component': {
-            \     'my_path': '%F',
-            \  },
-            \  'component': {
-            \     'my_text': 'Tab:',
-            \     'my_charvaluehex': 'U+%B',
-            \     'truncate_start': '%<',
-            \  },
-            \  'component_function': {
-            \     'normal_submode': 'ShowExtraNormalMode',
-            \     'vim_pwd': 'getcwd',
-            \  },
-            \  'component_visible_condition': {
-            \     'truncate_start': 0,
-            \     'tabs': 0,
-            \  },
-            \  'component_function_visible_condition': {
-            \     'normal_submode': 0,
-            \  },
-            \  'component_type': {
-            \     'normal_submode': 'raw',
-            \     'truncate_start': 'raw',
-            \  },
-            \}
-
-"the color scheme variable only available before VimEnter
-"Tab_FG_Color,Tab_BG_Color
-function! LightlineTabLineTheme()
-    let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]]
-    let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]]
-    let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
-    let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
-    let g:lightline#colorscheme#default#palette.inactive.right = [[ '#606060', '#202020', 252, 66, 'bold' ]]
-    let g:lightline#colorscheme#default#palette.inactive.middle = [[ '#606060', '#000000', 252, 66, 'bold' ]]
-endfunction
-command! LightlineTabLineTheme call LightlineTabLineTheme()
-
-function! LightlineReload()
-    if exists('*lightline#init')
-        call lightline#init()
-        call lightline#colorscheme()
-        call lightline#update()
+    if has('nvim')
+        set viminfo+=n~/.vim/.nviminfo
+        CompletorDisable
+    else
+        set viminfo+=n~/.vim/.viminfo
+        set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif2
     endif
-endfunction
-command! LightlineReload call LightlineReload()
-""""""""""""""""""""""""""""""
-Plug 'mhinz/vim-startify'
-""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""
-Plug 'ErichDonGubler/vim-sublime-monokai'
-"colorscheme sublimemonokai "cannot be set here, set it later
-""""""""""""""""""""""""""""""
+    call plug#begin('~/.vim/plugged')
 
-"""""""""""""""""""""""""""""" "On demand loading
-Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
-""""""""""""""""""""""""""""""
+    """"""""""""""""""""""""""""""
+    "" LIGHTLINE PLUGIN
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
-Plug 'posva/vim-vue', { 'for': 'vue' }
-""""""""""""""""""""""""""""""
+    Plug 'itchyny/lightline.vim'
+    set laststatus=2 "In order to show the lightline
+    set showcmd      "Always print current keystroke
+    set ruler        "Always show current position
+    set cmdheight=1  "Height of the command bar
+    let g:lightline = {
+                \  'active': {
+                \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
+                \                 [ 'relativepath', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
+                \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
+                \  },
+                \  'inactive': {
+                \   'left': [ [ ] ],
+                \   'right': [ ['bufnum'], [ 'relativepath', ] ]
+                \  },
+                \  'tabline': {
+                \     'left': [ [ 'my_text','tabs' ], ],
+                \     'right': [ [ 'vim_pwd', ] ]
+                \  },
+                \  'tab': {
+                \     'active': [ 'tabnum', 'filename' ],
+                \     'inactive': [ 'tabnum', ],
+                \  },
+                \  'tabline_subseparator': {
+                \     'left': '',
+                \     'right': '',
+                \  },
+                \  'tab_component': {
+                \     'my_path': '%F',
+                \  },
+                \  'component': {
+                \     'my_text': 'Tab:',
+                \     'my_charvaluehex': 'U+%B',
+                \     'truncate_start': '%<',
+                \  },
+                \  'component_function': {
+                \     'normal_submode': 'ShowExtraNormalMode',
+                \     'vim_pwd': 'getcwd',
+                \  },
+                \  'component_visible_condition': {
+                \     'truncate_start': 0,
+                \     'tabs': 0,
+                \  },
+                \  'component_function_visible_condition': {
+                \     'normal_submode': 0,
+                \  },
+                \  'component_type': {
+                \     'normal_submode': 'raw',
+                \     'truncate_start': 'raw',
+                \  },
+                \}
 
-" Plug 'Piping/repeatable-motions'
+    "the color scheme variable only available before VimEnter
+    "Tab_FG_Color,Tab_BG_Color
+    function! LightlineTabLineTheme()
+        let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]]
+        let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]]
+        let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
+        let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
+        let g:lightline#colorscheme#default#palette.inactive.right = [[ '#606060', '#202020', 252, 66, 'bold' ]]
+        let g:lightline#colorscheme#default#palette.inactive.middle = [[ '#606060', '#000000', 252, 66, 'bold' ]]
+    endfunction
+    command! LightlineTabLineTheme call LightlineTabLineTheme()
 
-""""""""""""""""""""""""""""""
-Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
-""""""""""""""""""""""""""""""
+    function! LightlineReload()
+        if exists('*lightline#init')
+            call lightline#init()
+            call lightline#colorscheme()
+            call lightline#update()
+        endif
+    endfunction
+    command! LightlineReload call LightlineReload()
+    """"""""""""""""""""""""""""""
+    Plug 'mhinz/vim-startify'
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-""""""""""""""""""""""""""""""
-" Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle' }
-""""""""""""""""""""""""""""""
-Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
+    """""""""""""""""""""""""""""
+    Plug 'ErichDonGubler/vim-sublime-monokai'
+    "colorscheme sublimemonokai "cannot be set here, set it later
+    """"""""""""""""""""""""""""""
 
-" Command Line Maunal
-" Option name      	 Shortcut key    	 Abbreviated 	 Global variable
-" filter           	 CTRL-F          	 [gv]/.*/
-" left_margin      	 CTRL-L          	 l[0-9]+
-" right_margin     	 CTRL-R          	 r[0-9]+
-" stick_to_left    	 <Left>, <Right> 	 < or >
-" ignore_groups    	 CTRL-G          	 ig\[.*\]    	 g:easy_align_ignore_groups
-" ignore_unmatched 	 CTRL-U          	 iu[01]      	 g:easy_align_ignore_unmatched
-" indentation      	 CTRL-I          	 i[ksdn]     	 g:easy_align_indentation
-" delimiter_align  	 CTRL-D          	 d[lrc]      	 g:easy_align_delimiter_align
-" align            	 CTRL-A          	 a[lrc*]*
+    """""""""""""""""""""""""""""" "On demand loading
+    Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
+    """"""""""""""""""""""""""""""
+    Plug 'posva/vim-vue', { 'for': 'vue' }
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
-Plug 'maralla/completor.vim' ", {'on': 'CompletorEnable'}
-" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<C-o>:CompletorEnable<cr>\<Tab>"
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
-""""""""""""""""""""""""""""""
+    " Plug 'Piping/repeatable-motions'
 
-Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-nmap  <leader>easymotio <Plug>(easymotion-prefix)
-nmap  <space>f    <Plug>(easymotion-overwin-f)
-nmap  <space>/    <Plug>(easymotion-sn)
+    """"""""""""""""""""""""""""""
+    Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
+    """"""""""""""""""""""""""""""
+    Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+    """"""""""""""""""""""""""""""
+    " Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle' }
+    """"""""""""""""""""""""""""""
+    Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
 
-""""""""""""""""""""""""""""""
-Plug 'skywind3000/asyncrun.vim', {'on' : [ 'AsyncRun' ]}
-""""""""""""""""""""""""""""""
+    " Command Line Maunal
+    " Option name      	 Shortcut key    	 Abbreviated 	 Global variable
+    " filter           	 CTRL-F          	 [gv]/.*/
+    " left_margin      	 CTRL-L          	 l[0-9]+
+    " right_margin     	 CTRL-R          	 r[0-9]+
+    " stick_to_left    	 <Left>, <Right> 	 < or >
+    " ignore_groups    	 CTRL-G          	 ig\[.*\]    	 g:easy_align_ignore_groups
+    " ignore_unmatched 	 CTRL-U          	 iu[01]      	 g:easy_align_ignore_unmatched
+    " indentation      	 CTRL-I          	 i[ksdn]     	 g:easy_align_indentation
+    " delimiter_align  	 CTRL-D          	 d[lrc]      	 g:easy_align_delimiter_align
+    " align            	 CTRL-A          	 a[lrc*]*
 
-""""""""""""""""""""""""""""""
-Plug 'w0rp/ale', { 'on': [ 'ALENext', 'ALEPrevious', 'ALEEnable' ] , 'for': 'cpp,c,js,html' }
-""""""""""""""""""""""""""""""
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
-Plug 'junegunn/limelight.vim', {'on': 'Limelight'}
-""""""""""""""""""""""""""""""
+    """"""""""""""""""""""""""""""
+    Plug 'maralla/completor.vim' ", {'on': 'CompletorEnable'}
+    " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<C-o>:CompletorEnable<cr>\<Tab>"
+    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    """"""""""""""""""""""""""""""
 
-""""""""""""""""""""""""""""""
-Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
-""""""""""""""""""""""""""""""
+    Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
+    nmap  <leader>easymotio <Plug>(easymotion-prefix)
+    nmap  <space>f    <Plug>(easymotion-overwin-f)
+    nmap  <space>/    <Plug>(easymotion-sn)
 
-""""""""""""""""""""""""""""""
-Plug 'junegunn/fzf', {'on': ['FZF','Ag','Commands','Commits', 'Buffers','History','Files']}
-Plug 'junegunn/fzf.vim' , {'on': ['FZF','Ag','Commands', 'Commits', 'Buffers','History','Files']}
-" CTRL-A CTRL-Q to select all and build quickfix list
-" location list is similar to quickfix, specific to each window
-function! s:build_quickfix_list(lines)
-    call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-    copen
-endfunction
-let g:fzf_action = {
-            \ 'ctrl-q': function('s:build_quickfix_list'),
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit' }
-let g:fzf_layout = {'left': '~40%'}
-" let g:fzf_layout = { 'window': 'left vertical new' }
+    """"""""""""""""""""""""""""""
 
-if $FZF_DEFAULT_COMMAND == ""
-    let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
+    """"""""""""""""""""""""""""""
+    Plug 'skywind3000/asyncrun.vim', {'on' : [ 'AsyncRun' ]}
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'w0rp/ale', { 'on': [ 'ALENext', 'ALEPrevious', 'ALEEnable' ] , 'for': 'cpp,c,js,html' }
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'junegunn/limelight.vim', {'on': 'Limelight'}
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'junegunn/fzf', {'on': ['FZF','Ag','Commands','Commits', 'Buffers','History','Files']}
+    Plug 'junegunn/fzf.vim' , {'on': ['FZF','Ag','Commands', 'Commits', 'Buffers','History','Files']}
+    " CTRL-A CTRL-Q to select all and build quickfix list
+    " location list is similar to quickfix, specific to each window
+    function! s:build_quickfix_list(lines)
+        call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+        copen
+    endfunction
+    let g:fzf_action = {
+                \ 'ctrl-q': function('s:build_quickfix_list'),
+                \ 'ctrl-t': 'tab split',
+                \ 'ctrl-x': 'split',
+                \ 'ctrl-v': 'vsplit' }
+    let g:fzf_layout = {'left': '~40%'}
+    " let g:fzf_layout = { 'window': 'left vertical new' }
+
+    if $FZF_DEFAULT_COMMAND == ""
+        let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
+    endif
+    let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
+                \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
+                \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
+    """""""""""""""""""""""""""""
+
+    " Plug 'tmux-plugins/vim-tmux-focus-events'
+
+    """"""""""""""""""""""""""""""
+    " VIM's OPERATOR/TEXT OBJECT "
+    """"""""""""""""""""""""""""""
+    Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
+    map  gc  <Plug>Commentary
+    nmap gcc <Plug>CommentaryLine
+    """"""""""""""""""""""""""""""
+    Plug 'michaeljsmith/vim-indent-object'
+    """"""""""""""""""""""""""""""
+
+    """""""""""""""""""""""""""""""""""""""""
+    ""PLUGIN LEADER KEY MAPPING"
+    """""""""""""""""""""""""""""""""""""""""
+    " Recently Used Files
+    " Overwrite default gf - open file under the cursor
+    map  gff          :FZF <C-r>=getcwd()<cr>
+    nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
+    map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
+    nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
+    " Recently Used Cmd, Alt-Enter to execute command<C-w>l<C-w>=<C-w>h
+    nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
+    " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
+    nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
+    nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
+    " easy-alignment no argument go to interactive mode
+    vmap <leader>a    :EasyAlign
+
+    nmap <leader>u   :UndotreeToggle<Cr>:normal! zz<cr>
+    map <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
+
+    nmap  <silent> <leader>zz  :Goyo<cr>:normal! zz<cr>
+
+    call plug#end()
+
+    "PLUGIN MANAGER END } 
+
+else
+    command! LightlineReload :normal! zz 
 endif
-let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
-            \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
-            \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
-"""""""""""""""""""""""""""""
-
-" Plug 'tmux-plugins/vim-tmux-focus-events'
-
-""""""""""""""""""""""""""""""
-" VIM's OPERATOR/TEXT OBJECT "
-""""""""""""""""""""""""""""""
-Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
-map  gc  <Plug>Commentary
-nmap gcc <Plug>CommentaryLine
-""""""""""""""""""""""""""""""
-Plug 'michaeljsmith/vim-indent-object'
-""""""""""""""""""""""""""""""
-
-call plug#end()
-
-"PLUGIN MANAGER END } 
 
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
-"""""""""""""""""""""""""""""""""""""""""
-""PLUGIN LEADER KEY MAPPING"
-"""""""""""""""""""""""""""""""""""""""""
-" Recently Used Files
-" Overwrite default gf - open file under the cursor
-map  gff          :FZF <C-r>=getcwd()<cr>
-nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
-map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
-nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
-" Recently Used Cmd, Alt-Enter to execute command<C-w>l<C-w>=<C-w>h
-nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
-" Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
-nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
-nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
-" easy-alignment no argument go to interactive mode
-vmap <leader>a    :EasyAlign
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
@@ -251,7 +269,6 @@ nnoremap <leader>; @:
 " nmap <leader>w   :w!<Cr>
 nmap <leader>q   :q!<Cr>
 nmap <leader>qa  :qa!<Cr>
-nmap <leader>u   :UndotreeToggle<Cr>:normal! zz<cr>
 nmap <silent> <leader>l :silent! Lexplore!<cr>:vertical resize 35<cr>:normal! zz<cr>
 
 " set 'p' to paste before cursor
@@ -308,7 +325,6 @@ map <leader>ez :e! ~/.zshrc<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""      Buffer, Tab, Window Management   """"""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>m  :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 map <leader>t  :tabnew<cr>
 map <leader>tc :tabclose<cr>
 nnoremap [t gT
@@ -321,8 +337,8 @@ let g:quickfix_opened = 0
 map <expr> <leader>c   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " To go to the next/previous quickfix entry:
-map <expr> ]p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cn<cr>" : ":ALENext<cr>"
-map <expr> [p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cp<cr>" : ":ALEPrevious<cr>"
+map <expr> ]p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cn<cr>" : ":silent! ALENext<cr>"
+map <expr> [p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cp<cr>" : ":silent! ALEPrevious<cr>"
 
 " To go to the next/previous quickfix list
 map <leader>nc :cnewer<cr>
@@ -457,7 +473,6 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap  <silent> <leader>zz  :Goyo<cr>:normal! zz<cr>
 nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>:normal! zz<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
@@ -483,7 +498,7 @@ endfunction
 noremap = $
 noremap \ %
 noremap \\ gg=G''
-
+noremap q :q!<cr>
 " for practice vim way of operating
 nnoremap <silent> <up>    <NOP>
 nnoremap <silent> <down>  <NOP>
@@ -766,6 +781,7 @@ set foldcolumn=1
 " highlight
 " show hidden chars
 set list
+" set listchars=tab:>-,eol:$,nbsp:▓
 set listchars=tab:>-,eol:ː,nbsp:▓
 " two highlight group nontext & specialkey
 highlight nontext ctermfg=238 guifg=#414141
@@ -830,12 +846,11 @@ endtry
 
 set autowrite
 set mouse=a
-set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 set timeout
 set ttimeout
 set timeoutlen=200 " For <leader> mapping
-set ttimeoutlen=0 " No keycode dealy - no esc dealy 
-set scrolloff=0 "allow cursor to be at top and bottom
+set ttimeoutlen=0  " No keycode dealy - no esc dealy
+set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
 """""""""""""""""""""""""""""""""""""""""
@@ -858,6 +873,7 @@ autocmd FileType * :call SetAutoFormatProgram()
 
 set splitright
 set splitbelow
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
