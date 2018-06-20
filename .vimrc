@@ -667,6 +667,9 @@ if has("autocmd")
         autocmd WinLeave * setlocal nocursorline
         highlight CursorLine guibg=#303000 ctermbg=234
         "}}
+
+        autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+
     augroup END
 endif
 
