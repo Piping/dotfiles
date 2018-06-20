@@ -743,10 +743,21 @@ set tm=500
 " => colors , fonts, display
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 silent! colorscheme sublimemonokai
+
+" set extra options when running in gui mode
+if has("gui_running")
+    set guioptions-=t
+    set guioptions-=e
+    set guitablabel=%m\ %t
+    set t_co=256
+endif
+
 " enable 256 colors palette in gnome terminal
 if $colorterm == 'gnome-terminal'
     set t_co=256
-else
+endif
+if $TERM == 'xterm-256color'
+    set t_co=256
     set termguicolors
 endif
 
@@ -756,8 +767,9 @@ set foldcolumn=1
 " show hidden chars
 set list
 set listchars=tab:>-,eol:ː,nbsp:▓
-" overrite color scheme for the listchars "#649a9a
 " two highlight group nontext & specialkey
+highlight nontext ctermfg=238 guifg=#414141
+" overrite color scheme for the listchars "#649a9a
 
 " change cursor style dependent on mode
 if empty($tmux)
@@ -768,15 +780,6 @@ else
     let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
     let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
     let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
-endif
-
-highlight nontext ctermfg=238 guifg=#414141
-" set extra options when running in gui mode
-if has("gui_running")
-    set guioptions-=t
-    set guioptions-=e
-    set t_co=256
-    set guitablabel=%m\ %t
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
