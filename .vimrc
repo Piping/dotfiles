@@ -22,7 +22,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     if has('nvim')
         set viminfo+=n~/.vim/.nviminfo
-        CompletorDisable
     else
         set viminfo+=n~/.vim/.viminfo
         set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif2
@@ -123,7 +122,15 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'posva/vim-vue', { 'for': 'vue' }
     """"""""""""""""""""""""""""""
 
-    " Plug 'Piping/repeatable-motions'
+    """"""""""""""""""""""""""""""
+    if (!has('nvim'))
+        Plug 'maralla/completor.vim' ", {'on': 'CompletorEnable'}
+        " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<C-o>:CompletorEnable<cr>\<Tab>"
+        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    endif
+    """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
     Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
@@ -148,14 +155,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " delimiter_align  	 CTRL-D          	 d[lrc]      	 g:easy_align_delimiter_align
     " align            	 CTRL-A          	 a[lrc*]*
 
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'maralla/completor.vim' ", {'on': 'CompletorEnable'}
-    " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<C-o>:CompletorEnable<cr>\<Tab>"
-    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
     """"""""""""""""""""""""""""""
 
     Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
