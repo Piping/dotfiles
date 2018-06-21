@@ -217,6 +217,11 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'michaeljsmith/vim-indent-object'
     """"""""""""""""""""""""""""""
 
+    Plug 'tmux-plugins/vim-tmux-focus-events'
+
+    call plug#end()
+
+    "PLUGIN MANAGER END } 
     """""""""""""""""""""""""""""""""""""""""
     ""PLUGIN LEADER KEY MAPPING"
     """""""""""""""""""""""""""""""""""""""""
@@ -233,15 +238,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
     " easy-alignment no argument go to interactive mode
     vmap <leader>a    :EasyAlign
-
-    nmap <leader>u   :UndotreeToggle<Cr>:normal! zz<cr>
-    map <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
-
+    nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
+    map <leader>m     :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
     nmap  <silent> <leader>zz  :Goyo<cr>:normal! zz<cr>
-
-    call plug#end()
-
-    "PLUGIN MANAGER END } 
 
 else
     command! LightlineReload :normal! zz 
@@ -501,14 +500,14 @@ noremap q :q!<cr>
 " for practice vim way of operating
 nnoremap <silent> <up>    <NOP>
 nnoremap <silent> <down>  <NOP>
-nnoremap <silent> <left>  <NOP>
-nnoremap <silent> <right> <NOP>
+" nnoremap <silent> <left>  <NOP>
+" nnoremap <silent> <right> <NOP>
 
 " " USEFUL page up and page down mapping 
 " noremap <silent> <up>    <C-u><C-u>
 " noremap <silent> <down>  <C-d><c-d>
-" noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
-" noremap <silent> <right> :normal! zz<cr>:bnext<cr>
+noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
+noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
 
@@ -628,8 +627,8 @@ func! Exec(command)
 endfunct!
 
 noremap <leader>r  :source $MYVIMRC<cr>
+"{{ " the line below set cursorline to underline style Support for transparent background, e.g. iterm2
 noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=NONE guibg=NONE<cr>:hi clear CursorLine<cr>:hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE<cr>
-"{{ " the line below set cursorline to underline style
 "}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
@@ -670,7 +669,10 @@ if has("autocmd")
 
         autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
-    augroup END
+        autocmd FocusGained * echo 'Focus Gained' | colorscheme sublimemonokai | LightlineReload
+        autocmd FocusLost   * echo 'Focus Lost' | :hi! Normal ctermbg=0 guibg=#101010
+
+    augroup EN 
 endif
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
