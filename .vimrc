@@ -16,11 +16,11 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-if executable('nvim')
-    :silent! !mkdir -p ~/.config
-    :silent! !ln -sf ~/.vim ~/.config/nvim
-    :silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
-endif
+" if executable('nvim')
+"     silent! !mkdir -p ~/.config
+"     silent! !ln -sf ~/.vim ~/.config/nvim
+"     silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
+" endif
 
 " PLUGIN MANAGER START {
 if !empty(glob('~/.vim/autoload/plug.vim'))
@@ -47,7 +47,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                 \  'active': {
                 \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
                 \                 [ 'relativepath', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
-                \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'fileencoding', 'my_charvaluehex', 'charvalue' ], ]
+                \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'my_bufferlist','fileencoding', 'my_charvaluehex', 'charvalue' ], ]
                 \  },
                 \  'inactive': {
                 \   'left': [ [ ] ],
@@ -75,6 +75,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                 \  },
                 \  'component_function': {
                 \     'normal_submode': 'ShowExtraNormalMode',
+                \     'my_bufferlist': 'ShowCurrentBufferList',
                 \     'vim_pwd': 'getcwd',
                 \  },
                 \  'component_visible_condition': {
@@ -111,6 +112,20 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     endfunction
     command! LightlineReload call LightlineReload()
     """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'bling/vim-bufferline'
+    let g:bufferline_echo = 0
+    let g:bufferline_rotate = 0
+    function! ShowCurrentBufferList()
+        call bufferline#refresh_status() 
+        return g:bufferline_status_info.before.''
+                    \ .g:bufferline_status_info.current.''
+                    \ .g:bufferline_status_info.after
+    endfunction
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
     Plug 'mhinz/vim-startify'
     """"""""""""""""""""""""""""""
 
@@ -130,7 +145,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     if (!has('nvim'))
         Plug 'maralla/completor.vim' ", {'on': 'CompletorEnable'}
-        " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<C-o>:CompletorEnable<cr>\<Tab>"
         inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
         inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
         inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
@@ -623,6 +637,7 @@ func! CleanExtraSpaces()
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfun
+
 " userful to redirect internal command output to paste buffer
 func! Exec(command)
     redir =>output
@@ -635,6 +650,24 @@ noremap <leader>r  :source $MYVIMRC<cr>
 "{{ " the line below set cursorline to underline style Support for transparent background, e.g. iterm2
 noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=NONE guibg=NONE<cr>:hi clear CursorLine<cr>:hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE<cr>
 "}}
+
+"""""""""""""""""""""""""""""""""""""""""
+"" Code/Text AutoFormat
+"""""""""""""""""""""""""""""""""""""""""
+function! SetAutoFormatProgram()
+    if &filetype == 'c'
+        if executable('clang-format')
+            if empty(glob('~/.clang-format'))
+                setlocal equalprg=clang-format\ --style='Webkit'
+            else
+                setlocal equalprg=clang-format\ --style='file'
+            endif
+        endif
+    elseif &ft  == 'javascript'
+        setlocal equalprg='js-beautify -f -'
+    endif
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -676,6 +709,8 @@ if has("autocmd")
 
         autocmd FocusGained * echo 'Focus Gained' | colorscheme sublimemonokai | LightlineReload
         autocmd FocusLost   * echo 'Focus Lost' | :hi! Normal ctermbg=0 guibg=#101010
+
+        autocmd FileType * :call SetAutoFormatProgram()
 
     augroup END
 endif
@@ -861,24 +896,6 @@ set timeoutlen=200 " For <leader> mapping
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
-
-"""""""""""""""""""""""""""""""""""""""""
-"" Code/Text AutoFormat
-"""""""""""""""""""""""""""""""""""""""""
-function! SetAutoFormatProgram()
-    if &filetype == 'c'
-        if executable('clang-format')
-            if empty(glob('~/.clang-format'))
-                setlocal equalprg=clang-format\ --style='Webkit'
-            else
-                setlocal equalprg=clang-format\ --style='file'
-            endif
-        endif
-    elseif &ft  == 'javascript'
-        setlocal equalprg='js-beautify -f -'
-    endif
-endfunction
-autocmd FileType * :call SetAutoFormatProgram()
 
 set splitright
 set splitbelow
