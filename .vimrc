@@ -16,6 +16,11 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+if executable('nvim')
+    :silent! !mkdir -p ~/.config
+    :silent! !ln -sf ~/.vim ~/.config/nvim
+    :silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
+endif
 
 " PLUGIN MANAGER START {
 if !empty(glob('~/.vim/autoload/plug.vim'))
@@ -672,7 +677,7 @@ if has("autocmd")
         autocmd FocusGained * echo 'Focus Gained' | colorscheme sublimemonokai | LightlineReload
         autocmd FocusLost   * echo 'Focus Lost' | :hi! Normal ctermbg=0 guibg=#101010
 
-    augroup EN 
+    augroup END
 endif
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
