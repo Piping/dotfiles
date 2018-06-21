@@ -118,6 +118,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     let g:bufferline_echo = 0
     let g:bufferline_rotate = 0
     function! ShowCurrentBufferList()
+        if empty(glob('~/.vim/plugged/vim-bufferline'))
+            return
+        endif
         call bufferline#refresh_status() 
         return g:bufferline_status_info.before.''
                     \ .g:bufferline_status_info.current.''
