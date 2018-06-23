@@ -22,7 +22,7 @@ endif
 "     silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
 " endif
 
-" PLUGIN MANAGER START {
+" PLUGIN MANAGER START {{
 if !empty(glob('~/.vim/autoload/plug.vim'))
 
     if has('nvim')
@@ -134,7 +134,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """""""""""""""""""""""""""""
     Plug 'ErichDonGubler/vim-sublime-monokai'
-    "colorscheme sublimemonokai "cannot be set here, set it later
     """"""""""""""""""""""""""""""
 
     """""""""""""""""""""""""""""" "On demand loading
@@ -161,10 +160,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
     """"""""""""""""""""""""""""""
-    " Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle' }
+
     """"""""""""""""""""""""""""""
     Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
-
     " Command Line Maunal
     " Option name      	 Shortcut key    	 Abbreviated 	 Global variable
     " filter           	 CTRL-F          	 [gv]/.*/
@@ -176,14 +174,10 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " indentation      	 CTRL-I          	 i[ksdn]     	 g:easy_align_indentation
     " delimiter_align  	 CTRL-D          	 d[lrc]      	 g:easy_align_delimiter_align
     " align            	 CTRL-A          	 a[lrc*]*
-
     """"""""""""""""""""""""""""""
 
+    """"""""""""""""""""""""""""""
     Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-    nmap  <leader>easymotio <Plug>(easymotion-prefix)
-    nmap  <space>f    <Plug>(easymotion-overwin-f)
-    nmap  <space>/    <Plug>(easymotion-sn)
-
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -223,27 +217,27 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
     endif
     let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
-                \ "--header ' :: Tip <C-t>TabSplit <C-x>split <C-v>vsplit <Esc>/<C-d> Quit\n".
-                \ " :: Tip <C-f>select_all <C-g>deselect_all <C-q>send_to_quickfix'"
+                \ "--header ' :: Tip Open in new tab <C-t> ; Open in split <C-x>;\n".
+                \ " :: Tip Open in vertical split <C-v>; Quit <Esc> or <C-d>\n".
+                \ " :: Tip select_all <C-f> ; deselect_all <C-g> send_to_quickfix <C-q>'"
     """""""""""""""""""""""""""""
-
-    " Plug 'tmux-plugins/vim-tmux-focus-events'
 
     """"""""""""""""""""""""""""""
     " VIM's OPERATOR/TEXT OBJECT "
     """"""""""""""""""""""""""""""
     Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
-    map  gc  <Plug>Commentary
-    nmap gcc <Plug>CommentaryLine
     """"""""""""""""""""""""""""""
     Plug 'michaeljsmith/vim-indent-object'
     """"""""""""""""""""""""""""""
 
+    """"""""""""""""""""""""""""""
     Plug 'tmux-plugins/vim-tmux-focus-events'
+    """"""""""""""""""""""""""""""
 
     call plug#end()
 
-    "PLUGIN MANAGER END } 
+    "}} PLUGIN MANAGER END 
+
     """""""""""""""""""""""""""""""""""""""""
     ""PLUGIN LEADER KEY MAPPING"
     """""""""""""""""""""""""""""""""""""""""
@@ -251,9 +245,10 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " Overwrite default gf - open file under the cursor
     map  gff          :FZF <C-r>=getcwd()<cr>
     nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
-    map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
+    " map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
+    " map  <leader>fg   :Ag 
     nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
-    " Recently Used Cmd, Alt-Enter to execute command<C-w>l<C-w>=<C-w>h
+    " Recently Used Cmd, Alt-Enter to execute command
     nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
     " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
     nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
@@ -261,8 +256,13 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " easy-alignment no argument go to interactive mode
     vmap <leader>a    :EasyAlign
     nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
-    map <leader>m     :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
-    nmap  <silent> <leader>zz  :Goyo<cr>:normal! zz<cr>
+    map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
+    nmap <silent>     <leader>zz  :Goyo<cr>:normal! zz<cr>
+    nmap <leader>easy <Plug>(easymotion-prefix)
+    nmap <space>f     <Plug>(easymotion-overwin-f)
+    nmap <space>/     <Plug>(easymotion-sn)
+    map  gc           <Plug>Commentary
+    nmap gcc          <Plug>CommentaryLine
 
 else
     command! LightlineReload :normal! zz 
