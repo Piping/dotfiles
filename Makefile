@@ -39,7 +39,7 @@ define ADD_INSTALL_RULE
     install: install_${1}
     .PHONY: install_${1}
     install_${1}:
-		$${${1}_INSTALL}
+	$${${1}_INSTALL}
 endef
 
 # ADD_CLEAN_RULE - Parameterized "function" that adds a new rule and phony
@@ -52,22 +52,10 @@ define ADD_CLEAN_RULE
     clean: clean_${1}
     .PHONY: clean_${1}
     clean_${1}:
-		$$(strip rm -f ${TARGET_DIR}/${1} $${${1}_OBJS:%.o=%.[doP]})
-		$${${1}_POSTCLEAN}
+	$$(strip rm -f ${TARGET_DIR}/${1} $${${1}_OBJS:%.o=%.[doP]})
+	$${${1}_POSTCLEAN}
 endef
 
-# ADD_RECURSIVE_RULE - Parameterized "function" that adds a new rule and phony
-#   target for support recursivesive make 
-#   files).
-#
-#   USE WITH EVAL E.g. $(eval $(call function agruments))
-#
-define ADD_RECURSIVE_RULE
-    recursive: recursive_${1}
-    .PHONY: recursive_${1}
-    recursive_${1}:
-		$$(strip make -C $(dir $${${1}_LEGACYMAKEFILES) -f $(notdir $${${1}_LEGACYMAKEFILES}))
-endef
 # ADD_OBJECT_RULE - Parameterized "function" that adds a pattern rule for
 #   building object files from source files with the filename extension
 #   specified in the second argument. The first argument must be the name of the
@@ -94,17 +82,17 @@ define ADD_TARGET_RULE
     ifeq "$$(suffix ${1})" ".a"
         # Add a target for creating a static library.
         $${TARGET_DIR}/${1}: $${${1}_OBJS}
-			@mkdir -p $$(dir $$@)
-			$$(strip $${AR} $${ARFLAGS} $$@ $${${1}_OBJS})
-			$${${1}_POSTMAKE}
+		@mkdir -p $$(dir $$@)
+		$$(strip $${AR} $${ARFLAGS} $$@ $${${1}_OBJS})
+		$${${1}_POSTMAKE}
 
     else
     ifeq "$$(suffix ${1})" ".so"
         # Add a target for creating a shared library.
         $${TARGET_DIR}/${1}: $${${1}_OBJS}
-			@mkdir -p $$(dir $$@)
-			$$(strip $${CC} $${CCFLAGS} -o $$@ -shared $${${1}_OBJS})
-			$${${1}_POSTMAKE}
+		@mkdir -p $$(dir $$@)
+		$$(strip $${CC} $${CCFLAGS} -o $$@ -shared $${${1}_OBJS})
+		$${${1}_POSTMAKE}
 
     else
         # Add a target for linking an executable. First, attempt to select the
@@ -122,15 +110,14 @@ define ADD_TARGET_RULE
                 ${1}_LINKER = $${CC}
             endif
         endif
-
+        # Link all library and objects at the end for a good reason
         $${TARGET_DIR}/${1}: $${${1}_OBJS} $${${1}_PREREQS}
-			@mkdir -p $$(dir $$@)
-			$$(strip $${${1}_LINKER} -o $$@ $${LDFLAGS} $${${1}_LDFLAGS} \
-			$${${1}_OBJS} $${LDLIBS} $${${1}_LDLIBS})
-			$${${1}_POSTMAKE}
+		@mkdir -p $$(dir $$@)
+		$$(strip $${${1}_LINKER} -o $$@ $${LDFLAGS} $${${1}_LDFLAGS} \
+		$${${1}_OBJS} $${LDLIBS} $${${1}_LDLIBS})
+		$${${1}_POSTMAKE}
     endif
     endif
-
 endef #ADD_TARGET_RULE
 
 # CANONICAL_PATH - Given one or more paths, converts the paths to the canonical
@@ -142,6 +129,9 @@ endef #ADD_TARGET_RULE
 define CANONICAL_PATH
 $(patsubst ${CURDIR}/%,%,$(abspath ${1}))
 endef
+
+# BOTH COMPILE_CMDS USE AUTO_GENERATED DEPEDENCY INFORMATION 
+# From the compiler
 
 # COMPILE_C_CMDS - Commands for compiling C source code.
 define COMPILE_C_CMDS
@@ -188,7 +178,6 @@ define INCLUDE_SUBMAKEFILE
     TGT_POSTMAKE        :=
     TGT_PREREQS         :=
     TGT_INSTALL         :=
-    TGT_LEGACYMAKEFILES :=
 
     SOURCES         :=
     SRC_CFLAGS      :=
@@ -197,6 +186,7 @@ define INCLUDE_SUBMAKEFILE
     SRC_INCDIRS     :=
 
     SUBMAKEFILES    :=
+    RECURSIVEMAKEFILES :=
 
     # A directory stack is maintained so that the correct paths are used as we
     # recursively include all submakefiles. Get the makefile's directory and
@@ -236,13 +226,11 @@ define INCLUDE_SUBMAKEFILE
         $${TGT}_LDLIBS    := $${TGT_LDLIBS}
         $${TGT}_LINKER    := $${TGT_LINKER}
         $${TGT}_OBJS      :=
+        $${TGT}_INSTALL   := $${TGT_INSTALL}
         $${TGT}_POSTCLEAN := $${TGT_POSTCLEAN}
         $${TGT}_POSTMAKE  := $${TGT_POSTMAKE}
         $${TGT}_PREREQS   := $$(addprefix $${TARGET_DIR}/,$${TGT_PREREQS})
         $${TGT}_SOURCES   :=
-
-        $${TGT}_INSTALL   := $${TGT_INSTALL}
-        $${TGT}_LEGACYMAKEFILES  := $${TGT_LEGACYMAKEFILES}
     else
         # The values defined by this makefile apply to the the "current" target
         # as determined by which target is at the top of the stack.
@@ -255,12 +243,10 @@ define INCLUDE_SUBMAKEFILE
         $${TGT}_INCDIRS     += $${TGT_INCDIRS}
         $${TGT}_LDFLAGS     += $${TGT_LDFLAGS}
         $${TGT}_LDLIBS      += $${TGT_LDLIBS}
+        $${TGT}_INSTALL     += $${TGT_INSTALL}
         $${TGT}_POSTCLEAN   += $${TGT_POSTCLEAN}
         $${TGT}_POSTMAKE    += $${TGT_POSTMAKE}
         $${TGT}_PREREQS     += $${TGT_PREREQS}
-
-        $${TGT}_INSTALL     += $${TGT_INSTALL}
-        $${TGT}_LEGACYMAKEFILES  += $${TGT_LEGACYMAKEFILES}
     endif
 
     # Push the current target onto the target stack.
@@ -296,14 +282,21 @@ define INCLUDE_SUBMAKEFILE
         $${OBJS}: SRC_CFLAGS   := $${$${TGT}_CFLAGS} $${SRC_CFLAGS}
         $${OBJS}: SRC_CXXFLAGS := $${$${TGT}_CXXFLAGS} $${SRC_CXXFLAGS}
         $${OBJS}: SRC_DEFS     := $$(addprefix -D,$${$${TGT}_DEFS} $${SRC_DEFS})
-        $${OBJS}: SRC_INCDIRS  := $$(addprefix -I,\
-                                     $${$${TGT}_INCDIRS} $${SRC_INCDIRS})
+        $${OBJS}: SRC_INCDIRS  := $$(addprefix -I,$${$${TGT}_INCDIRS} $${SRC_INCDIRS})
     endif
 
     ifneq "$$(strip $${SUBMAKEFILES})" ""
         # This makefile has submakefiles. Recursively include them.
         $$(foreach MK,$${SUBMAKEFILES},\
            $$(eval $$(call INCLUDE_SUBMAKEFILE,\
+                      $$(call CANONICAL_PATH,\
+                         $$(call QUALIFY_PATH,$${DIR},$${MK})))))
+    endif
+    
+    ifneq "$$(strip $${RECURSIVEMAKEFILES})" ""
+        # This makefile has submakefiles. Recursively include them.
+        $$(foreach MK,$${RECURSIVEMAKEFILES},\
+           $$(eval $$(call MAKE_RECURSUBMAKEFILE,\
                       $$(call CANONICAL_PATH,\
                          $$(call QUALIFY_PATH,$${DIR},$${MK})))))
     endif
@@ -316,6 +309,12 @@ define INCLUDE_SUBMAKEFILE
     DIR_STACK := $$(call POP,$${DIR_STACK})
     DIR := $$(call PEEK,$${DIR_STACK})
 endef #INCLUDE_SUBMAKEFILE
+
+define MAKE_RECURSUBMAKEFILE
+    $(info $(strip ${MAKE} -C $(dir ${1}) -f $(notdir ${1})))
+    # Force Make to run shellcmd in the first pass
+    $(info $(shell $(strip ${MAKE} -C $(dir ${1}) -f $(notdir ${1}))))
+endef
 
 # MIN - Parameterized "function" that results in the minimum lexical value of
 #   the two values given.
@@ -399,6 +398,10 @@ all: $(addprefix ${TARGET_DIR}/,${ALL_TGTS})
 $(foreach TGT,${ALL_TGTS},\
   $(eval $(call ADD_TARGET_RULE,${TGT})))
 
+# # Add "recursive" rules to do recursive make
+# $(foreach MK,${ALL_RECURSIVEMAKEFILES},\
+#   $(eval $(call ADD_RECURSIVE_RULE,${MK})))
+
 # Add pattern rule(s) for creating compiled object code from C source.
 $(foreach TGT,${ALL_TGTS},\
   $(foreach EXT,${C_SRC_EXTS},\
@@ -420,11 +423,6 @@ $(foreach TGT,${ALL_TGTS},\
 .PHONY: install
 $(foreach TGT,${ALL_TGTS},\
   $(eval $(call ADD_INSTALL_RULE,${TGT})))
-
-# Add "recursive" rules to do recursive make
-.PHONY: recursive
-$(foreach TGT,${ALL_TGTS},\
-  $(eval $(call ADD_RECURSIVE_RULE,${TGT})))
 
 # Include generated rules that define additional (header) dependencies.
 $(foreach TGT,${ALL_TGTS},\

@@ -29,7 +29,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         set viminfo+=n~/.vim/.nviminfo
     else
         set viminfo+=n~/.vim/.viminfo
-        set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif2
+        set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
     endif
 
     call plug#begin('~/.vim/plugged')
@@ -671,52 +671,6 @@ function! SetAutoFormatProgram()
     endif
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""    AUTO COMMANDS         """""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if has("autocmd")
-    augroup MYGROUP
-        autocmd! *
-
-        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
-
-        " Return to last edit position when opening files (You want this!)
-        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-
-        autocmd BufWinLeave * silent! mkview
-        autocmd BufWinEnter * silent! loadview
-
-        autocmd VimEnter * silent! LightlineTabLineTheme
-        " Properly disable sound on errors on MacVim
-        if has("gui_macvim")
-            autocmd GUIEnter * set vb t_vb=
-        endif
-
-        " auto save 
-        autocmd TextChanged  * :silent! write | echo 'saved to disk!'
-        autocmd TextChangedI * :silent! write | echo 'saved to disk!'
-        autocmd InsertLeave  * :silent! write | echo 'saved to disk!'
-
-        "{{
-        set cursorline
-        highlight cursorline cterm=none gui=none term=none
-        autocmd WinEnter * setlocal cursorline
-        autocmd WinLeave * setlocal nocursorline
-        highlight CursorLine guibg=#303000 ctermbg=234
-        "}}
-
-        autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
-
-        autocmd FocusGained * echo 'Focus Gained' | colorscheme sublimemonokai | LightlineReload
-        autocmd FocusLost   * echo 'Focus Lost' | :hi! Normal ctermbg=0 guibg=#101010
-
-        autocmd FileType * :call SetAutoFormatProgram()
-
-    augroup END
-endif
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 iab xdate2 <c-r>=strftime("%F")<cr>
@@ -903,6 +857,50 @@ set scrolloff=0    " allow cursor to be at top and bottom
 set splitright
 set splitbelow
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""    AUTO COMMANDS         """""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+if has("autocmd")
+    augroup MYGROUP
+        autocmd! *
+
+        autocmd VimEnter * silent! LightlineTabLineTheme
+
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+
+        " Return to last edit position when opening files (You want this!)
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+        autocmd BufWinLeave * silent! mkview
+        autocmd BufWinEnter * silent! loadview
+
+        " Properly disable sound on errors on MacVim
+        if has("gui_macvim")
+            autocmd GUIEnter * set vb t_vb=
+        endif
+
+        " auto save 
+        autocmd TextChanged  * :silent! write | echo 'saved to disk!'
+        autocmd TextChangedI * :silent! write | echo 'saved to disk!'
+        autocmd InsertLeave  * :silent! write | echo 'saved to disk!'
+
+        " smart cursorline
+        autocmd WinEnter * setlocal cursorline
+        autocmd WinLeave * setlocal nocursorline
+        highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+
+        " tab special for makefile 
+        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
+
+        autocmd FocusGained * :colorscheme sublimemonokai | LightlineReload
+        autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
+
+        autocmd FileType * :call SetAutoFormatProgram()
+
+    augroup END
+endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
