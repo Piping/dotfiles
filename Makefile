@@ -334,9 +334,11 @@ define INCLUDE_SUBMAKEFILE
 endef #INCLUDE_SUBMAKEFILE
 
 define MAKE_RECURSUBMAKEFILE
+
     $(info $(strip ${MAKE} -C $(dir ${1}) -f $(notdir ${1} ${MAKECMDGOALS})))
     # Force Make to run shellcmd in the first pass
-    $(info $(shell $(strip ${MAKE} -C $(dir ${1}) -f $(notdir ${1} ${MAKECMDGOALS}))))
+    $(foreach line,$(shell $(strip ${MAKE} -C $(dir ${1}) -f $(notdir ${1} ${MAKECMDGOALS})) | sed 's/\ / /g'),$(info ${line}))
+
 endef
 
 # MIN - Parameterized "function" that results in the minimum lexical value of
