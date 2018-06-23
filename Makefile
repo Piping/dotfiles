@@ -1,4 +1,5 @@
-# NON-RECURSIVE-Makefile: A reusable, but flexible, boilerplate Makefile.
+# A Progressive Non-RECURSIVE-Makefile framework designed for clean code
+# and support full view of the dependency tree
 #
 # Copyright 2008, 2009, 2010 Dan Moulding, Alan T. DeKok
 # Copyright 2018 Dequan Zhang
@@ -28,6 +29,26 @@
 #       be evaluated after expansion. Since they must be used with eval, most
 #       instances of "$" within them need to be escaped with a second "$" to
 #       accomodate the double expansion that occurs when eval is invoked.
+
+
+############################################################################
+######                                                              ########
+######                       PRE-EXPANSION RULE                     ########
+######                                                              ########
+############################################################################
+
+# ADD_TEST_RULE - Parameterized "function" that adds a new rule and phony
+#   target for install the specified target (from its build-generated
+#   files).
+#
+#   USE WITH EVAL E.g. $(eval $(call function agruments))
+#
+define ADD_TEST_RULE
+    test: test_${1}
+    .PHONY: test_${1}
+    test_${1}:
+	$${${1}_test}
+endef
 
 # ADD_INSTALL_RULE - Parameterized "function" that adds a new rule and phony
 #   target for install the specified target (from its build-generated
@@ -166,18 +187,18 @@ endef
 define INCLUDE_SUBMAKEFILE
     # Initialize all variables that can be defined by a makefile fragment, then
     # include the specified makefile fragment.
-    TARGET              :=
-    TGT_CFLAGS          :=
-    TGT_CXXFLAGS        :=
-    TGT_DEFS            :=
-    TGT_INCDIRS         :=
-    TGT_LDFLAGS         :=
-    TGT_LDLIBS          :=
-    TGT_LINKER          :=
-    TGT_POSTCLEAN       :=
-    TGT_POSTMAKE        :=
-    TGT_PREREQS         :=
-    TGT_INSTALL         :=
+    TARGET          :=
+    TGT_CFLAGS      :=
+    TGT_CXXFLAGS    :=
+    TGT_DEFS        :=
+    TGT_INCDIRS     :=
+    TGT_LDFLAGS     :=
+    TGT_LDLIBS      :=
+    TGT_LINKER      :=
+    TGT_POSTCLEAN   :=
+    TGT_POSTMAKE    :=
+    TGT_PREREQS     :=
+    TGT_INSTALL     :=
 
     SOURCES         :=
     SRC_CFLAGS      :=
@@ -227,6 +248,7 @@ define INCLUDE_SUBMAKEFILE
         $${TGT}_LINKER    := $${TGT_LINKER}
         $${TGT}_OBJS      :=
         $${TGT}_INSTALL   := $${TGT_INSTALL}
+        $${TGT}_TEST      := $${TGT_TEST}
         $${TGT}_POSTCLEAN := $${TGT_POSTCLEAN}
         $${TGT}_POSTMAKE  := $${TGT_POSTMAKE}
         $${TGT}_PREREQS   := $$(addprefix $${TARGET_DIR}/,$${TGT_PREREQS})
@@ -244,6 +266,7 @@ define INCLUDE_SUBMAKEFILE
         $${TGT}_LDFLAGS     += $${TGT_LDFLAGS}
         $${TGT}_LDLIBS      += $${TGT_LDLIBS}
         $${TGT}_INSTALL     += $${TGT_INSTALL}
+        $${TGT}_TEST        += $${TGT_TEST}
         $${TGT}_POSTCLEAN   += $${TGT_POSTCLEAN}
         $${TGT}_POSTMAKE    += $${TGT_POSTMAKE}
         $${TGT}_PREREQS     += $${TGT_PREREQS}
@@ -271,8 +294,8 @@ define INCLUDE_SUBMAKEFILE
 
         # Convert the source file names to their corresponding object file
         # names.
-        OBJS := $$(addprefix $${BUILD_DIR}/$$(call CANONICAL_PATH,$${TGT})/,\
-                   $$(addsuffix .o,$$(basename $${SOURCES})))
+        OBJS := $$(addsuffix .o,$$(basename $${SOURCES})) 
+        OBJS := $$(addprefix $${BUILD_DIR}/$$(call CANONICAL_PATH,$${TGT})/,$${OBJS})
 
         # Add the objects to the current target's list of objects, and create
         # target-specific variables for the objects based on any source
@@ -423,6 +446,11 @@ $(foreach TGT,${ALL_TGTS},\
 .PHONY: install
 $(foreach TGT,${ALL_TGTS},\
   $(eval $(call ADD_INSTALL_RULE,${TGT})))
+
+# Add "install" rules to add all target to its location.
+.PHONY: test
+$(foreach TGT,${ALL_TGTS},\
+  $(eval $(call ADD_TEST_RULE,${TGT})))
 
 # Include generated rules that define additional (header) dependencies.
 $(foreach TGT,${ALL_TGTS},\
