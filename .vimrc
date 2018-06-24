@@ -229,6 +229,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'michaeljsmith/vim-indent-object'
     """"""""""""""""""""""""""""""
+    Plug 'piping/vim-surround', { 'on': ['<Plug>Dsurround','<Plug>Csurround','<Plug>Ysurround']}
+    """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
     Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -263,6 +265,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     nmap <space>/     <Plug>(easymotion-sn)
     map  gc           <Plug>Commentary
     nmap gcc          <Plug>CommentaryLine
+    nmap ds           <Plug>Dsurround
+    nmap cs           <Plug>Csurround
+    nmap ss           <Plug>Ysurround
 
 else
     command! LightlineReload :normal! zz 
