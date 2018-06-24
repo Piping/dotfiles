@@ -28,9 +28,8 @@ All files work flawlessly on development and production server.
   - crafted UX that is modern and prove its quality in details
 
 ## Dependency && Install
-Most up to date desktop linux does not need install anything and it will work.
+Most up to date desktop linux does not need install anything and it will work.  
 For server users, here is a list of troubleshoots and environement configurations.
 
-## VIM Sreencast, configurations, key-mapping explained
+## Sreencast, configurations, key-mapping explained
 
-## Tmux key-mapping explained, usegae guide
