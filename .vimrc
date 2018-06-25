@@ -343,7 +343,7 @@ map <leader>et :e! ~/.tmux.conf<cr>
 map <leader>ez :e! ~/.zshrc<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""      Buffer, Tab, Window Management   """"""""""""""""
+""""""""      Buffer, Tab, Window Key Maps     """"""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>t  :tabnew<cr>
 map <leader>tc :tabclose<cr>
@@ -357,8 +357,8 @@ let g:quickfix_opened = 0
 map <expr> <leader>c   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " To go to the next/previous quickfix entry:
-map <expr> ]p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cn<cr>" : ":silent! ALENext<cr>"
-map <expr> [p  empty( filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"') ) == 0 ? ":cp<cr>" : ":silent! ALEPrevious<cr>"
+map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
+map <expr> [p   g:quickfix_opened  == 1 ? ":cp<cr>zz" : ":silent! ALEPrevious<cr>zz"
 
 " To go to the next/previous quickfix list
 map <leader>nc :cnewer<cr>
@@ -582,22 +582,22 @@ if has("cscope")
     set cscopeverbose
 
     " search for c symbol
-    map <leader>gs  :vertical scs find s <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
+    map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " seach for global definition
-    map <leader>gg  :vertical scs find g <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
+    map <leader>gg  :cs find g <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search functions that call this function
-    map <leader>gc  :vertical scs find c <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
+    map <leader>gc  :cs find c <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search this string
-    map <leader>gt  :vertical scs find t <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
+    map <leader>gt  :cs find t <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " egrep pattern matching
-    map <leader>ge  :vertical scs find e <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
+    map <leader>ge  :cs find e <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search this file
-    map <leader>gf  :vertical scs find f <c-r>=expand("<cfile>")<cr><cr>:botright copen<cr>
+    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search files that include this file
-    map <leader>gii :vertical scs find i <c-r>=expand("<cfile>")<cr><cr>:botright copen<cr>
-    map <leader>gi  :vertical scs find i <c-r>=expand("%:t")    <cr><cr>:botright copen<cr>
+    map <leader>gii :cs find i <c-r>=expand("<cfile>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gi  :cs find i <c-r>=expand("%:t")    <cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search for functions are called by this function
-    map <leader>gd  :vertical scs find d <c-r>=expand("<cword>")<cr><cr>:botright copen<cr>
+    map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
 
 endif
 
@@ -627,6 +627,7 @@ command! W w !sudo tee % > /dev/null
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Disable highlight when <leader><cr> is pressed
 nmap <silent> <leader><cr> :noh<cr>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
@@ -838,12 +839,19 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-" Specify the behavior when switching between buffers
-try
-    set switchbuf=useopen,usetab,newtab
-    set stal=2
-catch
-endtry
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Buffers, Split Windows, Tabs(Tabline)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Specify the behavior when switching/opening new buffers
+set switchbuf=useopen,usetab,vsplit
+" Always Show tabline
+set showtabline=2
+" Set Split Position
+set splitright
+set splitbelow
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set autowrite
 set mouse=a
@@ -853,9 +861,6 @@ set timeoutlen=200 " For <leader> mapping
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
-
-set splitright
-set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
@@ -890,6 +895,7 @@ if has("autocmd")
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
         highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+        highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
 
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
