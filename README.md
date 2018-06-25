@@ -7,19 +7,24 @@ All files work flawlessly on development and production server.
 - put them under your home folder. E.g. `~/.vimrc`
 
 ## Principle
-- never remove the deault keybinding, your knowledge applies, only enhancements.
+- never remove the deault keybinding, applies your knowledge, only enhancements.
 - compatible across different terminals, distrubutions
-- Productive and Professional.  
+- productive and professional.  
 
 ## VIM
 - Features List
+  - single-hand browsing is never been easier
   - auto-save file, no need to press :w to save file anymore
   - unlimited undo history, fearless edititng
-  - 50ms startup time, always fast!
-  - configuration file auto-reload once modified inside vim
+  - **50ms** startup time, every ms counts! always fast!
+  - configuration file auto-reload on modified inside vim
   - carefully selected high quality plugins that is absolutely improve productivity
-  - works without any plugins if thats your style
   - crafted UX that is modern and prove its quality in details
+  - search visual selection with */# key
+  - straightforward buffer list management
+  - quick and accurate file search using fzf
+  - user-firendly and efficient undotree panel
+  - works without any plugins if thats your style
 
 ## TMUX
 - Best TMUX Configuration Over the Internet
