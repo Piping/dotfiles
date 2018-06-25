@@ -30,8 +30,8 @@ DerivePointerAlignment: 'false'
 IndentCaseLabels: 'false'
 IndentWrappedFunctionNames: 'false'
 JavaScriptQuotes: Single
-IncludeBlocks: IBS_Regroup
-IndentPPDirectives: PPDIS_AfterHash
+#IncludeBlocks: IBS_Regroup
+#IndentPPDirectives: PPDIS_AfterHash
 KeepEmptyLinesAtTheStartOfBlocks: 'true'
 Language: Cpp
 MaxEmptyLinesToKeep: '1'
