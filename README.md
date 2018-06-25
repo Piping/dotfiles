@@ -1,6 +1,6 @@
 # dotfiles
 A set of terminal configuration files for zsh, tmux, vim (fast, simple, minimal, off the shelf).  
-All options and UI are carefully crafted.
+All options and UI are carefully crafted, no boilerplate, no gaint dependency!.
 All files work flawlessly on development and production server.
 
 ## How to use these files
@@ -9,7 +9,8 @@ All files work flawlessly on development and production server.
 ## Principle
 - never remove the deault keybinding, applies your knowledge, only enhancements.
 - compatible across different terminals, distrubutions
-- productive and professional.  
+- productive and professional. 
+- minimal redundant information on USER Interface! It is clean!
 
 ## VIM
 - Features List
@@ -22,7 +23,7 @@ All files work flawlessly on development and production server.
   - crafted UX that is modern and prove its quality in details
   - search visual selection with */# key
   - straightforward buffer list management
-  - quick and accurate file search using fzf
+  - quick and accurate file search using fzf, also (commits,grep,commands, history ...)
   - user-firendly and efficient undotree panel
   - works without any plugins if thats your style
 

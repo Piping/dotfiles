@@ -123,7 +123,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         endif
         call bufferline#refresh_status() 
         return g:bufferline_status_info.before.''
-                    \ .g:bufferline_status_info.current.''
+                    \ .'[文]'
                     \ .g:bufferline_status_info.after
     endfunction
     """"""""""""""""""""""""""""""
@@ -219,7 +219,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
                 \ "--header ' :: Tip Open in new tab <C-t> ; Open in split <C-x>;\n".
                 \ " :: Tip Open in vertical split <C-v>; Quit <Esc> or <C-d>\n".
-                \ " :: Tip select_all <C-f> ; deselect_all <C-g> send_to_quickfix <C-q>'"
+                \ " :: Tip select_all <C-f> ; deselect_all <C-g> send_to_quickfix<C-q>'"
     """""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -228,8 +228,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
     """"""""""""""""""""""""""""""
     Plug 'michaeljsmith/vim-indent-object'
-    """"""""""""""""""""""""""""""
-    Plug 'piping/vim-surround', { 'on': ['<Plug>Dsurround','<Plug>Csurround','<Plug>Ysurround']}
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -265,9 +263,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     nmap <space>/     <Plug>(easymotion-sn)
     map  gc           <Plug>Commentary
     nmap gcc          <Plug>CommentaryLine
-    nmap ds           <Plug>Dsurround
-    nmap cs           <Plug>Csurround
-    nmap ss           <Plug>Ysurround
 
 else
     command! LightlineReload :normal! zz 
@@ -887,9 +882,9 @@ if has("autocmd")
         endif
 
         " auto save 
-        autocmd TextChanged  * :silent! write | echo 'saved to disk!'
-        autocmd TextChangedI * :silent! write | echo 'saved to disk!'
-        autocmd InsertLeave  * :silent! write | echo 'saved to disk!'
+        autocmd TextChanged  * :silent! write | echo 'file is saved to disk!'
+        autocmd TextChangedI * :silent! write | echo 'file is saved to disk!'
+        autocmd InsertLeave  * :silent! write | echo 'file is saved to disk!'
 
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
