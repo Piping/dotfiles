@@ -1,3 +1,4 @@
+![show](screencast.png)
 # dotfiles
 A set of terminal configuration files for zsh, tmux, vim (fast, simple, minimal, off the shelf).  
 All options and UI are carefully crafted, no boilerplate, no gaint dependency!.
