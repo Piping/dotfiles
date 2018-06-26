@@ -46,7 +46,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     let g:lightline = {
                 \  'active': {
                 \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
-                \                 [ 'relativepath', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
+                \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
                 \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'my_bufferlist','fileencoding', 'my_charvaluehex', 'charvalue' ], ]
                 \  },
                 \  'inactive': {
@@ -58,15 +58,15 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                 \     'right': [ [ 'vim_pwd', ] ]
                 \  },
                 \  'tab': {
-                \     'active': [ 'tabnum', 'filename' ],
+                \     'active': [ 'tabnum', 'my_path' ],
                 \     'inactive': [ 'tabnum', ],
                 \  },
                 \  'tabline_subseparator': {
                 \     'left': '',
                 \     'right': '',
                 \  },
-                \  'tab_component': {
-                \     'my_path': '%F',
+                \  'tab_component_function': {
+                \     'my_path': 'LightlineTabShowPath',
                 \  },
                 \  'component': {
                 \     'my_text': 'Tab:',
@@ -111,6 +111,10 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         endif
     endfunction
     command! LightlineReload call LightlineReload()
+
+    function! LightlineTabShowPath(n)
+        return expand('%:.')
+    endfunction
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
