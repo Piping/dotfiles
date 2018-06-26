@@ -299,16 +299,15 @@ nnoremap Xp Xp
 " swap cursor and previous char
 nnoremap xp xp
 "Join the line below with space
-nnoremap <leader>j  J
+" nnoremap <leader>j  J
 " Reverse of J
 nnoremap <leader>jj v$hdO<Esc>pj
-nnoremap <leader>k  K
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Cursor Moving mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Keep the cursor at center they are and move whole page
-noremap J <C-e>j
-noremap K <C-y>k
+" Keep the cursor at center while scrolling
+noremap <C-e> <C-e>j
+noremap <C-y> <C-y>k
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ""Join the line below with space => Code Development - TagBar
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -355,10 +354,6 @@ nnoremap [t gT
 " quickfix window  displaying
 let g:quickfix_opened = 0
 map <expr> <leader>c   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
-
-" To go to the next/previous quickfix entry:
-map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
-map <expr> [p   g:quickfix_opened  == 1 ? ":cp<cr>zz" : ":silent! ALEPrevious<cr>zz"
 
 " To go to the next/previous quickfix list
 map <leader>nc :cnewer<cr>
@@ -519,6 +514,7 @@ noremap = $
 noremap \ %
 noremap \\ gg=G''
 noremap q :q!<cr>
+
 " for practice vim way of operating
 nnoremap <silent> <up>    <NOP>
 nnoremap <silent> <down>  <NOP>
@@ -532,13 +528,16 @@ noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
 noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
-
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>
 nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 
 " Quickly move current line
 nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
+
+" To go to the next/previous quickfix/linter entry:
+map <expr> [p   g:quickfix_opened  == 1 ? ":cp<cr>zz" : ":silent! ALEPrevious<cr>zz"
+map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
 
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
@@ -598,9 +597,18 @@ if has("cscope")
     map <leader>gi  :cs find i <c-r>=expand("%:t")    <cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search for functions are called by this function
     map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
-
 endif
 
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+command! W w !sudo tee % > /dev/null
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Pattern Match, Search Highlight
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Disable highlight when <leader><cr> is pressed
+nmap <silent> <leader><cr> :noh<cr>
 
 " " Search for selected text, forwards or backwards.
 " Paste matching text of last search
@@ -618,20 +626,7 @@ endfunction
 vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
 vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
 
-" :W sudo saves the file
-" (useful for handling the permission-denied error)
-command! W w !sudo tee % > /dev/null
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Pattern Match, Search Highlight
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Disable highlight when <leader><cr> is pressed
-nmap <silent> <leader><cr> :noh<cr>
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Delete trailing white space on save, useful for some filetypes ;)
 func! CleanExtraSpaces()
@@ -701,6 +696,7 @@ set encoding=utf8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -721,7 +717,7 @@ else
 endif
 
 " A buffer becomes hidden when it is abandoned
-set hid
+set hidden
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -755,50 +751,6 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => colors , fonts, display
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-silent! colorscheme sublimemonokai
-
-" set extra options when running in gui mode
-if has("gui_running")
-    set guioptions-=t
-    set guioptions-=e
-    set guitablabel=%m\ %t
-    set t_co=256
-endif
-
-" enable 256 colors palette in gnome terminal
-if $colorterm == 'gnome-terminal'
-    set t_co=256
-endif
-if $TERM == 'xterm-256color'
-    set t_co=256
-    set termguicolors
-endif
-
-set nonumber
-set foldcolumn=1
-" highlight
-" show hidden chars
-set list
-" set listchars=tab:>-,eol:$,nbsp:▓
-set listchars=tab:>-,eol:ː,nbsp:▓
-" two highlight group nontext & specialkey
-highlight nontext ctermfg=238 guifg=#414141
-" overrite color scheme for the listchars "#649a9a
-
-" change cursor style dependent on mode
-if empty($tmux)
-    let &t_si = "\<esc>]50;cursorshape=1\x7"
-    let &t_ei = "\<esc>]50;cursorshape=0\x7"
-    let &t_sr = "\<esc>]50;cursorshape=2\x7"
-else
-    let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
-    let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
-    let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
-endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => files, backups and undo
@@ -857,27 +809,77 @@ set autowrite
 set mouse=a
 set timeout
 set ttimeout
-set timeoutlen=200 " For <leader> mapping
+set timeoutlen=500 " For <leader> mapping
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => colors , fonts, display, highlight
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+silent! colorscheme sublimemonokai
+
+" set extra options when running in gui mode
+if has("gui_running")
+    set guioptions-=t
+    set guioptions-=e
+    set guitablabel=%m\ %t
+    set t_co=256
+endif
+
+" enable 256 colors palette in gnome terminal
+if $colorterm == 'gnome-terminal'
+    set t_co=256
+endif
+if $TERM == 'xterm-256color'
+    set t_co=256
+    set termguicolors
+endif
+
+set nonumber
+set foldcolumn=1
+" highlight
+" show hidden chars
+set list
+" set listchars=tab:>-,eol:$,nbsp:▓
+set listchars=tab:>-,eol:ː,nbsp:▓
+" two highlight group nontext & specialkey
+highlight nontext ctermfg=238 guifg=#414141
+" overrite color scheme for the listchars "#649a9a
+
+highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
+
+" change cursor style dependent on mode
+if empty($tmux)
+    let &t_si = "\<esc>]50;cursorshape=1\x7"
+    let &t_ei = "\<esc>]50;cursorshape=0\x7"
+    let &t_sr = "\<esc>]50;cursorshape=2\x7"
+else
+    let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
+    let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
+    let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
+endif
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 if has("autocmd")
     augroup MYGROUP
         autocmd! *
 
+        " Apply my custom lightline theme
         autocmd VimEnter * silent! LightlineTabLineTheme
 
+        " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
         autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+        " Save the code folding if we had one
         autocmd BufWinLeave * silent! mkview
         autocmd BufWinEnter * silent! loadview
 
@@ -894,17 +896,15 @@ if has("autocmd")
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
-        highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
-        highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
 
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
+        " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
         autocmd FocusGained * :colorscheme sublimemonokai | LightlineReload
         autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
 
         autocmd FileType * :call SetAutoFormatProgram()
-
     augroup END
 endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
