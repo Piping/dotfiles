@@ -243,38 +243,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     call plug#end()
-
     "}} PLUGIN MANAGER END 
-
-    """""""""""""""""""""""""""""""""""""""""
-    ""PLUGIN LEADER KEY MAPPING"
-    """""""""""""""""""""""""""""""""""""""""
-    " Recently Used Files
-    " Overwrite default gf - open file under the cursor
-    map  gff          :FZF <C-r>=getcwd()<cr>
-    nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
-    " map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
-    " map  <leader>fg   :Ag 
-    nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
-    " Recently Used Cmd, Alt-Enter to execute command
-    nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
-    " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
-    nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
-    nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
-    " easy-alignment no argument go to interactive mode
-    vmap <leader>a    :EasyAlign
-    nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
-    map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
-    nmap <silent>     <leader>zz  :Goyo<cr>:normal! zz<cr>
-    nmap <leader>easy <Plug>(easymotion-prefix)
-    nmap <space>f     <Plug>(easymotion-overwin-f)
-    nmap <space>/     <Plug>(easymotion-sn)
-    map  gc           <Plug>Commentary
-    nmap gcc          <Plug>CommentaryLine
-    nmap ds           <Plug>Dsurround
-    nmap cs           <Plug>Csurround
-    nmap ss           <Plug>Ysurround
-
 else
     command! LightlineReload :normal! zz 
 endif
@@ -283,6 +252,35 @@ endif
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
+
+"""""""""""""""""""""""""""""""""""""""""
+""PLUGIN LEADER KEY MAPPING"
+"""""""""""""""""""""""""""""""""""""""""
+" Recently Used Files
+" Overwrite default gf - open file under the cursor
+map  gff          :FZF <C-r>=getcwd()<cr>
+nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
+" map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
+" map  <leader>fg   :Ag 
+nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
+" Recently Used Cmd, Alt-Enter to execute command
+nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
+" Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
+nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
+" easy-alignment no argument go to interactive mode
+vmap <leader>a    :EasyAlign
+nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
+map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
+nmap <silent>     <leader>zz  :Goyo<cr>:normal! zz<cr>
+nmap <leader>easy <Plug>(easymotion-prefix)
+nmap <space>f     <Plug>(easymotion-overwin-f)
+nmap <space>/     <Plug>(easymotion-sn)
+map  gc           <Plug>Commentary
+nmap gcc          <Plug>CommentaryLine
+nmap ds           <Plug>Dsurround
+nmap cs           <Plug>Csurround
+nmap ss           <Plug>Ysurround
 
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
