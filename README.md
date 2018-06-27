@@ -35,6 +35,7 @@ All files work flawlessly on development and production server.
   - crafted UX that is modern and prove its quality in details
 
 ## Dependency && Install
+Plugin-version of `vimrc` requires the python support, make sure in vim `has('python')` return 1;  
 Most up to date desktop linux does not need install anything and it will work.  
 For server users, here is a list of troubleshoots and environement configurations.
 
