@@ -310,7 +310,7 @@ nnoremap xp xp
 "Join the line below with space
 " nnoremap <leader>j  J
 " Reverse of J
-nnoremap <leader>jj v$hdO<Esc>pj
+nnoremap <leader>j v$hdO<Esc>pj
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Cursor Moving mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
