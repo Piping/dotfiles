@@ -17,12 +17,7 @@ endif
 if 0
     md ~\AppData\Local\nvim\autoload
     $uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    (New-Object Net.WebClient).DownloadFile(
-    $uri,
-    $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
-    "~\AppData\Local\nvim\autoload\plug.vim"
-    )
-    )
+    (New-Object Net.WebClient).DownloadFile( $uri, $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath( "~\AppData\Local\nvim\autoload\plug.vim"))
 endif
 
 " if executable('nvim')
@@ -568,12 +563,12 @@ map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 inoremap <c-h> <left>
 inoremap <c-l> <right>
-inoremap <c-k> <up>
-inoremap <c-j> <down>
+" inoremap <c-k> <up>
+" inoremap <c-j> <down>
 cnoremap <c-h> <left>
 cnoremap <c-l> <right>
-cnoremap <c-k> <up>
-cnoremap <c-j> <down>
+" cnoremap <c-k> <up>
+" cnoremap <c-j> <down>
 
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
@@ -585,11 +580,12 @@ inoremap <C-Z> <S-Left>
 inoremap <C-X> <S-Right>
 " Delete/Cut forward word
 inoremap <C-D> <C-O>dw
-" inoremap <C-K> <C-O>D
+inoremap <C-K> <C-O>D
 inoremap <C-W> <C-\><C-O>db
 inoremap <C-U> <C-\><C-O>d0
 inoremap <C-Y> <C-R>"
 " Same as above, works for cmdline
+" Additionaly you can use c-f to editing cmd in normal mode window
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
 cnoremap <C-Z> <S-Left>
@@ -942,4 +938,7 @@ if exists("g:gui_oni")
         autocmd! FocusGained *
         autocmd! FocusLost *
     augroup END
+    set laststatus=0
+    set noshowcmd
 endif
+
