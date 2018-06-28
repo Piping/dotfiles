@@ -6,8 +6,6 @@
 " ██║By   ███████╗██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
 " ╚═╝ROBIN╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
 
-command! LightlineReload :normal! zz 
-
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
@@ -55,15 +53,6 @@ noremap <C-y> <C-y>k
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Esc, Ctrl, :, ^W, ^s, Tab, Alt
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Spell checking
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
-" nmap z= provide a list of replacement
-" nmap zg add word to definition
-map <leader>sa ]s
-map <leader>sd [s
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Misc
@@ -79,7 +68,6 @@ map <leader>pp :setlocal paste!<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>e  :e! ~/.vimrc<cr>
 map <leader>et :e! ~/.tmux.conf<cr>
-map <leader>ez :e! ~/.zshrc<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""      Buffer, Tab, Window Key Maps     """"""""""""""""
@@ -146,18 +134,6 @@ noremap = $
 noremap \ %
 noremap \\ gg=G''
 noremap q :q!<cr>
-
-" for practice vim way of operating
-nnoremap <silent> <up>    <NOP>
-nnoremap <silent> <down>  <NOP>
-" nnoremap <silent> <left>  <NOP>
-" nnoremap <silent> <right> <NOP>
-
-" " USEFUL page up and page down mapping 
-" noremap <silent> <up>    <C-u><C-u>
-" noremap <silent> <down>  <C-d><c-d>
-noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
-noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>
@@ -433,17 +409,6 @@ set si "Smart indent
 set wrap "Wrap lines
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Buffers, Split Windows, Tabs(Tabline)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Specify the behavior when switching/opening new buffers
-set switchbuf=useopen,usetab,vsplit
-" Always Show tabline
-set showtabline=2
-" Set Split Position
-set splitright
-set splitbelow
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set autowrite
@@ -455,54 +420,66 @@ set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => colors , fonts, display, highlight
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-silent! colorscheme sublimemonokai
-
-" set extra options when running in gui mode
-if has("gui_running")
-    set guioptions-=t
-    set guioptions-=e
-    set guitablabel=%m\ %t
-    set t_co=256
-endif
-
-" enable 256 colors palette in gnome terminal
-if $colorterm == 'gnome-terminal'
-    set t_co=256
-endif
-if $TERM == 'xterm-256color'
-    set t_co=256
-    set termguicolors
-endif
-
 set nonumber
 set foldcolumn=1
-" highlight
-" show hidden chars
-set list
-" set listchars=tab:>-,eol:$,nbsp:▓
-set listchars=tab:>-,eol:ː,nbsp:▓
-" two highlight group nontext & specialkey
-highlight nontext ctermfg=238 guifg=#414141
-" overrite color scheme for the listchars "#649a9a
 
-highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
-highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
+if v:version >= 800
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    " => Buffers, Split Windows, Tabs(Tabline)
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    " Specify the behavior when switching/opening new buffers
+    set switchbuf=useopen,usetab,vsplit
+    " Always Show tabline
+    set showtabline=2
+    " Set Split Position
+    set splitright
+    set splitbelow
 
-" change cursor style dependent on mode
-if empty($tmux)
-    let &t_si = "\<esc>]50;cursorshape=1\x7"
-    let &t_ei = "\<esc>]50;cursorshape=0\x7"
-    let &t_sr = "\<esc>]50;cursorshape=2\x7"
-else
-    let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
-    let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
-    let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    " => colors , fonts, display, highlight
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    silent! colorscheme sublimemonokai
+
+    " set extra options when running in gui mode
+    if has("gui_running")
+        set guioptions-=t
+        set guioptions-=e
+        set guitablabel=%m\ %t
+        set t_co=256
+    endif
+
+    " enable 256 colors palette in gnome terminal
+    if $colorterm == 'gnome-terminal'
+        set t_co=256
+    endif
+    if $TERM == 'xterm-256color'
+        set t_co=256
+        set termguicolors
+    endif
+
+    " highlight
+    " show hidden chars
+    set list
+    " set listchars=tab:>-,eol:$,nbsp:▓
+    set listchars=tab:>-,eol:ː,nbsp:▓
+    " two highlight group nontext & specialkey
+    highlight nontext ctermfg=238 guifg=#414141
+    " overrite color scheme for the listchars "#649a9a
+
+    highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
+
+    " change cursor style dependent on mode
+    if empty($tmux)
+        let &t_si = "\<esc>]50;cursorshape=1\x7"
+        let &t_ei = "\<esc>]50;cursorshape=0\x7"
+        let &t_sr = "\<esc>]50;cursorshape=2\x7"
+    else
+        let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
+        let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
+        let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
+    endif
 endif
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -514,7 +491,7 @@ if has("autocmd")
         autocmd VimEnter * silent! LightlineTabLineTheme
 
         " Auto reload conffiguration file, clean whitespace for some common code files
-        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc
         autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
         " Return to last edit position when opening files (You want this!)
@@ -530,10 +507,11 @@ if has("autocmd")
         endif
 
         " auto save 
-        autocmd TextChanged  * :silent! write | echo 'file is saved to disk!'
-        autocmd TextChangedI * :silent! write | echo 'file is saved to disk!'
-        autocmd InsertLeave  * :silent! write | echo 'file is saved to disk!'
-
+        if v:version >= 800
+            autocmd TextChanged  * :silent! write | echo 'file is saved to disk!'
+            autocmd TextChangedI * :silent! write | echo 'file is saved to disk!'
+            autocmd InsertLeave  * :silent! write | echo 'file is saved to disk!'
+        endif
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
