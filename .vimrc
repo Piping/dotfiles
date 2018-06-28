@@ -150,7 +150,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,c,cpp,js,html'}
+    Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,c,cpp,js,html'}
     inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
@@ -221,9 +221,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
     endif
     let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
-                \ "--header ' :: Tip Open in new tab <C-t> ; Open in split <C-x>;\n".
-                \ " :: Tip Open in vertical split <C-v>; Quit <Esc> or <C-d>\n".
-                \ " :: Tip select_all <C-f> ; deselect_all <C-g> send_to_quickfix<C-q>'"
+                \ "--header ' :: Tip <C-t> Open in new tab;<C-x> Open in split;\n".
+                \ " :: Tip <C-v> Open in vertical split;<Esc> or <C-d> Quit \n".
+                \ " :: Tip <C-f> select_all; <C-g> deselect_all;<C-q> send_to_quickfix;' "
     """""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -274,8 +274,8 @@ nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 nmap <silent>     <leader>zz  :Goyo<cr>:normal! zz<cr>
 nmap <leader>easy <Plug>(easymotion-prefix)
-nmap <space>f     <Plug>(easymotion-overwin-f)
-nmap <space>/     <Plug>(easymotion-sn)
+nmap <leader>f     <Plug>(easymotion-overwin-f)
+nmap <leader>/     <Plug>(easymotion-sn)
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
 nmap ds           <Plug>Dsurround
@@ -294,10 +294,6 @@ nnoremap <leader>; @:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Fast saving
-" nmap <leader>w   :w!<Cr>
-nmap <leader>q   :q!<Cr>
-nmap <leader>qa  :qa!<Cr>
 nmap <silent> <leader>l :silent! Lexplore!<cr>:vertical resize 35<cr>:normal! zz<cr>
 
 " set 'p' to paste before cursor
@@ -364,12 +360,13 @@ nnoremap [t gT
 let g:quickfix_opened = 0
 map <expr> <leader>c   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
-" To go to the next/previous quickfix list
-map <leader>nc :cnewer<cr>
-map <leader>pc :colder<cr>
 " Help Windows
 map <leader>h  :helpclose<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+noremap <leader>r  :source $MYVIMRC<cr>
+" utilize transparent background provoded by some terminals emulators like iTerm2
+noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=NONE guibg=NONE<cr>:hi clear CursorLine<cr>:hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE<cr>
 
 let s:statusline_mode = 0
 function! ToggleHiddenAll()
@@ -513,18 +510,20 @@ function! ToggleOnlyWindow()
 endfunction
 " mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
 " wincmd o "only windows
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" END of Leader Key mapping
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => InertMode/CMDline Editing mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Extra Normal Mode Mapping 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
 noremap \ %
 noremap \\ gg=G''
-noremap q :q!<cr>
+noremap q ZQ
 
-" for practice vim way of operating
+" for practicing vim way
 nnoremap <silent> <up>    <NOP>
 nnoremap <silent> <down>  <NOP>
 " nnoremap <silent> <left>  <NOP>
@@ -547,6 +546,10 @@ nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 " To go to the next/previous quickfix/linter entry:
 map <expr> [p   g:quickfix_opened  == 1 ? ":cp<cr>zz" : ":silent! ALEPrevious<cr>zz"
 map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => InertMode/CMDline Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => UP/DOWN/LEFT/RIGHT MOVEMENT
@@ -627,7 +630,7 @@ command! W w !sudo tee % > /dev/null
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Pattern Match, Search Highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Disable highlight when <leader><cr> is pressed
+" Disable highlight when <space><enter> is pressed
 nmap <silent> <leader><cr> :noh<cr>
 
 " " Search for selected text, forwards or backwards.
@@ -646,8 +649,6 @@ endfunction
 vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
 vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
 
-
-
 " Delete trailing white space on save, useful for some filetypes ;)
 func! CleanExtraSpaces()
     let save_cursor = getpos(".")
@@ -664,11 +665,6 @@ func! Exec(command)
     redir END
     return output
 endfunct!
-
-noremap <leader>r  :source $MYVIMRC<cr>
-"{{ " the line below set cursorline to underline style Support for transparent background, e.g. iterm2
-noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=NONE guibg=NONE<cr>:hi clear CursorLine<cr>:hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE<cr>
-"}}
 
 """""""""""""""""""""""""""""""""""""""""
 "" Code/Text AutoFormat
@@ -834,7 +830,6 @@ set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -921,7 +916,7 @@ if has("autocmd")
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
         " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-        autocmd FocusGained * :colorscheme sublimemonokai | LightlineReload
+        autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
         autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
 
         autocmd FileType * :call SetAutoFormatProgram()
