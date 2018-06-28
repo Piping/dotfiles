@@ -6,14 +6,23 @@
 " ██║By   ███████╗██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
 " ╚═╝ROBIN╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""" vim-plug for lazy loading plugin management
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if empty(glob('~/.vim/autoload/plug.vim'))
+if empty(glob('~/.vim/autoload/plug.vim')) && !has('windows')
     silent !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" for windows oni or neovim, manually install using powershell 
+" and install git for windows as well, run ` PlugInstall --sync | source $MYVIMRC ` Afterward
+if 0
+    md ~\AppData\Local\nvim\autoload
+    $uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    (New-Object Net.WebClient).DownloadFile(
+    $uri,
+    $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
+    "~\AppData\Local\nvim\autoload\plug.vim"
+    )
+    )
 endif
 
 " if executable('nvim')
@@ -23,7 +32,7 @@ endif
 " endif
 
 " PLUGIN MANAGER START {{
-if !empty(glob('~/.vim/autoload/plug.vim'))
+if !empty(glob('~/.vim/autoload/plug.vim')) || has('windows')
 
     if has('nvim')
         set viminfo+=n~/.vim/.nviminfo
