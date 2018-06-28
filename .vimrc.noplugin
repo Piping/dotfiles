@@ -438,7 +438,6 @@ if v:version >= 800
     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     " => colors , fonts, display, highlight
     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-    silent! colorscheme sublimemonokai
 
     " set extra options when running in gui mode
     if has("gui_running")
@@ -518,10 +517,6 @@ if has("autocmd")
 
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
-
-        " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-        autocmd FocusGained * :colorscheme sublimemonokai | LightlineReload
-        autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
 
         autocmd FileType * :call SetAutoFormatProgram()
     augroup END
