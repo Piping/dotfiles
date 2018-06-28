@@ -8,10 +8,10 @@ All files work flawlessly on development and production server.
 - put them under your home folder. E.g. `~/.vimrc`
 
 ## Principle
-- never remove the deault keybinding, applies your knowledge, only enhancements.
-- compatible across different terminals, distrubutions
-- productive and professional. 
-- minimal redundant information on USER Interface! It is clean!
+- never remove or replace the deault keybinding, applies your knowledge, only enhancements.
+- compatible across different terminals, linux distrubutions, and OS
+- productive and professional 
+- minimal redundant information on USER Interface! It is clean while infomative!
 
 ## VIM
 - Features List
@@ -29,15 +29,16 @@ All files work flawlessly on development and production server.
   - works without any plugins if thats your style
 
 ## TMUX
-- Best TMUX Configuration Over the Internet
+- Best TMUX Configuration as far as I know 
   - User Experience Oriented, especially for users that are new to CLI
   - Native COPY/PASTE experience across terminal/OS. Never been easier than this!
   - crafted UX that is modern and prove its quality in details
 
 ## Dependency && Install
-Plugin-version of `vimrc` requires the python support, make sure in vim `has('python')` return 1;  
 Most up to date desktop linux does not need install anything and it will work.  
 For server users, here is a list of troubleshoots and environement configurations.
-
+- Plugin-version of `vimrc` requires the python support, make sure in vim `has('python')` return 1;  
+- vim8.0+ required
+- vim should be compiled with python, aka huge-feature-set
 ## Sreencast, configurations, key-mapping explained
 

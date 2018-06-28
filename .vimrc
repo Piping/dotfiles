@@ -548,6 +548,18 @@ nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 map <expr> [p   g:quickfix_opened  == 1 ? ":cp<cr>zz" : ":silent! ALEPrevious<cr>zz"
 map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => UP/DOWN/LEFT/RIGHT MOVEMENT
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+inoremap <c-h> <left>
+inoremap <c-l> <right>
+inoremap <c-k> <up>
+inoremap <c-j> <down>
+cnoremap <c-h> <left>
+cnoremap <c-l> <right>
+cnoremap <c-k> <up>
+cnoremap <c-j> <down>
+
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
 " InsertMode with Extra Emacs Shortcut Mapping
@@ -558,7 +570,7 @@ inoremap <C-Z> <S-Left>
 inoremap <C-X> <S-Right>
 " Delete/Cut forward word
 inoremap <C-D> <C-O>dw
-inoremap <C-K> <C-O>D
+" inoremap <C-K> <C-O>D
 inoremap <C-W> <C-\><C-O>db
 inoremap <C-U> <C-\><C-O>d0
 inoremap <C-Y> <C-R>"
@@ -568,7 +580,6 @@ cnoremap <C-E> <End>
 cnoremap <C-Z> <S-Left>
 cnoremap <C-X> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
-cnoremap <C-K> <C-U>
 cnoremap <C-Y> <C-R>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
@@ -924,8 +935,6 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if exists("g:gui_oni")
-    set laststatus=1
-    set noruler
     augroup MYGROUP
         autocmd! FocusGained *
         autocmd! FocusLost *
