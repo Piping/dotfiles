@@ -128,7 +128,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         endif
         call bufferline#refresh_status() 
         return g:bufferline_status_info.before.''
-                    \ .'[文]'
+                    \ .'[正文]'
                     \ .g:bufferline_status_info.after
     endfunction
     """"""""""""""""""""""""""""""
@@ -274,8 +274,8 @@ nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 nmap <silent>     <leader>zz  :Goyo<cr>:normal! zz<cr>
 nmap <leader>easy <Plug>(easymotion-prefix)
-nmap <leader>f     <Plug>(easymotion-overwin-f)
-nmap <leader>/     <Plug>(easymotion-sn)
+nmap <leader>f    <Plug>(easymotion-overwin-f)
+nmap <leader>/    <Plug>(easymotion-sn)
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
 nmap ds           <Plug>Dsurround
@@ -289,7 +289,6 @@ nmap ss           <Plug>Ysurround
 nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
-" Normal mode pressing * or # searches for the current selection
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -318,6 +317,9 @@ noremap <C-y> <C-y>k
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" Disable highlight when <space><enter> is pressed
+nmap <silent> <leader><cr> :noh<cr>
 
 " Esc, Ctrl, :, ^W, ^s, Tab, Alt
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -510,6 +512,7 @@ function! ToggleOnlyWindow()
 endfunction
 " mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
 " wincmd o "only windows
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " END of Leader Key mapping
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -630,12 +633,7 @@ command! W w !sudo tee % > /dev/null
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Pattern Match, Search Highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Disable highlight when <space><enter> is pressed
-nmap <silent> <leader><cr> :noh<cr>
-
-" " Search for selected text, forwards or backwards.
-" Paste matching text of last search
-" maygn`ap
+" Normal mode pressing * or # searches for word under cursor
 " enable * # for visual selected text, whitespace match any whitespace in potential result
 function! s:getSelectedText()
     let l:old_reg = getreg('"')
@@ -903,10 +901,11 @@ if has("autocmd")
             autocmd GUIEnter * set vb t_vb=
         endif
 
-        " auto save 
-        autocmd TextChanged  * :silent! write | echo 'file is saved to disk!'
-        autocmd TextChangedI * :silent! write | echo 'file is saved to disk!'
-        autocmd InsertLeave  * :silent! write | echo 'file is saved to disk!'
+        if v:version >= 800
+            " auto save 
+            autocmd TextChanged  * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+            autocmd TextChangedI * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        endif
 
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
