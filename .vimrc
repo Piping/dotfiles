@@ -263,7 +263,7 @@ let mapleader = "\<space>"
 " Recently Used Files
 " Overwrite default gf - open file under the cursor
 map  gff          :FZF <C-r>=getcwd()<cr>
-nmap gf           :History<Cr><C-w>l<C-w>=<C-w>h
+nmap <silent>gf   :call Helper_gf()<cr>
 " map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
 " map  <leader>fg   :Ag 
 nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
@@ -285,6 +285,14 @@ nmap gcc          <Plug>CommentaryLine
 nmap ds           <Plug>Dsurround
 nmap cs           <Plug>Csurround
 nmap ss           <Plug>Ysurround
+
+function! Helper_gf()
+    let v:errmsg = ""
+    silent! normal! gf
+    if v:errmsg != ""
+        :History<Cr><C-w>l<C-w>=<C-w>h
+    endif
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
@@ -940,5 +948,6 @@ if exists("g:gui_oni")
     augroup END
     set laststatus=0
     set noshowcmd
+    set noruler
 endif
 
