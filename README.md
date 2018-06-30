@@ -51,11 +51,11 @@ For server users, here is a list of troubleshoots and environement configuration
 
 ## Sreencast, configurations, key-mapping explained
 - TMUX
-  - prefix is ` (backtick under ~) or Ctrl-b
-  - press prefix twice to send ` (backtick under ~) or Ctrl-b
+  - prefix is ``` (backtick under ~) or `Ctrl-b`
+  - press prefix twice to send ``` (backtick under ~) or `Ctrl-b`
   - Dettach && Attach to Mantain the Session
-    - <prefix> d   ; dettach
-    - <prefix> D   ; dettach other users 
+    - `<prefix> d`   ; dettach
+    - `<prefix> D`   ; dettach other users 
     - `tmux attach` ; attach to last access Session
     - `tmux attach -t <session id>` ;attach to <session>
     - `tmux list-sessions` ; list sessions
