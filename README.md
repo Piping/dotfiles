@@ -64,33 +64,33 @@ For server users, here is a list of troubleshoots and environement configuration
       - left click and drag to select, copy on stop
       - middle/right click to paste
     - keyboard
-      - <prefix> Enter ; enter copy mode
-      - Enter ; exit copy mode
+      - `<prefix> Enter` ; enter copy mode
+      - `Enter` ; exit copy mode
       - vi-key binding to move cursor 
-      - v ; start selection
-      - y ; copy/yank the text
-      - <prefix> p ; paste the text from buffer
+      - `v` ; start selection
+      - `y` ; copy/yank the text
+      - `<prefix> p` ; paste the text from buffer
     - Search Display Buffer
-      - <prefix> / ; search upward
+      - `<prefix> /` ; search upward
       - Under COPY MODE
-        - / search forward
-        - ? search backward
+        - `/` search forward
+        - `?` search backward
   - Create Windows/Navigate
-    - <prefix> c   ; create new windows
-    - <prefix> 1-9 ; go to windows 1-9
-    - <prefix> n   ; go to next windows
-    - <prefix> -   ; create horizontal split
-    - <prefix> \   ; create vertical split
+    - `<prefix> c   `; create new windows
+    - `<prefix> 1-9 `; go to windows 1-9
+    - `<prefix> n   `; go to next windows
+    - `<prefix> -   `; create horizontal split
+    - `<prefix> \   `; create vertical split
   - TMUX pane features
-    - <prefix> a   ; go to last acessed window
-    - <prefix> l   ; create a split layout like H
-    - <prefix> z   ; ZOOM the current pane to use all display space
-    - <prefix> s   ; synchornize the input in all panels under the same window
-    - <prefix> x   ; kill the current panel
-    - <prefix> ,   ; rename the windows
-    - <prefix> T   ; rename the pane
-    - <prefix> t   ; show clock
+    - `<prefix> a`   ; go to last acessed window
+    - `<prefix> l`   ; create a split layout like H
+    - `<prefix> z`   ; ZOOM the current pane to use all display space
+    - `<prefix> s`   ; synchornize the input in all panels under the same window
+    - `<prefix> x`   ; kill the current panel
+    - `<prefix> ,`   ; rename the windows
+    - `<prefix> T`   ; rename the pane
+    - `<prefix> t`   ; show clock
   - TMUX command line
-    - <prefix> :   ; enter command line
-    - <esc>        ; editing cmdline with vi-key binding
+    - `<prefix> :`   ; enter command line
+    - `<esc>`        ; editing cmdline with vi-key binding
 
