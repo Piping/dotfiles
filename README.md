@@ -70,6 +70,11 @@ For server users, here is a list of troubleshoots and environement configuration
       - v ; start selection
       - y ; copy/yank the text
       - <prefix> p ; paste the text from buffer
+    - Search Display Buffer
+      - <prefix> / ; search upward
+      - Under COPY MODE
+        - / search forward
+        - ? search backward
   - Create Windows/Navigate
     - <prefix> c   ; create new windows
     - <prefix> 1-9 ; go to windows 1-9
