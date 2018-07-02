@@ -154,7 +154,7 @@ if !empty(glob('~/.vim/autoload/plug.vim')) || has('windows')
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,c,cpp,js,html'}
+    Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,c,cpp,vue,js,html'}
     inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
@@ -221,9 +221,7 @@ if !empty(glob('~/.vim/autoload/plug.vim')) || has('windows')
     let g:fzf_layout = {'left': '~40%'}
     " let g:fzf_layout = { 'window': 'left vertical new' }
 
-    if $FZF_DEFAULT_COMMAND == ""
-        let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
-    endif
+    " let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
     let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
                 \ "--header ' :: Tip <C-t> Open in new tab;<C-x> Open in split;\n".
                 \ " :: Tip <C-v> Open in vertical split;<Esc> or <C-d> Quit \n".
@@ -690,7 +688,9 @@ function! SetAutoFormatProgram()
             endif
         endif
     elseif &ft  == 'javascript'
-        setlocal equalprg='js-beautify -f -'
+        if executable('js-beautify')
+            setlocal equalprg='js-beautify -f -'
+        endif
     endif
 endfunction
 
@@ -851,15 +851,11 @@ if has("gui_running")
     set guioptions-=t
     set guioptions-=e
     set guitablabel=%m\ %t
-    set t_co=256
+    set t_Co=256
 endif
 
-" enable 256 colors palette in gnome terminal
-if $colorterm == 'gnome-terminal'
-    set t_co=256
-endif
-if $TERM == 'xterm-256color'
-    set t_co=256
+if $TERM  =~? '256color'
+    set t_Co=256
     set termguicolors
 endif
 
