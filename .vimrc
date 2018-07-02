@@ -27,7 +27,7 @@ endif
 " endif
 
 " PLUGIN MANAGER START {{
-if !empty(glob('~/.vim/autoload/plug.vim')) || has('windows')
+if !empty(glob('~/.vim/autoload/plug.vim'))
 
     if has('nvim')
         set viminfo+=n~/.vim/.nviminfo
@@ -537,16 +537,16 @@ noremap \\ gg=G''
 noremap q ZQ
 
 " for practicing vim way
-nnoremap <silent> <up>    <NOP>
-nnoremap <silent> <down>  <NOP>
+" nnoremap <silent> <up>    <NOP>
+" nnoremap <silent> <down>  <NOP>
 " nnoremap <silent> <left>  <NOP>
 " nnoremap <silent> <right> <NOP>
 
 " " USEFUL page up and page down mapping 
 " noremap <silent> <up>    <C-u><C-u>
 " noremap <silent> <down>  <C-d><c-d>
-noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
-noremap <silent> <right> :normal! zz<cr>:bnext<cr>
+" noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
+" noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>
@@ -567,12 +567,12 @@ map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => UP/DOWN/LEFT/RIGHT MOVEMENT
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-inoremap <c-h> <left>
-inoremap <c-l> <right>
+" inoremap <c-h> <left>
+" inoremap <c-l> <right>
 " inoremap <c-k> <up>
 " inoremap <c-j> <down>
-cnoremap <c-h> <left>
-cnoremap <c-l> <right>
+" cnoremap <c-h> <left>
+" cnoremap <c-l> <right>
 " cnoremap <c-k> <up>
 " cnoremap <c-j> <down>
 
@@ -873,15 +873,17 @@ highlight nontext ctermfg=238 guifg=#414141
 highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
 highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
 
-" change cursor style dependent on mode
-if empty($tmux)
-    let &t_si = "\<esc>]50;cursorshape=1\x7"
-    let &t_ei = "\<esc>]50;cursorshape=0\x7"
-    let &t_sr = "\<esc>]50;cursorshape=2\x7"
-else
-    let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
-    let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
-    let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
+if v:version >= 800
+    " change cursor style dependent on mode
+    if empty($tmux)
+        let &t_si = "\<esc>]50;cursorshape=1\x7"
+        let &t_ei = "\<esc>]50;cursorshape=0\x7"
+        let &t_sr = "\<esc>]50;cursorshape=2\x7"
+    else
+        let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
+        let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
+        let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
+    endif
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
