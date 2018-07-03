@@ -145,14 +145,14 @@ bindkey -e
 # 100 = 1 second for key sequences
 KEYTIMEOUT=10
 #设置 [DEL]键 为向后删除
-bindkey '^Z' backward-wordː
-bindkey '^X' forward-wordː
-bindkey '^W' backward-kill-wordː
-bindkey '^D' kill-wordː
-#设置 [DEL]键 为向后删除ː
-bindkey "^[[3~" backward-delete-charː
-#以下字符视为单词的一部分ː
-WORDCHARS='*?_-[]~=&;!#$%^(){}<>'ː
+bindkey '^Z' backward-word
+bindkey '^X' forward-word
+bindkey '^W' backward-kill-word
+bindkey '^D' kill-word
+#设置 [DEL]键 为向后删除
+bindkey "^[[3~" backward-delete-char
+#以下字符视为单词的一部分
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 #}}}
 
 #{{{ 自动补全功能,使用Ctrl-c取消补全,添加'$fpath'处理额外补全文件
