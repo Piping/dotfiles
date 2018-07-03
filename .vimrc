@@ -154,11 +154,13 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,c,cpp,vue,js,html'}
-    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
-    inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    if has( 'python' ) || has( 'python3' )
+        Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,c,cpp,vue,js,html'}
+        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+        inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
+        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    endif
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
