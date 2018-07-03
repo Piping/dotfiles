@@ -33,7 +33,7 @@ JavaScriptQuotes: Single
 #IncludeBlocks: IBS_Regroup
 #IndentPPDirectives: PPDIS_AfterHash
 KeepEmptyLinesAtTheStartOfBlocks: 'true'
-Language: Cpp
+#Language: Cpp
 MaxEmptyLinesToKeep: '1'
 NamespaceIndentation: All
 PointerAlignment: Right
