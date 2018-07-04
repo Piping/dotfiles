@@ -220,9 +220,23 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                 \ 'ctrl-t': 'tab split',
                 \ 'ctrl-x': 'split',
                 \ 'ctrl-v': 'vsplit' }
-    let g:fzf_layout = {'left': '~40%'}
-    " let g:fzf_layout = { 'window': 'left vertical new' }
 
+    if exists('*nvim_open_float_win')
+        function! FZF_Floating()
+            let b = nvim_create_buf(v:false)
+            call nvim_buf_set_option(b, "buftype", "nofile")
+            let opts = {'x':0, 'y':5, 'anchor': 'NE'}
+
+            let w =  nvim_open_float_win(b,v:true,&columns,&lines-10,opts)
+
+            hi Floating guibg=#000000
+            call setwinvar(w, '&winhl', 'Normal:Floating')
+            call setwinvar(w, '&number', 0)
+        endfunction
+        let g:fzf_layout = { 'window': 'call FZF_Floating()' }
+    else
+        let g:fzf_layout = { 'left': '~40%' }
+    endif
     " let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
     let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
                 \ "--header ' :: Tip <C-t> Open in new tab;<C-x> Open in split;\n".
@@ -266,12 +280,12 @@ map  gff          :FZF <C-r>=getcwd()<cr>
 nmap <silent>gf   :call Helper_gf()<cr>
 " map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
 " map  <leader>fg   :Ag 
-nmap <leader>b    :Buffers<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>b    :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
-nmap <leader>cc   :History:<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>cc   :History:<Cr>
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
-nmap <leader>cm   :Commits<Cr><C-w>l<C-w>=<C-w>h
-nmap <leader>co   :Commands<Cr><C-w>l<C-w>=<C-w>h
+nmap <leader>cm   :Commits<Cr>
+nmap <leader>co   :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
@@ -928,8 +942,8 @@ if has("autocmd")
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
         " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-        autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
-        autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
+        " autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
+        " autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
 
         autocmd FileType * :call SetAutoFormatProgram()
     augroup END
