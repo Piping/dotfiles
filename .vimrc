@@ -319,7 +319,7 @@ nnoremap <leader>; @:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :silent! Lexplore!<cr>:vertical resize 35<cr>:normal! zz<cr>
+nmap <silent> <leader>l :silent! set list!<cr>
 
 " set 'p' to paste before cursor
 nnoremap p P
