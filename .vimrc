@@ -844,7 +844,9 @@ set wrap "Wrap lines
 " => Buffers, Split Windows, Tabs(Tabline)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Specify the behavior when switching/opening new buffers
-set switchbuf=useopen,usetab,vsplit
+if v:version >= 800
+    set switchbuf=useopen,usetab,vsplit
+endif
 " Always Show tabline
 set showtabline=2
 " Set Split Position
@@ -878,7 +880,9 @@ endif
 
 if $TERM  =~? '256color'
     set t_Co=256
-    set termguicolors
+    if v:version >= 800
+        set termguicolors
+    endif
 endif
 
 set nonumber
