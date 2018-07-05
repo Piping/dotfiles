@@ -15,18 +15,18 @@ All files work flawlessly on development and production server.
 
 ## VIM
 - Features List
-  - single-hand browsing is never been easier
+  - **single-hand** operation is never been easier
   - auto-save file, no need to press :w to save file anymore
   - unlimited undo history, fearless edititng
   - **50ms** startup time, every ms counts! always fast!
   - configuration file auto-reload on modified inside vim
   - carefully selected high quality plugins that is absolutely improve productivity
   - crafted UX that is modern and prove its quality in details
-  - search visual selection with */# key
+  - search visual selection with * or # key
   - straightforward buffer list management
   - quick and accurate file search using fzf, also (commits,grep,commands, history ...)
   - user-firendly and efficient undotree panel
-  - works without any plugins if thats your style
+  - **works without any plugins** if thats your style
 
 ## TMUX
 - Best TMUX Configuration as far as I know 
@@ -35,11 +35,10 @@ All files work flawlessly on development and production server.
   - crafted UX that is modern and prove its quality in details
 
 ## Dependency && Install
-Most up to date desktop linux does not need install anything and it will work.  
+Most up to date desktop linux does not need install anything and it will work with full features.
 For server users, here is a list of troubleshoots and environement configurations.
-- Plugin-version of `vimrc` requires the python support if you want the autocompelte features, make sure in vim `has('python')` return 1;
-- vim8.0+ required
-- vim should be compiled with python, and huge-feature-set
+- vim8.0+ and compiled with python is required to use full features (atuocomplete), make sure in vim `:echo has('python')` return 1;
+- vim should be compiled with python, and huge-feature-set, (better highlight, 24bit color support, file bufer switching behavior)
 - tmux need version 2.6+
 - if the color does not looks right, do the following 
     - `yum install xterm`
@@ -50,13 +49,14 @@ For server users, here is a list of troubleshoots and environement configuration
     - if above tips do not help, change your terminal emulator to iTerm2/Chrome Secure Shell Extension
 
 ## Sreencast, configurations, key-mapping explained
-- TMUX
+- #### TMUX
   - prefix is `` ` `` (backtick under ~) or `Ctrl-b`
   - press prefix twice to send `` ` `` (backtick under ~) or `Ctrl-b`
   - Dettach && Attach to Mantain the Session
     - `<prefix> d`   ; dettach
     - `<prefix> D`   ; dettach other users 
-    - `tmux attach` ; attach to last access Session
+    - `<prefix> w`   ; display info on sessions/windows/panes
+    - `tmux attach`  ; attach to last access Session `tmux a` works too.
     - `tmux attach -t <session id>` ;attach to <session>
     - `tmux list-sessions` ; list sessions
   - COPY/PASTE
@@ -93,4 +93,7 @@ For server users, here is a list of troubleshoots and environement configuration
   - TMUX command line
     - `<prefix> :`   ; enter command line
     - `<esc>`        ; editing cmdline with vi-key binding
-
+- #### VIM
+  - Vim itself is huge topic to cover, for built-in shortcuts and functionality,   
+  please checkout my vim [cheatsheet]() and the book `practical vim`
+  - The list belows is the shortcuts && common FAQ solutions
