@@ -629,7 +629,7 @@ if has("cscope")
 
     " add any cscope database in current directory
     if filereadable("cscope.out")
-        cs add cscope.out
+        cs add cscope.out <C-r>=getcwd()<cr><cr>
         " else add the database pointed to by environment variable
     elseif $CSCOPE_DIR !=""
         cs add $CSCOPE_DIR/cscope.out $CSCOPE_DIR
@@ -868,8 +868,11 @@ set scrolloff=0    " allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-silent! colorscheme sublimemonokai
-
+try 
+    colorscheme sublimemonokai
+catch
+    silent! colorscheme desert
+endtry
 " set extra options when running in gui mode
 if has("gui_running")
     set guioptions-=t
