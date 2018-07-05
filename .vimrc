@@ -303,7 +303,7 @@ nmap gcc          <Plug>CommentaryLine
 function! GoToFile()
     let v:errmsg = ""
     silent! normal! gf
-    if v:errmsg != ""
+    if v:errmsg != "" && exists(':FZF')
         :History<Cr><C-w>l<C-w>=<C-w>h
     endif
 endfunction
