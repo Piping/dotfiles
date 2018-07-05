@@ -276,13 +276,12 @@ let mapleader = "\<space>"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
 " Overwrite default gf - open file under the cursor
-map  gff          :FZF <C-r>=getcwd()<cr>
-nmap <silent>gf   :call Helper_gf()<cr>
+nmap <leader>F    :FZF <C-r>=getcwd()<cr>
 " map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
 " map  <leader>fg   :Ag 
 nmap <leader>b    :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
-nmap <leader>cc   :History:<Cr>
+nmap <leader>ch   :History:<Cr>
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
 nmap <leader>cm   :Commits<Cr>
 nmap <leader>co   :Commands<Cr>
@@ -290,17 +289,18 @@ nmap <leader>co   :Commands<Cr>
 vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
-nmap <silent>     <leader>zz  :Goyo<cr>:normal! zz<cr>
+nmap <silent>     <leader>z  :Goyo<cr>:normal! zz<cr>
 nmap <leader>easy <Plug>(easymotion-prefix)
 nmap <leader>f    <Plug>(easymotion-overwin-f)
 nmap <leader>/    <Plug>(easymotion-sn)
+nmap <leader>ds   <Plug>Dsurround
+nmap <leader>cs   <Plug>Csurround
+nmap <leader>ss   <Plug>Ysurround
+nmap gf           :call GoToFile()<cr>
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
-nmap ds           <Plug>Dsurround
-nmap cs           <Plug>Csurround
-nmap ss           <Plug>Ysurround
 
-function! Helper_gf()
+function! GoToFile()
     let v:errmsg = ""
     silent! normal! gf
     if v:errmsg != ""
@@ -323,11 +323,11 @@ nmap <silent> <leader>l :silent! set list!<cr>
 
 " set 'p' to paste before cursor
 nnoremap p P
+" swap cursro and next char
 nnoremap P p
-" swap cursor and next char
-nnoremap Xp Xp
+" nnoremap Xp Xp
 " swap cursor and previous char
-nnoremap xp xp
+" nnoremap xp xp
 "Join the line below with space
 " nnoremap <leader>j  J
 " Reverse of J
@@ -351,12 +351,11 @@ nmap <silent> <leader><cr> :noh<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
-" nmap z= provide a list of replacement
-" nmap zg add word to definition
-map <leader>sa ]s
-map <leader>sd [s
+map <leader>sp :setlocal spell!<cr>
+"  z= provide a list of replacement
+"  zg add word to definition
+"  ]s next spell error
+"  [s previous spell error
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Misc
@@ -370,7 +369,7 @@ map <leader>pp :setlocal paste!<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Fast editing and reloading of vimrc configs
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>e  :e! ~/.vimrc<cr>
+map <leader>ee :e! ~/.vimrc<cr>
 map <leader>et :e! ~/.tmux.conf<cr>
 map <leader>ez :e! ~/.zshrc<cr>
 
@@ -378,7 +377,6 @@ map <leader>ez :e! ~/.zshrc<cr>
 """"""""      Buffer, Tab, Window Key Maps     """"""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>t  :tabnew<cr>
-map <leader>tc :tabclose<cr>
 nnoremap [t gT
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -386,15 +384,21 @@ nnoremap [t gT
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
 let g:quickfix_opened = 0
-map <expr> <leader>c   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
+map <expr> <leader>cc   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " Help Windows
-map <leader>h  :helpclose<cr>
+map <leader>hc :helpclose<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 noremap <leader>r  :source $MYVIMRC<cr>
 " utilize transparent background provoded by some terminals emulators like iTerm2
-noremap <leader>rr :hi! Normal ctermbg=NONE guibg=NONE<cr>:hi! NonText ctermbg=NONE guibg=NONE<cr>:hi clear CursorLine<cr>:hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE<cr>
+
+function! ToggleTransBackground()
+    hi! Normal ctermbg=NONE guibg=NONE
+    hi! NonText ctermbg=NONE guibg=NONE
+    hi clear CursorLine
+    hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE
+endfunction
 
 let s:statusline_mode = 0
 function! ToggleHiddenAll()
@@ -522,7 +526,7 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>:normal! zz<cr>
+" nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>:normal! zz<cr>
 let s:zoomed_windows_b = 0
 function! ToggleOnlyWindow()
     if s:zoomed_windows_b == 0
@@ -633,6 +637,8 @@ if has("cscope")
     " show msg when any other cscope db added
     set cscopeverbose
 
+    " Find assignments to this symbol
+    map <leader>ga  :cs find a <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " search for c symbol
     map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
     " seach for global definition
@@ -850,7 +856,7 @@ set splitbelow
 
 set autowrite
 set mouse=a
-set timeout
+set notimeout
 set ttimeout
 set timeoutlen=500 " For <leader> mapping
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
