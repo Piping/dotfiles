@@ -26,15 +26,15 @@ endif
 "     silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
 " endif
 
+if has('nvim')
+    set viminfo+=n~/.vim/.nviminfo
+else
+    set viminfo+=n~/.vim/.viminfo
+    set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
+endif
+
 " PLUGIN MANAGER START {{
 if !empty(glob('~/.vim/autoload/plug.vim'))
-
-    if has('nvim')
-        set viminfo+=n~/.vim/.nviminfo
-    else
-        set viminfo+=n~/.vim/.viminfo
-        set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
-    endif
 
     call plug#begin('~/.vim/plugged')
 
@@ -891,7 +891,7 @@ endif
 set nonumber
 set foldcolumn=1
 " highlight
-" show hidden chars
+" show hidden chars using shortcuts
 set list
 " set listchars=tab:>-,eol:$,nbsp:▓
 set listchars=tab:>-,eol:ː,nbsp:▓
