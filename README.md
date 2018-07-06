@@ -95,5 +95,5 @@ For server users, here is a list of troubleshoots and environement configuration
     - `<esc>`        ; editing cmdline with vi-key binding
 - #### VIM
   - Vim itself is huge topic to cover, for built-in shortcuts and functionality,   
-  please checkout my vim [cheatsheet]() and the book `practical vim`
+  please checkout my vim [cheatsheet](https://www.cheatography.com/piping/cheat-sheets/vim-ide/) and the book `practical vim`
   - The list belows is the shortcuts && common FAQ solutions
