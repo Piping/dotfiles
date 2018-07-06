@@ -254,6 +254,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " Plug 'piping/vim-surround', { 'on': [ '<Plug>Dsurround', '<Plug>Ysurround', '<Plug>Csurround' ] }
     """"""""""""""""""""""""""""""
     Plug 'wellle/targets.vim'
+    Plug 'benjifisher/matchit.zip'
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -393,7 +394,7 @@ map <leader>hc :helpclose<cr>
 noremap <leader>r  :source $MYVIMRC<cr>
 " utilize transparent background provoded by some terminals emulators like iTerm2
 
-function! ToggleTransBackground()
+function! TransBackground()
     hi! Normal ctermbg=NONE guibg=NONE
     hi! NonText ctermbg=NONE guibg=NONE
     hi clear CursorLine
@@ -552,7 +553,7 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
-noremap \\ gg=G''
+noremap \ gg=G''
 noremap q ZQ
 
 " for practicing vim way
