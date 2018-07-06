@@ -6,7 +6,7 @@
 " ██║By   ███████╗██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
 " ╚═╝ROBIN╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
 
-if empty(glob('~/.vim/autoload/plug.vim')) && !has('windows')
+if empty(glob('~/.vim/autoload/plug.vim')) && !has('win32')
     silent !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
@@ -20,11 +20,11 @@ if 0
     (New-Object Net.WebClient).DownloadFile( $uri, $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath( "~\AppData\Local\nvim\autoload\plug.vim"))
 endif
 
-" if executable('nvim')
-"     silent! !mkdir -p ~/.config
-"     silent! !ln -sf ~/.vim ~/.config/nvim
-"     silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
-" endif
+if executable('nvim') && empty(glob('~/.config/nvim/init.vim')) && !has('win32')
+    silent! !mkdir -p ~/.config
+    silent! !ln -sf ~/.vim ~/.config/nvim
+    silent! !ln -sf ~/.vimrc ~/.config/nvim/init.vim
+endif
 
 if has('nvim')
     set viminfo+=n~/.vim/.nviminfo
