@@ -552,7 +552,6 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
-noremap \ %
 noremap \\ gg=G''
 noremap q ZQ
 
@@ -576,7 +575,7 @@ nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
-" To go to the next/previous quickfix/linter entry:
+" To go to the next/previous quickfix/linter entry
 nmap <silent> [p :cp<cr>zz 
 nmap <silent> ]p :cn<cr>zz
 nmap <silent> [l :ALENext<cr>zz
@@ -650,8 +649,9 @@ if has("cscope")
     " search this file
     map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
     " search files that include this file
-    map <leader>gii :cs find i <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
-    map <leader>gi  :cs find i <c-r>=expand("%:t")    <cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>zz:botright copen<cr><c-w>p
+    " searcg files that inclde the filename under cursor
+    map <leader>gn  :cs find i <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
     " search for functions are called by this function
     map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
 endif
