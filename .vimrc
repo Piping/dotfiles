@@ -187,7 +187,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
+    " Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -249,9 +249,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
     """"""""""""""""""""""""""""""
-    Plug 'michaeljsmith/vim-indent-object'
+    " Plug 'michaeljsmith/vim-indent-object'
     """"""""""""""""""""""""""""""
-    Plug 'piping/vim-surround', { 'on': [ '<Plug>Dsurround', '<Plug>Ysurround', '<Plug>Csurround' ] }
+    " Plug 'piping/vim-surround', { 'on': [ '<Plug>Dsurround', '<Plug>Ysurround', '<Plug>Csurround' ] }
     """"""""""""""""""""""""""""""
     Plug 'wellle/targets.vim'
     """"""""""""""""""""""""""""""
@@ -283,22 +283,22 @@ nmap <leader>b    :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
 nmap <leader>ch   :History:<Cr>
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
-nmap <leader>cm   :Commits<Cr>
-nmap <leader>co   :Commands<Cr>
+nmap <leader>cc   :Commits<Cr>
+nmap <leader>cm   :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 nmap <silent>     <leader>z  :Goyo<cr>:normal! zz<cr>
-nmap <leader>easy <Plug>(easymotion-prefix)
-nmap <leader>f    <Plug>(easymotion-overwin-f)
-nmap <leader>/    <Plug>(easymotion-sn)
-nmap <leader>ds   <Plug>Dsurround
-nmap <leader>cs   <Plug>Csurround
-nmap <leader>ss   <Plug>Ysurround
 nmap gf           :call GoToFile()<cr>
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
+" nmap <leader>easy <Plug>(easymotion-prefix)
+" nmap <leader>f    <Plug>(easymotion-overwin-f)
+" nmap <leader>/    <Plug>(easymotion-sn)
+" nmap <leader>ds   <Plug>Dsurround
+" nmap <leader>cs   <Plug>Csurround
+" nmap <leader>ss   <Plug>Ysurround
 
 function! GoToFile()
     let v:errmsg = ""
@@ -384,7 +384,7 @@ nnoremap [t gT
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
 let g:quickfix_opened = 0
-map <expr> <leader>cc   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
+map <expr> <leader>q   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " Help Windows
 map <leader>hc :helpclose<cr>
@@ -577,8 +577,10 @@ nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 " To go to the next/previous quickfix/linter entry:
-map <expr> [p   g:quickfix_opened  == 1 ? ":cp<cr>zz" : ":silent! ALEPrevious<cr>zz"
-map <expr> ]p   g:quickfix_opened  == 1 ? ":cn<cr>zz" : ":silent! ALENext<cr>zz"
+nmap <silent> [p :cp<cr>zz 
+nmap <silent> ]p :cn<cr>zz
+nmap <silent> [l :ALENext<cr>zz
+nmap <silent> ]l :ALEPrevious<cr>zz
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -628,34 +630,30 @@ if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
 
     " add any cscope database in current directory
-    if filereadable("cscope.out")
-        cs add cscope.out <C-r>=getcwd()<cr><cr>
-        " else add the database pointed to by environment variable
-    elseif $CSCOPE_DIR !=""
-        cs add $CSCOPE_DIR/cscope.out $CSCOPE_DIR
-    endif
+    map <leader>ca :cs add cscope.out <C-r>=getcwd()<cr>
+
     " show msg when any other cscope db added
     set cscopeverbose
 
     " Find assignments to this symbol
-    map <leader>ga  :cs find a <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>ga  :cs find a <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
     " search for c symbol
-    map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
     " seach for global definition
-    map <leader>gg  :cs find g <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gg  :cs find g <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
     " search functions that call this function
-    map <leader>gc  :cs find c <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gc  :cs find c <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
     " search this string
-    map <leader>gt  :cs find t <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gt  :cs find t <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
     " egrep pattern matching
-    map <leader>ge  :cs find e <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>ge  :cs find e <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
     " search this file
-    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
     " search files that include this file
-    map <leader>gii :cs find i <c-r>=expand("<cfile>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
-    map <leader>gi  :cs find i <c-r>=expand("%:t")    <cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gii :cs find i <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gi  :cs find i <c-r>=expand("%:t")    <cr><cr>zz:botright copen<cr><c-w>p
     " search for functions are called by this function
-    map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:let g:quickfix_opened=1<cr>:botright copen<cr><c-w>p
+    map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
 endif
 
 
