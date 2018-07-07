@@ -303,7 +303,7 @@ nmap gcc          <Plug>CommentaryLine
 
 function! GoToFile()
     let v:errmsg = ""
-    silent! normal! gf
+    silent! normal! vgf
     if v:errmsg != "" && exists(':FZF')
         " normal :FZF =getcwd()
         execute "normal! :FZF \<C-R>=getcwd()\<cr>\<cr>"
