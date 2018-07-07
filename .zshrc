@@ -185,10 +185,12 @@ if true; then
 
     if [ ! -f "$ZIM_HOME/init.zsh" ]; then
         echo "Installing zim"
-        git clone --recursive https://github.com/zimfw/zimfw.git $ZIM_HOME
+        git clone --recursive https://github.com/Piping/zimfw.git $ZIM_HOME
         git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
-        cat $ZIM_HOME/templates/zlogin >> $HOME/.zlogin
-        source $HOME/.zlogin
+    fi
+
+    if [[ -o login ]]; then
+        source $ZIM_HOME/login_init.zsh
     fi
 
     zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
@@ -199,61 +201,3 @@ if true; then
 fi
 
 
-if false; then
-    export ZPLUG_HOME="$HOME/.zplug"
-
-    if [ ! -f "$ZPLUG_HOME/init.zsh" ]; then
-        echo "Installing zplug"
-        git clone https://github.com/zplug/zplug $ZPLUG_HOME
-    fi
-
-    source $ZPLUG_HOME/init.zsh
-
-    zplug "mafredri/zsh-async", from:github
-    zplug "sindresorhus/pure, use:pure.zsh", from:github, as:theme
-    zplug "zsh-users/zsh-autosuggestions"
-    zplug "zsh-users/zsh-completions"
-    zplug "piping/fzf-zsh"
-    zplug "zsh-users/zsh-syntax-highlighting", defer:2
-    ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-
-    if ! zplug check --verbose; then
-        printf "Install? [y/N]: "
-        if read -q; then
-            echo; zplug install
-        fi
-    fi
-
-    zclean_cache() {
-        rm -f ${HOME}/.zshrc.zwc{,.old}
-        rm -f ${HOME}/.zcompdump{,.zwc{,.old}}
-
-        find ${ZPLUG_HOME} \( -name '*.zwc' -or -name '*.zwc.old' \) -delete
-    }
-
-    zcompare() {
-        if [[ -s ${1} && ( ! -s ${1}.zwc || ${1} -nt ${1}.zwc) ]]; then
-            zcompile ${1}
-        fi
-    }
-
-    znew_cache() {
-        zclean_cache
-
-        ( local file
-        setopt LOCAL_OPTIONS EXTENDED_GLOB
-
-        zcompare ${HOME}/.zshrc
-        zcompare ${HOME}/.zcompdump
-
-        # zcompile the completion cache; siginificant speedup
-        zcompare ${ZPLUG_HOME}/zcompdump
-
-        # zcompile enabled module scripts
-        for file in ${ZPLUG_HOME}/cache/*.zsh; do
-            zcompare ${file}
-        done) &!
-    }
-
-    zplug load #--verbose
-fi
