@@ -179,25 +179,19 @@ bindkey "\t" user-complete
 # Disable Ctrl-S freeze
 stty -ixon
 
-if true; then
-    # Zim initializition
-    export ZIM_HOME="$HOME/.zsh"
+# Zim initializition
+export ZIM_HOME="$HOME/.zsh"
 
-    if [ ! -f "$ZIM_HOME/init.zsh" ]; then
-        echo "Installing zim"
-        git clone --recursive https://github.com/Piping/zimfw.git $ZIM_HOME
-        git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
-    fi
-
-    if [[ -o login ]]; then
-        source $ZIM_HOME/login_init.zsh
-    fi
-
-    zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
-    zprompt_theme='steeef'
-    zhighlighters=(main brackets cursor pattern)
-
-    source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
+if [ ! -f "$ZIM_HOME/init.zsh" ]; then
+    echo "Installing zim"
+    git clone --recursive https://github.com/Piping/zimfw.git $ZIM_HOME
+    git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
+    source $ZIM_HOME/login_init.zsh
 fi
 
+zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
+zprompt_theme='steeef'
+zhighlighters=(main brackets cursor pattern)
+
+source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
 
