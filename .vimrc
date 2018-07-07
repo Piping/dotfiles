@@ -631,7 +631,7 @@ if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
 
     " add any cscope database in current directory
-    map <leader>ca :cs add cscope.out <C-r>=getcwd()<cr>
+    map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
 
     " show msg when any other cscope db added
     set cscopeverbose
