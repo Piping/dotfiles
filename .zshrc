@@ -3,8 +3,23 @@
 [[ $- != *i* ]] && return
 
 # 常用命令
-alias ls='ls --color=auto'
-alias ll='ls -altr --color=auto'
+case `uname` in
+    Darwin)
+        # commands for OS X go here
+        alias ls='ls -G'
+        alias ll='ls -altrG'
+        export LSCOLORS=exfxcxdxbxexexabagacad
+        ;;
+    Linux)
+        # commands for Linux go here
+        alias ls='ls --color=auto'
+        alias ll='ls -altr --color=auto'
+        ;;
+    FreeBSD)
+        # commands for FreeBSD go here
+        ;;
+esac
+
 alias vi='vim'
 alias vimc='vim -i NONE -u NONE -N'
 
@@ -27,13 +42,16 @@ export TERM="xterm-256color"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 # Key Binding
-bindkey -e
 KEYTIMEOUT=10 # 100 = 1 second for key sequences
+
+bindkey -e
+
 bindkey '^Z' backward-word
 bindkey '^X' forward-word
 bindkey '^W' backward-kill-word
 bindkey '^D' kill-word
 bindkey "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
+
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'     #以下字符视为单词的一部分
 
 loop() {
@@ -161,19 +179,81 @@ bindkey "\t" user-complete
 # Disable Ctrl-S freeze
 stty -ixon
 
-# Zim initializition
-export ZIM_HOME="$HOME/.zsh"
+if true; then
+    # Zim initializition
+    export ZIM_HOME="$HOME/.zsh"
 
-if [ ! -f "$ZIM_HOME/init.zsh" ]; then
-    echo "Installing zim"
-    git clone --recursive https://github.com/zimfw/zimfw.git $ZIM_HOME
-    git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
-    cat $ZIM_HOME/templates/zlogin >> $HOME/.zlogin
-    source $HOME/.zlogin
+    if [ ! -f "$ZIM_HOME/init.zsh" ]; then
+        echo "Installing zim"
+        git clone --recursive https://github.com/zimfw/zimfw.git $ZIM_HOME
+        git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
+        cat $ZIM_HOME/templates/zlogin >> $HOME/.zlogin
+        source $HOME/.zlogin
+    fi
+
+    zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
+    zprompt_theme='steeef'
+    zhighlighters=(main brackets cursor pattern)
+
+    source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
 fi
 
-zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
-zprompt_theme='steeef'
-zhighlighters=(main brackets cursor)
 
-source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
+if false; then
+    export ZPLUG_HOME="$HOME/.zplug"
+
+    if [ ! -f "$ZPLUG_HOME/init.zsh" ]; then
+        echo "Installing zplug"
+        git clone https://github.com/zplug/zplug $ZPLUG_HOME
+    fi
+
+    source $ZPLUG_HOME/init.zsh
+
+    zplug "mafredri/zsh-async", from:github
+    zplug "sindresorhus/pure, use:pure.zsh", from:github, as:theme
+    zplug "zsh-users/zsh-autosuggestions"
+    zplug "zsh-users/zsh-completions"
+    zplug "piping/fzf-zsh"
+    zplug "zsh-users/zsh-syntax-highlighting", defer:2
+    ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+    if ! zplug check --verbose; then
+        printf "Install? [y/N]: "
+        if read -q; then
+            echo; zplug install
+        fi
+    fi
+
+    zclean_cache() {
+        rm -f ${HOME}/.zshrc.zwc{,.old}
+        rm -f ${HOME}/.zcompdump{,.zwc{,.old}}
+
+        find ${ZPLUG_HOME} \( -name '*.zwc' -or -name '*.zwc.old' \) -delete
+    }
+
+    zcompare() {
+        if [[ -s ${1} && ( ! -s ${1}.zwc || ${1} -nt ${1}.zwc) ]]; then
+            zcompile ${1}
+        fi
+    }
+
+    znew_cache() {
+        zclean_cache
+
+        ( local file
+        setopt LOCAL_OPTIONS EXTENDED_GLOB
+
+        zcompare ${HOME}/.zshrc
+        zcompare ${HOME}/.zcompdump
+
+        # zcompile the completion cache; siginificant speedup
+        zcompare ${ZPLUG_HOME}/zcompdump
+
+        # zcompile enabled module scripts
+        for file in ${ZPLUG_HOME}/cache/*.zsh; do
+            zcompare ${file}
+        done) &!
+    }
+
+    zplug load #--verbose
+fi
