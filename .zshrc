@@ -22,7 +22,6 @@ export PAGER='less -irf'
 export GREP_COLOR='40;33;01'
 export TERM="xterm-256color"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-export ZPLUG_HOME="$HOME/.zsh"
 
 # options
 unsetopt correct_all
@@ -30,7 +29,7 @@ unsetopt correct_all
 #{{{ 关于历史纪录的配置
 export HISTSIZE=1000000
 export SAVEHIST=1000000
-export HISTFILE=$ZPLUG_HOME/.zsh_history
+export HISTFILE=$HOME/.zhistory
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY             # Share history between all sessions.
@@ -141,59 +140,94 @@ bindkey "\t" user-complete
 # Disable Ctrl-S freeze
 stty -ixon
 
-if [ ! -f "$ZPLUG_HOME/init.zsh" ]; then
-    echo "Installing zplug"
-    git clone https://github.com/zplug/zplug $ZPLUG_HOME
+# Zim initializition
+export ZIM_HOME="$HOME/.zsh"
+
+if [ ! -f "$ZIM_HOME/init.zsh" ]; then
+    echo "Installing zim"
+    git clone --recursive https://github.com/zimfw/zimfw.git $ZIM_HOME
+    git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
+    cp $ZIM_HOME/templates/zlogin $HOME/.zlogin
 fi
 
-source $ZPLUG_HOME/init.zsh
+autoload -Uz is-at-least && if ! is-at-least 5.2; then
+  print "ERROR: Zim didn't start. You're using zsh version ${ZSH_VERSION}, and versions < 5.2 are not supported. Update your zsh." >&2
+  return 1
+fi
 
-zplug mafredri/zsh-async, from:github
-zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
+zprompt_theme='steeef'
+zhighlighters=(main brackets cursor)
 
-# zplug "rupa/z.sh"
+# Autoload module functions
+() {
+  local mod_function
+  setopt LOCAL_OPTIONS EXTENDED_GLOB
 
-zplug "zsh-users/zsh-autosuggestions"
+  # autoload searches fpath for function locations; add enabled module function paths
+  fpath=(${ZIM_HOME}/modules/${^zmodules}/functions(/FN) ${fpath})
 
-zplug "zsh-users/zsh-completions"
+  for mod_function in ${ZIM_HOME}/modules/${^zmodules}/functions/^(_*|prompt_*_setup|*.*)(-.N:t); do
+    autoload -Uz ${mod_function}
+  done
+}
 
-zplug "piping/fzf-zsh"
+# Initialize modules
+() {
+  local zmodule zmodule_dir zmodule_file
 
-# about 20ms
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-# syntax color definition
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
-typeset -A ZSH_HIGHLIGHT_STYLES
-ZSH_HIGHLIGHT_STYLES[default]=none
-ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=009
-ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=009,standout
-ZSH_HIGHLIGHT_STYLES[alias]=fg=cyan,bold
-ZSH_HIGHLIGHT_STYLES[builtin]=fg=cyan,bold
-ZSH_HIGHLIGHT_STYLES[function]=fg=cyan,bold
-ZSH_HIGHLIGHT_STYLES[command]=fg=white,bold
-ZSH_HIGHLIGHT_STYLES[precommand]=fg=white,underline
-ZSH_HIGHLIGHT_STYLES[commandseparator]=none
-ZSH_HIGHLIGHT_STYLES[hashed-command]=fg=009
-ZSH_HIGHLIGHT_STYLES[path]=fg=214,underline
-ZSH_HIGHLIGHT_STYLES[globbing]=fg=063
-ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=white,underline
-ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=none
-ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=none
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=none
-ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=063
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=063
-ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=009
-ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=009
-ZSH_HIGHLIGHT_STYLES[assign]=none
+  for zmodule in ${zmodules}; do
+    zmodule_dir=${ZIM_HOME}/modules/${zmodule}
+    if [[ ! -d ${zmodule_dir} ]]; then
+      print "No such module \"${zmodule}\"." >&2
+    else
+      for zmodule_file in ${zmodule_dir}/init.zsh \
+          ${zmodule_dir}/{,zsh-}${zmodule}.{zsh,plugin.zsh,zsh-theme,sh}; do
+        if [[ -f ${zmodule_file} ]]; then
+          source ${zmodule_file}
+          break
+        fi
+      done
+    fi
+  done
+}
 
-# Install plugins if there are plugins that have not been installed
-# about 10ms
-# if ! zplug check --verbose; then
-#     printf "Install? [y/N]: "
-#     if read -q; then
-#         echo; zplug install
-#     fi
-# fi
+zmanage() {
+  local usage="zmanage [action]
+Actions:
+  update       Fetch and merge upstream zim commits if possible
+  info         Print zim and system info
+  issue        Create a template for reporting an issue
+  clean-cache  Clean the zim cache
+  build-cache  Rebuild the zim cache
+  remove       *experimental* Remove zim as best we can
+  reset        Reset zim to the latest commit
+  debug        Invoke the trace-zim script which produces logs
+  help         Print this usage message"
 
-# Then, source plugins and add commands to $PATH
-zplug load #--verbose
+  if (( ${#} != 1 )); then
+    print ${usage}
+    return 1
+  fi
+
+  case ${1} in
+    update)      zsh ${ZIM_HOME}/tools/zim_update
+                 ;;
+    info)        zsh ${ZIM_HOME}/tools/zim_info
+                 ;;
+    issue)       zsh ${ZIM_HOME}/tools/zim_issue
+                 ;;
+    clean-cache) source ${ZIM_HOME}/tools/zim_clean_cache && print 'Cache cleaned'
+                 ;;
+    build-cache) source ${ZIM_HOME}/tools/zim_build_cache && print 'Cache rebuilt'
+                 ;;
+    remove)      zsh ${ZIM_HOME}/tools/zim_remove
+                 ;;
+    reset)       zsh ${ZIM_HOME}/tools/zim_reset
+                 ;;
+    debug)       zsh ${ZIM_HOME}/modules/debug/functions/trace-zim
+                 ;;
+    *)           print ${usage}; return 1
+                 ;;
+  esac
+}
