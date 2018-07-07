@@ -6,7 +6,10 @@
 alias ls='ls --color=auto'
 alias ll='ls -altr --color=auto'
 alias vi='vim'
-alias vimnn='vim -i NONE -u NONE -N'
+alias vimc='vim -i NONE -u NONE -N'
+
+alias docker_clean_images='docker rmi -f $(docker images -a --filter=dangling=true -q)'
+alias docker_clean_ps='docker rmi -f $(docker ps --filter=status=exited --filter=status=created -q)'
 
 # 文件别名
 alias -s gz='tar -xzvf'
@@ -22,6 +25,34 @@ export PAGER='less -irf'
 export GREP_COLOR='40;33;01'
 export TERM="xterm-256color"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+
+# Key Binding
+bindkey -e
+KEYTIMEOUT=10 # 100 = 1 second for key sequences
+bindkey '^Z' backward-word
+bindkey '^X' forward-word
+bindkey '^W' backward-kill-word
+bindkey '^D' kill-word
+bindkey "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'     #以下字符视为单词的一部分
+
+loop() {
+    while true; do
+        eval "$@"
+    done
+}
+loopn() {
+    local n="$1"
+    shift
+    for i in {1..$n}; do
+        eval "$@"
+    done
+}
+loopf() {
+    for i in *; do
+        eval "$@" "$i"
+    done
+}
 
 # options
 unsetopt correct_all
@@ -47,16 +78,6 @@ setopt PUSHD_IGNORE_DUPS         #相同的历史路径只保留一个
 setopt HIST_IGNORE_SPACE         #在命令前添加空格，不将此命令添加到纪录文件中
 unsetopt beep
 #}}}
-
-# Key Binding
-bindkey -e
-KEYTIMEOUT=10 # 100 = 1 second for key sequences
-bindkey '^Z' backward-word
-bindkey '^X' forward-word
-bindkey '^W' backward-kill-word
-bindkey '^D' kill-word
-bindkey "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
-WORDCHARS='*?_-[]~=&;!#$%^(){}<>'     #以下字符视为单词的一部分
 
 # Tab Menu Selection
 setopt AUTO_LIST
@@ -147,87 +168,12 @@ if [ ! -f "$ZIM_HOME/init.zsh" ]; then
     echo "Installing zim"
     git clone --recursive https://github.com/zimfw/zimfw.git $ZIM_HOME
     git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
-    cp $ZIM_HOME/templates/zlogin $HOME/.zlogin
-fi
-
-autoload -Uz is-at-least && if ! is-at-least 5.2; then
-  print "ERROR: Zim didn't start. You're using zsh version ${ZSH_VERSION}, and versions < 5.2 are not supported. Update your zsh." >&2
-  return 1
+    cat $ZIM_HOME/templates/zlogin >> $HOME/.zlogin
+    source $HOME/.zlogin
 fi
 
 zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
 zprompt_theme='steeef'
 zhighlighters=(main brackets cursor)
 
-# Autoload module functions
-() {
-  local mod_function
-  setopt LOCAL_OPTIONS EXTENDED_GLOB
-
-  # autoload searches fpath for function locations; add enabled module function paths
-  fpath=(${ZIM_HOME}/modules/${^zmodules}/functions(/FN) ${fpath})
-
-  for mod_function in ${ZIM_HOME}/modules/${^zmodules}/functions/^(_*|prompt_*_setup|*.*)(-.N:t); do
-    autoload -Uz ${mod_function}
-  done
-}
-
-# Initialize modules
-() {
-  local zmodule zmodule_dir zmodule_file
-
-  for zmodule in ${zmodules}; do
-    zmodule_dir=${ZIM_HOME}/modules/${zmodule}
-    if [[ ! -d ${zmodule_dir} ]]; then
-      print "No such module \"${zmodule}\"." >&2
-    else
-      for zmodule_file in ${zmodule_dir}/init.zsh \
-          ${zmodule_dir}/{,zsh-}${zmodule}.{zsh,plugin.zsh,zsh-theme,sh}; do
-        if [[ -f ${zmodule_file} ]]; then
-          source ${zmodule_file}
-          break
-        fi
-      done
-    fi
-  done
-}
-
-zmanage() {
-  local usage="zmanage [action]
-Actions:
-  update       Fetch and merge upstream zim commits if possible
-  info         Print zim and system info
-  issue        Create a template for reporting an issue
-  clean-cache  Clean the zim cache
-  build-cache  Rebuild the zim cache
-  remove       *experimental* Remove zim as best we can
-  reset        Reset zim to the latest commit
-  debug        Invoke the trace-zim script which produces logs
-  help         Print this usage message"
-
-  if (( ${#} != 1 )); then
-    print ${usage}
-    return 1
-  fi
-
-  case ${1} in
-    update)      zsh ${ZIM_HOME}/tools/zim_update
-                 ;;
-    info)        zsh ${ZIM_HOME}/tools/zim_info
-                 ;;
-    issue)       zsh ${ZIM_HOME}/tools/zim_issue
-                 ;;
-    clean-cache) source ${ZIM_HOME}/tools/zim_clean_cache && print 'Cache cleaned'
-                 ;;
-    build-cache) source ${ZIM_HOME}/tools/zim_build_cache && print 'Cache rebuilt'
-                 ;;
-    remove)      zsh ${ZIM_HOME}/tools/zim_remove
-                 ;;
-    reset)       zsh ${ZIM_HOME}/tools/zim_reset
-                 ;;
-    debug)       zsh ${ZIM_HOME}/modules/debug/functions/trace-zim
-                 ;;
-    *)           print ${usage}; return 1
-                 ;;
-  esac
-}
+source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
