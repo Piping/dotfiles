@@ -978,8 +978,5 @@ if exists("g:gui_oni")
         autocmd! FocusGained *
         autocmd! FocusLost *
     augroup END
-    set laststatus=0
-    set noshowcmd
-    set noruler
 endif
 
