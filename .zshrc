@@ -30,7 +30,7 @@ unsetopt correct_all
 #{{{ 关于历史纪录的配置
 export HISTSIZE=1000000
 export SAVEHIST=1000000
-export HISTFILE=$ZPLUG_HOME/.zhistory
+export HISTFILE=$ZPLUG_HOME/.zsh_history
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY             # Share history between all sessions.
@@ -138,8 +138,6 @@ esac
 zle -N user-complete
 bindkey "\t" user-complete
 
-
-
 # Disable Ctrl-S freeze
 stty -ixon
 
@@ -150,12 +148,8 @@ fi
 
 source $ZPLUG_HOME/init.zsh
 
-# about 30ms
-zplug "nojhan/liquidprompt"
-# set | grep ^LP_ENABLE_
-# LP_ENABLE_SVN=0
-# LP_ENABLE_TEMP=0
-# LP_ENABLE_GIT=0
+zplug mafredri/zsh-async, from:github
+zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 
 # zplug "rupa/z.sh"
 
