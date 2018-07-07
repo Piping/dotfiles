@@ -185,7 +185,6 @@ export ZIM_HOME="$HOME/.zsh"
 if [ ! -f "$ZIM_HOME/init.zsh" ]; then
     echo "Installing zim"
     git clone --recursive https://github.com/Piping/zimfw.git $ZIM_HOME
-    git clone https://github.com/Piping/fzf-zsh.git $ZIM_HOME/modules/fzf-zsh
     source $ZIM_HOME/login_init.zsh
 fi
 
