@@ -282,7 +282,7 @@ nmap <leader>F    :FZF <C-r>=getcwd()<cr>
 " map  <leader>fg   :Ag 
 nmap <leader>b    :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
-nmap <leader>ch   :History:<Cr>
+nmap <leader>ch   :History<Cr>
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
 nmap <leader>cc   :Commits<Cr>
 nmap <leader>cm   :Commands<Cr>
@@ -305,7 +305,7 @@ function! GoToFile()
     let v:errmsg = ""
     silent! normal! gf
     if v:errmsg != "" && exists(':FZF')
-        :History<Cr><C-w>l<C-w>=<C-w>h
+        :FZF <C-r>=getcwd()<cr><cr>
     endif
 endfunction
 
