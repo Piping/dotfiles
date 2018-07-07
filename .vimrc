@@ -235,7 +235,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         endfunction
         let g:fzf_layout = { 'window': 'call FZF_Floating()' }
     else
-        let g:fzf_layout = { 'left': '~40%' }
+        let g:fzf_layout = { 'up': '~70%' }
     endif
     " let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
     let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
@@ -303,8 +303,11 @@ nmap gcc          <Plug>CommentaryLine
 
 function! GoToFile()
     let v:errmsg = ""
-    silent! normal! vgf
-    if v:errmsg != "" && exists(':FZF')
+    silent! normal! gf
+    if v:errmsg == ""
+        bprevious
+        normal! vgf
+    elseif exists(':FZF')
         " normal :FZF =getcwd()
         execute "normal! :FZF \<C-R>=getcwd()\<cr>\<cr>"
     endif
