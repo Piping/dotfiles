@@ -305,7 +305,8 @@ function! GoToFile()
     let v:errmsg = ""
     silent! normal! gf
     if v:errmsg != "" && exists(':FZF')
-        :FZF <C-r>=getcwd()<cr><cr>
+        " normal :FZF =getcwd()
+        execute "normal! :FZF \<C-R>=getcwd()\<cr>\<cr>"
     endif
 endfunction
 
