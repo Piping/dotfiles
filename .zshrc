@@ -41,6 +41,9 @@ export GREP_COLOR='40;33;01'
 export TERM="xterm-256color"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
+# Disable Ctrl-S freeze and free up C-s binding
+stty -ixon
+
 # Key Binding
 KEYTIMEOUT=100 # 100 = 1 second for escape 
 
@@ -51,10 +54,13 @@ bindkey '^E' end-of-line
 bindkey '^W' backward-kill-word
 bindkey '^D' kill-word
 bindkey '^Z' backward-word
-bindkey '^S' vi-cmd-mode
-bindkey '^X' forward-word
+bindkey '^S' forward-word
 bindkey '^R' history-incremental-search-backward
 bindkey "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
+# enable unicode-char insert
+autoload insert-unicode-char
+zle -N insert-unicode-char
+bindkey '^Xv' insert-unicode-char
 
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'     #以下字符视为单词的一部分
 
@@ -180,8 +186,6 @@ esac
 zle -N user-complete
 bindkey "\t" user-complete
 
-# Disable Ctrl-S freeze
-stty -ixon
 
 # Zim initializition
 export ZIM_HOME="$HOME/.zsh"

@@ -609,7 +609,7 @@ inoremap <C-A> <Home>
 inoremap <C-E> <End>
 " My Custom Emacs-Style Move Shortcut
 inoremap <C-Z> <S-Left>
-inoremap <C-X> <S-Right>
+inoremap <C-S> <S-Right>
 " Delete/Cut forward word
 inoremap <C-D> <C-O>dw
 inoremap <C-K> <C-O>D
@@ -621,7 +621,7 @@ inoremap <C-Y> <C-R>"
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
 cnoremap <C-Z> <S-Left>
-cnoremap <C-X> <S-Right>
+cnoremap <C-S> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-Y> <C-R>"
 cnoremap <C-P> <Up>
@@ -977,6 +977,7 @@ if exists("g:gui_oni")
     augroup MYGROUP
         autocmd! FocusGained *
         autocmd! FocusLost *
+        autocmd! TextChangedI *
     augroup END
 endif
 
