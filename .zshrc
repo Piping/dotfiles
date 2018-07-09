@@ -42,15 +42,28 @@ export TERM="xterm-256color"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 # Key Binding
-KEYTIMEOUT=10 # 100 = 1 second for key sequences
+KEYTIMEOUT=1 # 100 = 1 second for key sequences
 
-bindkey -e
+bindkey -v
 
-bindkey '^Z' backward-word
-bindkey '^X' forward-word
-bindkey '^W' backward-kill-word
-bindkey '^D' kill-word
-bindkey "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
+bindkey -M emacs '^A' beginning-of-line
+bindkey -M emacs '^E' end-of-line
+bindkey -M emacs '^W' backward-kill-word
+bindkey -M emacs '^D' kill-word
+bindkey -M emacs '^Z' backward-word
+bindkey -M emacs '^X' forward-word
+bindkey -M emacs '^R' history-incremental-search-backward
+bindkey -M emacs "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
+
+bindkey -M viins '^A' beginning-of-line
+bindkey -M viins '^E' end-of-line
+bindkey -M viins '^W' backward-kill-word
+bindkey -M viins '^D' kill-word
+bindkey -M viins '^Z' backward-word
+bindkey -M viins '^X' forward-word
+bindkey -M viins '^K' kill-line
+bindkey -M viins '^R' history-incremental-search-backward
+bindkey -M viins "^[[3~" backward-delete-char  #设置 [DEL]键 为向后删除
 
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'     #以下字符视为单词的一部分
 
@@ -189,6 +202,7 @@ if [ ! -f "$ZIM_HOME/init.zsh" ]; then
 fi
 
 zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
+
 zprompt_theme='minimal'
 zhighlighters=(main brackets cursor pattern)
 
