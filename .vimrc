@@ -9,7 +9,9 @@
 if empty(glob('~/.vim/autoload/plug.vim')) && !has('win32')
     silent !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    if v:shell_error == 0
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
 endif
 
 " for windows oni or neovim, manually install using powershell 
@@ -947,7 +949,6 @@ if has("autocmd")
         if v:version >= 800
             " auto save 
             autocmd TextChanged  * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-            autocmd TextChangedI * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         endif
 
         " smart cursorline
