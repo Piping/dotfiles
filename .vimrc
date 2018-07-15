@@ -929,8 +929,8 @@ if has("autocmd")
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
 
-        " tab special for makefile 
-        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
+        " tab special for makefile, recommend using > instead of tab " .RECIPEPREFIX = >
+        " autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
         autocmd FileType * :call SetAutoFormatProgram()
     augroup END
