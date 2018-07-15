@@ -62,7 +62,8 @@ For server users, here is a list of troubleshoots and environement configuration
   - COPY/PASTE
     - mouse
       - left click and drag to select, copy on stop
-      - middle/right click to paste
+      - middle or right click to paste
+      - while on copu, press <prefix> to stay in copy mode
     - keyboard
       - `<prefix> Enter` ; enter copy mode
       - `Enter` ; exit copy mode
@@ -83,17 +84,32 @@ For server users, here is a list of troubleshoots and environement configuration
     - `<prefix> \   `; create vertical split
   - TMUX pane features
     - `<prefix> a`   ; go to last acessed window
-    - `<prefix> l`   ; create a split layout like H
+    - `<prefix> o`   ; create a split layout like H
     - `<prefix> z`   ; ZOOM the current pane to use all display space
     - `<prefix> s`   ; synchornize the input in all panels under the same window
     - `<prefix> x`   ; kill the current panel
     - `<prefix> ,`   ; rename the windows
     - `<prefix> T`   ; rename the pane
     - `<prefix> t`   ; show clock
+    - `<prefix> m`   ; mark the pane
+    - `<prefix> M`   ; merge marked pane to current window
   - TMUX command line
     - `<prefix> :`   ; enter command line
     - `<esc>`        ; editing cmdline with vi-key binding
+    - `<prefix> ~`   ; show output log history
+    - `<prefix> *`   ; use ctrl-b as only prefix key, useful for nested tmux sessions
 - #### VIM
   - Vim itself is huge topic to cover, for built-in shortcuts and functionality,   
   please checkout my vim [cheatsheet](https://www.cheatography.com/piping/cheat-sheets/vim-ide/) and the book `practical vim`
-  - The list belows is the shortcuts && common FAQ solutions
+  - The list belows is FAQ for frequent used shortcuts and provides common solutions
+  - ###### How naviagte different files
+    - `:Explorer` command shows directory and files
+    - `:ls` shows opened buffer and `:b<number>` switch to that buffer(file)
+    - `<space>b` keymapping does above in one shot
+    - `Ctrl-w s` horizontal split current window
+    - `Ctrl-w v` vertical split current window
+    - `splitright` and `splittop` set where the new splitted windows will be placed
+    - `:tabnew` or `<space>t` will open new tab 
+    - `gt` mapping swithes between tabs, `3gt` goes to tab number 3
+    - `gf` open the file under cursor or open FZF fuzzy file search
+    - `Ctrl-i` and `Ctrl-o` jumps between next/old cursor position, can switch to different files too. 
