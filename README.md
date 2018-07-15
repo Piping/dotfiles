@@ -102,7 +102,7 @@ For server users, here is a list of troubleshoots and environement configuration
   - Vim itself is huge topic to cover, for built-in shortcuts and functionality,   
   please checkout my vim [cheatsheet](https://www.cheatography.com/piping/cheat-sheets/vim-ide/) and the book `practical vim`
   - The list belows is FAQ for frequent used shortcuts and provides common solutions
-  - ###### How naviagte different files
+  - ##### How to naviagte different files
     - `:Explorer` command shows directory and files
     - `:ls` shows opened buffer and `:b<number>` switch to that buffer(file)
     - `<space>b` keymapping does above in one shot

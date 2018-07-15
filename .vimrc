@@ -7,8 +7,8 @@
 " ╚═╝ROBIN╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
 
 if empty(glob('~/.vim/autoload/plug.vim')) && !has('win32')
-    silent !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    silent! !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
+    silent! !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim > /dev/null 2>&1
     if v:shell_error == 0
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
@@ -384,7 +384,9 @@ let g:quickfix_opened = 0
 map <expr> <leader>q   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " Help Windows
-map <leader>hc :helpclose<cr>
+if v:version >= 800
+    map <leader>hc :helpclose<cr>
+endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 noremap <leader>r  :source $MYVIMRC<cr>
@@ -844,11 +846,20 @@ set scrolloff=0    " allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function! DisplayReloadTheme()
 try 
     colorscheme sublimemonokai
 catch
     silent! colorscheme desert
 endtry
+
+syntax on
+
+set cursorline
+
+:LightlineReload
+
 " set extra options when running in gui mode
 if has("gui_running")
     set guioptions-=t
@@ -890,18 +901,24 @@ if v:version >= 800
     endif
 endif
 
+:nohlsearch
+
+endfunction
+
+call DisplayReloadTheme()
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("autocmd")
     augroup MYGROUP
         autocmd! *
-
         " Apply my custom lightline theme
-        autocmd VimEnter * LightlineTabLineTheme
+        autocmd VimEnter * silent! LightlineTabLineTheme
 
         " Auto reload conffiguration file, clean whitespace for some common code files
-        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
         autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
         " Return to last edit position when opening files (You want this!)
@@ -921,7 +938,7 @@ if has("autocmd")
             autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
             autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
             " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-            autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
+            autocmd FocusGained * :call DisplayReloadTheme()
             autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
         endif
 
@@ -937,8 +954,6 @@ if has("autocmd")
 
 endif
 
-syntax on
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
