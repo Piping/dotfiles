@@ -157,7 +157,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """"""""""""""""""""""""""""""
     if has( 'python' ) || has( 'python3' )
-        Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,c,cpp,vue,js,html'}
+        Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,make,c,cpp,vue,js,html'}
         inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
         inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
         inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
@@ -166,7 +166,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    Plug 'majutsushi/tagbar',       {'on': 'TagbarToggle'}
+    Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -190,10 +190,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """"""""""""""""""""""""""""""
     " Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'skywind3000/asyncrun.vim', {'on' : [ 'AsyncRun' ]}
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -282,7 +278,6 @@ let mapleader = "\<space>"
 nmap <leader>F    :FZF <C-r>=getcwd()<cr>
 " map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
 " map  <leader>fg   :Ag 
-nmap <leader>b    :Buffers<Cr>
 " Recently Used Cmd, Alt-Enter to execute command
 nmap <leader>ch   :History<Cr>
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
@@ -293,15 +288,9 @@ vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 nmap <silent>     <leader>z  :Goyo<cr>:normal! zz<cr>
-nmap gf           :call GoToFile()<cr>
+nmap <nowait> gf  :call GoToFile()<cr>
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
-" nmap <leader>easy <Plug>(easymotion-prefix)
-" nmap <leader>f    <Plug>(easymotion-overwin-f)
-" nmap <leader>/    <Plug>(easymotion-sn)
-" nmap <leader>ds   <Plug>Dsurround
-" nmap <leader>cs   <Plug>Csurround
-" nmap <leader>ss   <Plug>Ysurround
 
 function! GoToFile()
     let v:errmsg = ""
@@ -322,7 +311,8 @@ endfunction
 nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
-
+" Go to Buffer
+nmap <leader>b    :ls<cr>:buffer
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -332,9 +322,9 @@ nmap <silent> <leader>l :silent! set list!<cr>
 nnoremap p P
 " swap cursro and next char
 nnoremap P p
-" nnoremap Xp Xp
-" swap cursor and previous char
-" nnoremap xp xp
+
+" swap cursor and previous char " xP
+
 "Join the line below with space
 " nnoremap <leader>j  J
 " Reverse of J
@@ -560,19 +550,13 @@ endfunction
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
 noremap \ gg=G''
-noremap q ZQ
+noremap <nowait> q ZQ
 
 " for practicing vim way
 " nnoremap <silent> <up>    <NOP>
 " nnoremap <silent> <down>  <NOP>
 " nnoremap <silent> <left>  <NOP>
 " nnoremap <silent> <right> <NOP>
-
-" " USEFUL page up and page down mapping 
-" noremap <silent> <up>    <C-u><C-u>
-" noremap <silent> <down>  <C-d><c-d>
-" noremap <silent> <left>  :normal! zz<cr>:bprevious<cr>
-" noremap <silent> <right> :normal! zz<cr>:bnext<cr>
 
 " Quickly add empty lines
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>
@@ -591,19 +575,6 @@ nmap <silent> ]l :ALEPrevious<cr>zz
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => UP/DOWN/LEFT/RIGHT MOVEMENT
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" inoremap <c-h> <left>
-" inoremap <c-l> <right>
-" inoremap <c-k> <up>
-" inoremap <c-j> <down>
-" cnoremap <c-h> <left>
-" cnoremap <c-l> <right>
-" cnoremap <c-k> <up>
-" cnoremap <c-j> <down>
-
 " Map _ to be reverse of -, move cursor one line upward and beginning of the word
 " noremap _ ddkp
 " InsertMode with Extra Emacs Shortcut Mapping
@@ -716,7 +687,7 @@ function! SetAutoFormatProgram()
         endif
     elseif &ft  == 'javascript'
         if executable('js-beautify')
-            setlocal equalprg='js-beautify -f -'
+            " setlocal equalprg='js-beautify '
         endif
     endif
 endfunction
@@ -895,12 +866,11 @@ endif
 
 set nonumber
 set foldcolumn=1
-" highlight
+
 " show hidden chars using shortcuts
 set list
-" set listchars=tab:>-,eol:$,nbsp:▓
-set listchars=tab:>-,eol:ː,nbsp:▓
-" two highlight group nontext & specialkey
+set listchars=tab:␉·,eol:␤,nbsp:▓
+" two highlight group nontext & specialkey for listchars
 highlight nontext ctermfg=238 guifg=#414141
 " overrite color scheme for the listchars "#649a9a
 
@@ -928,7 +898,7 @@ if has("autocmd")
         autocmd! *
 
         " Apply my custom lightline theme
-        autocmd VimEnter * silent! LightlineTabLineTheme
+        autocmd VimEnter * LightlineTabLineTheme
 
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | LightlineReload
@@ -939,7 +909,7 @@ if has("autocmd")
 
         " Save the code folding if we had one
         autocmd BufWinLeave * silent! mkview
-        autocmd BufWinEnter * silent! loadview
+        " autocmd BufWinEnter * silent! loadview
 
         " Properly disable sound on errors on MacVim
         if has("gui_macvim")
@@ -949,6 +919,10 @@ if has("autocmd")
         if v:version >= 800
             " auto save 
             autocmd TextChanged  * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+
+            " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
+            autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
+            autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
         endif
 
         " smart cursorline
@@ -957,10 +931,6 @@ if has("autocmd")
 
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
-
-        " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-        " autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
-        " autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
 
         autocmd FileType * :call SetAutoFormatProgram()
     augroup END
