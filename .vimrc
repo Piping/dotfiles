@@ -918,8 +918,8 @@ if has("autocmd")
 
         if v:version >= 800
             " auto save 
-            autocmd TextChanged  * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-
+            autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+            autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
             " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
             autocmd FocusGained * :silent! colorscheme sublimemonokai | LightlineReload
             autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
@@ -929,8 +929,8 @@ if has("autocmd")
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
 
-        " tab special for makefile, recommend using > instead of tab " .RECIPEPREFIX = >
-        " autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
+        " tab special for makefile 
+        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
         autocmd FileType * :call SetAutoFormatProgram()
     augroup END
@@ -948,7 +948,6 @@ if exists("g:gui_oni")
     augroup MYGROUP
         autocmd! FocusGained *
         autocmd! FocusLost *
-        autocmd! TextChangedI *
     augroup END
 endif
 
