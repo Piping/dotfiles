@@ -312,7 +312,11 @@ nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
 " Go to Buffer
-nmap <leader>b    :ls<cr>:buffer
+if v:version >= 800
+    nmap <leader>b :ls<cr>:sbuffer
+else
+    nmap <leader>b :ls<cr>:buffer
+endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -848,60 +852,60 @@ set scrolloff=0    " allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 function! DisplayReloadTheme()
-try 
-    colorscheme sublimemonokai
-catch
-    silent! colorscheme desert
-endtry
+    try 
+        colorscheme sublimemonokai
+    catch
+        silent! colorscheme desert
+    endtry
 
-syntax on
+    syntax on
 
-set cursorline
+    set cursorline
 
-:LightlineReload
+    :LightlineReload
 
-" set extra options when running in gui mode
-if has("gui_running")
-    set guioptions-=t
-    set guioptions-=e
-    set guitablabel=%m\ %t
-    set t_Co=256
-endif
+    " set extra options when running in gui mode
+    if has("gui_running")
+        set guioptions-=t
+        set guioptions-=e
+        set guitablabel=%m\ %t
+        set t_Co=256
+    endif
 
-if $TERM  =~? '256color'
-    set t_Co=256
+    if $TERM  =~? '256color'
+        set t_Co=256
+        if v:version >= 800
+            set termguicolors
+        endif
+    endif
+
+    set nonumber
+    set foldcolumn=1
+
+    " show hidden chars using shortcuts
+    set list
+    set listchars=tab:␉·,eol:␤,nbsp:▓
+    " two highlight group nontext & specialkey for listchars
+    highlight nontext ctermfg=238 guifg=#414141
+    " overrite color scheme for the listchars "#649a9a
+
+    highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
+
     if v:version >= 800
-        set termguicolors
+        " change cursor style dependent on mode
+        if empty($tmux)
+            let &t_si = "\<esc>]50;cursorshape=1\x7"
+            let &t_ei = "\<esc>]50;cursorshape=0\x7"
+            let &t_sr = "\<esc>]50;cursorshape=2\x7"
+        else
+            let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
+            let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
+            let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
+        endif
     endif
-endif
 
-set nonumber
-set foldcolumn=1
-
-" show hidden chars using shortcuts
-set list
-set listchars=tab:␉·,eol:␤,nbsp:▓
-" two highlight group nontext & specialkey for listchars
-highlight nontext ctermfg=238 guifg=#414141
-" overrite color scheme for the listchars "#649a9a
-
-highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
-highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
-
-if v:version >= 800
-    " change cursor style dependent on mode
-    if empty($tmux)
-        let &t_si = "\<esc>]50;cursorshape=1\x7"
-        let &t_ei = "\<esc>]50;cursorshape=0\x7"
-        let &t_sr = "\<esc>]50;cursorshape=2\x7"
-    else
-        let &t_si = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=1\x7\<esc>\\"
-        let &t_ei = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=0\x7\<esc>\\"
-        let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
-    endif
-endif
-
-:nohlsearch
+    :nohlsearch
 
 endfunction
 
