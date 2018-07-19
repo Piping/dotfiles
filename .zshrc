@@ -42,10 +42,10 @@ export TERM="xterm-256color"
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 #color for less and manpage that uses less command
-export LESS_TERMCAP_mb=$'\e[1;32m'     #start blink
-export LESS_TERMCAP_md=$'\e[1;32m'     #start bold
-export LESS_TERMCAP_so=$'\e[7;33m'     #start standout
-export LESS_TERMCAP_us=$'\e[1;4;31m'   #start underline
+export LESS_TERMCAP_mb=$'\e[0;32m'     #start blink
+export LESS_TERMCAP_md=$'\e[0;32m'     #start bold
+export LESS_TERMCAP_so=$'\e[1;7;33m'   #start standout
+export LESS_TERMCAP_us=$'\e[1;4m'      #start underline
 export LESS_TERMCAP_me=$'\e[0m'        #stop bold
 export LESS_TERMCAP_se=$'\e[0m'        #stop standout
 export LESS_TERMCAP_ue=$'\e[0m'        #stop underline
