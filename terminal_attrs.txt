@@ -1,3 +1,48 @@
+╔══════════╦════════════════════════════════╦═════════════════════════════════════════════════════════════════════════╗
+║  Code    ║             Effect             ║                                   Note                                  ║
+╠══════════╬════════════════════════════════╬═════════════════════════════════════════════════════════════════════════╣
+║ 0        ║  Reset / Normal                ║  all attributes off                                                     ║
+║ 1        ║  Bold or increased intensity   ║                                                                         ║
+║ 2        ║  Faint (decreased intensity)   ║  Not widely supported.                                                  ║
+║ 3        ║  Italic                        ║  Not widely supported. Sometimes treated as inverse.                    ║
+║ 4        ║  Underline                     ║                                                                         ║
+║ 5        ║  Slow Blink                    ║  less than 150 per minute                                               ║
+║ 6        ║  Rapid Blink                   ║  MS-DOS ANSI.SYS; 150+ per minute; not widely supported                 ║
+║ 7        ║  [[reverse video]]             ║  swap foreground and background colors                                  ║
+║ 8        ║  Conceal                       ║  Not widely supported.                                                  ║
+║ 9        ║  Crossed-out                   ║  Not widely supported.                                                  ║
+║ 10       ║  Primary(default) font         ║                                                                         ║
+║ 11–19    ║  Alternate font                ║  Select alternate font `n-10`                                           ║
+║ 20       ║  Fraktur                       ║  hardly ever supported                                                  ║
+║ 21       ║  Bold off or Double Underline  ║  Bold off not widely supported; double underline hardly ever supported. ║
+║ 22       ║  Normal color or intensity     ║  Neither bold nor faint                                                 ║
+║ 23       ║  Not italic, not Fraktur       ║                                                                         ║
+║ 24       ║  Underline off                 ║  Not singly or doubly underlined                                        ║
+║ 25       ║  Blink off                     ║                                                                         ║
+║ 27       ║  Inverse off                   ║                                                                         ║
+║ 28       ║  Reveal                        ║  conceal off                                                            ║
+║ 29       ║  Not crossed out               ║                                                                         ║
+║ 30–37    ║  Set foreground color          ║  See color table below                                                  ║
+║ 38       ║  Set foreground color          ║  Next arguments are `5;n` or `2;r;g;b`, see below                       ║
+║ 39       ║  Default foreground color      ║  implementation defined (according to standard)                         ║
+║ 40–47    ║  Set background color          ║  See color table below                                                  ║
+║ 48       ║  Set background color          ║  Next arguments are `5;n` or `2;r;g;b`, see below                       ║
+║ 49       ║  Default background color      ║  implementation defined (according to standard)                         ║
+║ 51       ║  Framed                        ║                                                                         ║
+║ 52       ║  Encircled                     ║                                                                         ║
+║ 53       ║  Overlined                     ║                                                                         ║
+║ 54       ║  Not framed or encircled       ║                                                                         ║
+║ 55       ║  Not overlined                 ║                                                                         ║
+║ 60       ║  ideogram underline            ║  hardly ever supported                                                  ║
+║ 61       ║  ideogram double underline     ║  hardly ever supported                                                  ║
+║ 62       ║  ideogram overline             ║  hardly ever supported                                                  ║
+║ 63       ║  ideogram double overline      ║  hardly ever supported                                                  ║
+║ 64       ║  ideogram stress marking       ║  hardly ever supported                                                  ║
+║ 65       ║  ideogram attributes off       ║  reset the effects of all of 60-64                                      ║
+║ 90–97    ║  Set bright foreground color   ║  aixterm (not in standard)                                              ║
+║ 100–107  ║  Set bright background color   ║  aixterm (not in standard)                                              ║
+╚══════════╩════════════════════════════════╩═════════════════════════════════════════════════════════════════════════╝
+
    Default   Bold/Bright     Dim      Underlined    Blink     Reverse      Hidden    Strokeout
 [0;40;30m ^[0;40;30m [0m[1;40;30m ^[1;40;30m [0m[2;40;30m ^[2;40;30m [0m[4;40;30m ^[4;40;30m [0m[5;40;30m ^[5;40;30m [0m[7;40;30m ^[7;40;30m [0m[8;40;30m ^[8;40;30m [0m[9;40;30m ^[9;40;30m [0m
 [0;40;31m ^[0;40;31m [0m[1;40;31m ^[1;40;31m [0m[2;40;31m ^[2;40;31m [0m[4;40;31m ^[4;40;31m [0m[5;40;31m ^[5;40;31m [0m[7;40;31m ^[7;40;31m [0m[8;40;31m ^[8;40;31m [0m[9;40;31m ^[9;40;31m [0m
@@ -16,3 +61,5 @@
 [0;40;96m ^[0;40;96m [0m[1;40;96m ^[1;40;96m [0m[2;40;96m ^[2;40;96m [0m[4;40;96m ^[4;40;96m [0m[5;40;96m ^[5;40;96m [0m[7;40;96m ^[7;40;96m [0m[8;40;96m ^[8;40;96m [0m[9;40;96m ^[9;40;96m [0m
 [0;40;97m ^[0;40;97m [0m[1;40;97m ^[1;40;97m [0m[2;40;97m ^[2;40;97m [0m[4;40;97m ^[4;40;97m [0m[5;40;97m ^[5;40;97m [0m[7;40;97m ^[7;40;97m [0m[8;40;97m ^[8;40;97m [0m[9;40;97m ^[9;40;97m [0m
 [0;40;39m ^[0;40;39m [0m[1;40;39m ^[1;40;39m [0m[2;40;39m ^[2;40;39m [0m[4;40;39m ^[4;40;39m [0m[5;40;39m ^[5;40;39m [0m[7;40;39m ^[7;40;39m [0m[8;40;39m ^[8;40;39m [0m[9;40;39m ^[9;40;39m [0m
+
+

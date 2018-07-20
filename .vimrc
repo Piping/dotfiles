@@ -61,8 +61,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                 \   'right': [ ['bufnum'], [ 'relativepath', ] ]
                 \  },
                 \  'tabline': {
-                \     'left': [ [ 'my_text','tabs' ], ],
-                \     'right': [ [ 'vim_pwd', ] ]
+                \     'left': [ [ 'my_text','vim_pwd','tabs' ], ],
+                \     'right': [ ]
                 \  },
                 \  'tab': {
                 \     'active': [ 'tabnum', 'my_path' ],
@@ -276,8 +276,6 @@ let mapleader = "\<space>"
 " Recently Used Files
 " Overwrite default gf - open file under the cursor
 nmap <leader>F    :FZF <C-r>=getcwd()<cr>
-" map  <leader>fm   :Marks<Cr><C-w>l<C-w>=<C-w>h
-" map  <leader>fg   :Ag 
 " Recently Used Cmd, Alt-Enter to execute command
 nmap <leader>ch   :History<Cr>
 " Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
@@ -378,14 +376,13 @@ map <leader>ez :e! ~/.zshrc<cr>
 """"""""      Buffer, Tab, Window Key Maps     """"""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>t  :tabnew<cr>
-nnoremap [t gT
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""        Special Windows Shortcuts    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
 let g:quickfix_opened = 0
-map <expr> <leader>q   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
+map <expr> <leader>f   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
 
 " Help Windows
 if v:version >= 800
@@ -394,7 +391,6 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 noremap <leader>r  :source $MYVIMRC<cr>
-" utilize transparent background provoded by some terminals emulators like iTerm2
 
 function! TransBackground()
     hi! Normal ctermbg=NONE guibg=NONE
