@@ -553,6 +553,7 @@ endfunction
 noremap = $
 noremap \ gg=G''
 noremap <nowait> q ZQ
+noremap <nowait> Q q
 
 " for practicing vim way
 " nnoremap <silent> <up>    <NOP>
