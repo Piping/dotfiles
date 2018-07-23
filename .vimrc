@@ -647,17 +647,25 @@ command! W w !sudo tee % > /dev/null
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Normal mode pressing * or # searches for word under cursor
 " enable * # for visual selected text, whitespace match any whitespace in potential result
-function! s:getSelectedText()
-    let l:old_reg = getreg('"')
-    let l:old_regtype = getregtype('"')
-    norm gvy
-    let l:ret = getreg('"')
-    call setreg('"', l:old_reg, l:old_regtype)
-    exe "norm \<Esc>"
-    return l:ret
+let s:save_cpo = &cpo | set cpo&vim
+function! s:VSetSearch(cmd)
+  let old_reg = getreg('"')
+  let old_regtype = getregtype('"')
+  normal! gvy
+  if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$'
+    let @/ = @@
+  else
+    let pat = escape(@@, a:cmd.'\')
+    let pat = substitute(pat, '\n', '\\n', 'g')
+    let @/ = '\V'.pat
+  endif
+  normal! gV
+  call setreg('"', old_reg, old_regtype)
 endfunction
-vnoremap <silent> * :call setreg("/",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
-vnoremap <silent> # :call setreg("?",substitute(<SID>getSelectedText(),'\_s\+', '\\_s\\+', 'g') )<Cr>n
+vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
+vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+vmap <kMultiply> *
+let &cpo = s:save_cpo | unlet s:save_cpo
 
 " Delete trailing white space on save, useful for some filetypes ;)
 func! CleanExtraSpaces()
