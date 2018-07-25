@@ -206,9 +206,9 @@ if [ ! -f "$ZIM_HOME/init.zsh" ]; then
 fi
 
 zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
-
-zprompt_theme='minimal'
 zhighlighters=(main brackets cursor pattern)
+zprompt_theme='lean'
+PROMPT_LEAN_TMUX=""
 
 source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
 

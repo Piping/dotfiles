@@ -293,7 +293,7 @@ nmap gcc          <Plug>CommentaryLine
 function! GoToFile()
     let v:errmsg = ""
     silent! normal! gf
-    if v:errmsg == ""
+    if v:errmsg !~ 'E447'
         bprevious
         normal! vgf
     elseif exists(':FZF')
