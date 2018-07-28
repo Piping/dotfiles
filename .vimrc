@@ -156,16 +156,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    if has( 'python' ) || has( 'python3' )
-        Plug 'maralla/completor.vim' , {'on': 'CompletorEnable', 'for': 'vim,tmux,make,c,cpp,vue,js,html'}
-        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-        inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
-        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
-    endif
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
     Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
     """"""""""""""""""""""""""""""
 
@@ -189,11 +179,23 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    " Plug 'easymotion/vim-easymotion', {'on': [ '<Plug>(easymotion-sn)', '<Plug>(easymotion-prefix)', '<Plug>(easymotion-overwin-f)' ] }
-    """"""""""""""""""""""""""""""
+    if has( 'python' ) || has( 'python3' )
+        """ this might take a few seconds to install, wait
+        Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
+        """ Python: pip install 'python-language-server[all]'
+        let g:LanguageClient_serverCommands = {
+                    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+                    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+                    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+                    \ 'python': ['/usr/bin/pyls'],
+                    \ }
 
-    """"""""""""""""""""""""""""""
-    Plug 'w0rp/ale', { 'on': [ 'ALENext', 'ALEPrevious', 'ALEEnable' ] , 'for': 'cpp,c,js,html' }
+        Plug 'maralla/completor.vim'
+        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+        inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
+        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    endif
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -649,18 +651,18 @@ command! W w !sudo tee % > /dev/null
 " enable * # for visual selected text, whitespace match any whitespace in potential result
 let s:save_cpo = &cpo | set cpo&vim
 function! s:VSetSearch(cmd)
-  let old_reg = getreg('"')
-  let old_regtype = getregtype('"')
-  normal! gvy
-  if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$'
-    let @/ = @@
-  else
-    let pat = escape(@@, a:cmd.'\')
-    let pat = substitute(pat, '\n', '\\n', 'g')
-    let @/ = '\V'.pat
-  endif
-  normal! gV
-  call setreg('"', old_reg, old_regtype)
+    let old_reg = getreg('"')
+    let old_regtype = getregtype('"')
+    normal! gvy
+    if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$'
+        let @/ = @@
+    else
+        let pat = escape(@@, a:cmd.'\')
+        let pat = substitute(pat, '\n', '\\n', 'g')
+        let @/ = '\V'.pat
+    endif
+    normal! gV
+    call setreg('"', old_reg, old_regtype)
 endfunction
 vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
 vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
