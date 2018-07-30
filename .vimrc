@@ -188,7 +188,12 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
                     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
                     \ 'python': ['/usr/bin/pyls'],
+                    \ 'cpp': ['~/.local/bin/cquery', '--log-file=~/.local/cquery.log', 
+                    \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
+                    \        ],
                     \ }
+        let g:LanguageClient_fzfContextMenu=0
+        let g:LanguageClient_selectionUI="quickfix"
 
         Plug 'maralla/completor.vim'
         inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -312,11 +317,8 @@ nnoremap <leader>. @@
 "repeat last typed command
 nnoremap <leader>; @:
 " Go to Buffer
-if v:version >= 800
-    nmap <leader>b :ls<cr>:sbuffer
-else
-    nmap <leader>b :ls<cr>:buffer
-endif
+nmap <leader>b :ls<cr>:buffer
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -383,14 +385,7 @@ map <leader>t  :tabnew<cr>
 """"""""        Special Windows Shortcuts    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
-let g:quickfix_opened = 0
-map <expr> <leader>f   g:quickfix_opened == 0 ? ":botright copen<cr>:let g:quickfix_opened = 1<cr>" : ":cclose<cr>:let g:quickfix_opened = 0<cr>"
-
-" Help Windows
-if v:version >= 800
-    map <leader>hc :helpclose<cr>
-endif
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>f  :botright cwindow<cr>
 
 noremap <leader>r  :source $MYVIMRC<cr>
 
@@ -436,7 +431,7 @@ function! ToggleHiddenAll()
         echo ''
     endif
 endfunction
-nnoremap <leader>hh :call ToggleHiddenAll()<cr>
+nnoremap <leader>ht :call ToggleHiddenAll()<cr>
 "
 let s:auto_normal_mode = 0
 function! ToggleAutoNormalMode()
@@ -523,6 +518,13 @@ function! s:CloseHiddenBuffers()
         endif
     endfor
 endfunction
+map <leader>hc :CloseHiddenBuffers<cr>
+
+" Help Windows
+if v:version >= 800
+    map <leader>hh :helpclose<cr>
+endif
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Zoomed Window
@@ -574,8 +576,10 @@ nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 " To go to the next/previous quickfix/linter entry
 nmap <silent> [p :cp<cr>zz 
 nmap <silent> ]p :cn<cr>zz
-nmap <silent> [l :ALENext<cr>zz
-nmap <silent> ]l :ALEPrevious<cr>zz
+
+" To go to the next/previous quickfix/linter entry
+nmap <silent> [l :cpf<cr>zz 
+nmap <silent> ]l :cnf<cr>zz
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -606,7 +610,7 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Code Development - Cscope
+" => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
@@ -633,12 +637,21 @@ if has("cscope")
     map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
     " search files that include this file
     map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>zz:botright copen<cr><c-w>p
-    " searcg files that inclde the filename under cursor
-    map <leader>gn  :cs find i <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
     " search for functions are called by this function
     map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
 endif
 
+if executable("cquery")
+    nnoremap <silent> <leader>gh :call LanguageClient_textDocument_hover()<cr>
+    nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<cr>
+    nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<cr>
+    nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>
+    nnoremap <silent> <leader>gn :call LanguageClient_textDocument_rename()<cr>
+    nnoremap <silent> <leader>gm :call LanguageClient_textDocument_implementation()<cr>
+    nnoremap <silent> <leader>gt :call LanguageClient_textDocument_typeDefinition()<cr>
+    nnoremap <silent> <leader>gx :call LanguageClient_contextMenu()<cr>
+    nnoremap <silent> <leader>gc :call LanguageClient#cquery_callers()<cr>
+endif
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
@@ -664,8 +677,8 @@ function! s:VSetSearch(cmd)
     normal! gV
     call setreg('"', old_reg, old_regtype)
 endfunction
-vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
-vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<cr>/<C-R>/<cr>
+vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<cr>?<C-R>/<cr>
 vmap <kMultiply> *
 let &cpo = s:save_cpo | unlet s:save_cpo
 
@@ -702,6 +715,8 @@ function! SetAutoFormatProgram()
         if executable('js-beautify')
             " setlocal equalprg='js-beautify '
         endif
+    elseif &ft  == 'python'
+        setlocal makeprg=python\ %
     endif
 endfunction
 
@@ -833,7 +848,7 @@ set wrap "Wrap lines
 " => Buffers, Split Windows, Tabs(Tabline)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Specify the behavior when switching/opening new buffers
-if v:version >= 800
+if v:version >= 740
     set switchbuf=useopen,usetab,vsplit
 endif
 " Always Show tabline
