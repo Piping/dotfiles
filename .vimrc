@@ -40,7 +40,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     call plug#begin('~/.vim/plugged')
 
-
     """"""""""""""""""""""""""""""
     "" LIGHTLINE PLUGIN
     """"""""""""""""""""""""""""""
@@ -122,20 +121,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     function! LightlineTabShowPath(n)
         return expand('%:.')
     endfunction
-    """"""""""""""""""""""""""""""
 
-    """"""""""""""""""""""""""""""
-    Plug 'bling/vim-bufferline'
-    let g:bufferline_echo = 0
-    let g:bufferline_rotate = 0
     function! ShowCurrentBufferList()
-        if empty(glob('~/.vim/plugged/vim-bufferline'))
-            return
-        endif
-        call bufferline#refresh_status() 
-        return g:bufferline_status_info.before.''
-                    \ .'[正文]'
-                    \ .g:bufferline_status_info.after
+        return '[正文]'
     endfunction
     """"""""""""""""""""""""""""""
 
@@ -183,12 +171,20 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         """ this might take a few seconds to install, wait
         Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
         """ Python: pip install 'python-language-server[all]'
+        """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery  \
+        """      && mkdir build && cd build  \
+        """      && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
+        """      && make -j8 && make install
+ 
         let g:LanguageClient_serverCommands = {
                     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
                     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
                     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
                     \ 'python': ['/usr/bin/pyls'],
                     \ 'cpp': ['~/.local/bin/cquery', '--log-file=~/.local/cquery.log', 
+                    \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
+                    \        ],
+                    \ 'c':   ['~/.local/bin/cquery', '--log-file=~/.local/cquery.log', 
                     \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
                     \        ],
                     \ }
@@ -204,11 +200,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    Plug 'junegunn/limelight.vim', {'on': 'Limelight'}
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
     Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
+    let g:goyo_width=130
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -259,7 +252,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " Plug 'piping/vim-surround', { 'on': [ '<Plug>Dsurround', '<Plug>Ysurround', '<Plug>Csurround' ] }
     """"""""""""""""""""""""""""""
     Plug 'wellle/targets.vim'
-    Plug 'benjifisher/matchit.zip'
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -271,6 +263,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 else
     command! LightlineReload :normal! zz 
 endif
+
+packadd! matchit
 
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
@@ -323,13 +317,6 @@ nmap <leader>b :ls<cr>:buffer
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap <silent> <leader>l :silent! set list!<cr>
-
-" set 'p' to paste before cursor
-nnoremap p P
-" swap cursro and next char
-nnoremap P p
-
-" swap cursor and previous char " xP
 
 "Join the line below with space
 " nnoremap <leader>j  J
@@ -385,7 +372,7 @@ map <leader>t  :tabnew<cr>
 """"""""        Special Windows Shortcuts    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quickfix window  displaying
-map <leader>f  :botright cwindow<cr>
+map <leader>f  :botright copen<cr>
 
 noremap <leader>r  :source $MYVIMRC<cr>
 
@@ -446,14 +433,17 @@ function! ToggleAutoNormalMode()
         " Automitically enter the normal mode after sometime
         augroup AutoNormalMode
             autocmd! *
-            au CursorHoldI  * stopinsert
-            au CursorMovedI * let updaterestore=&updatetime | set updatetime=500
+            au CursorHoldI  * stopinsert au CursorMovedI * let updaterestore=&updatetime | set updatetime=500
             au InsertEnter  * let updaterestore=&updatetime | set updatetime=2000
             au InsertLeave  * let &updatetime=updaterestore
         augroup END
         echohl ModeMsg | echo '-- NORMAL(AUTO-ESC) --' | echohl None
     endif
 endfunction
+" I Use Auto-Normal Mode by Default
+" silent call ToggleAutoNormalMode()
+nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
+
 let s:custom_mode_output = 0
 function! ShowExtraNormalMode()
     let s:custom_mode_output = ''
@@ -461,14 +451,11 @@ function! ShowExtraNormalMode()
         let s:custom_mode_output .= '[ijkl] '
     endif
     if s:auto_normal_mode != 0 && mode() == 'n'
-        let s:custom_mode_output .= '[esc] '
+        let s:custom_mode_output .= '[ESC] '
     endif
     return s:custom_mode_output
 endfunction
 
-" I Use Auto-Normal Mode by Default
-" silent call ToggleAutoNormalMode()
-nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
 let s:hjkl_compatiable_mode = 1
 function! ToggleHJKLCompatiableMode()
     if s:hjkl_compatiable_mode == 1
@@ -554,8 +541,8 @@ endfunction
 " Extra Normal Mode Mapping 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
-noremap = $
-noremap \ gg=G''
+noremap = gg=G''
+noremap \ $
 noremap <nowait> q ZQ
 noremap <nowait> Q q
 
@@ -577,7 +564,7 @@ nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 nmap <silent> [p :cp<cr>zz 
 nmap <silent> ]p :cn<cr>zz
 
-" To go to the next/previous quickfix/linter entry
+" To go to the next/previous quickfix/linter entry in a different file
 nmap <silent> [l :cpf<cr>zz 
 nmap <silent> ]l :cnf<cr>zz
 
@@ -645,12 +632,21 @@ if executable("cquery")
     nnoremap <silent> <leader>gh :call LanguageClient_textDocument_hover()<cr>
     nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<cr>
     nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<cr>
-    nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>
+    nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>:copen<cr>:wincmd L<cr>
     nnoremap <silent> <leader>gn :call LanguageClient_textDocument_rename()<cr>
     nnoremap <silent> <leader>gm :call LanguageClient_textDocument_implementation()<cr>
-    nnoremap <silent> <leader>gt :call LanguageClient_textDocument_typeDefinition()<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_codeAction<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_rangeFormatting<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_completion()<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_typeDefinition()<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_workspace_symbol()<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_workspace_applyEdit()<cr>
+    nnoremap <silent> <leader>gu :call LanguageClient_workspace_executeCommand()<cr>
     nnoremap <silent> <leader>gx :call LanguageClient_contextMenu()<cr>
-    nnoremap <silent> <leader>gc :call LanguageClient#cquery_callers()<cr>
+    nnoremap <silent> <leader>gc :call LanguageClient_cquery_vars()<cr>
+    nnoremap <silent> <leader>gc :call LanguageClient_cquery_base()<cr>
+    nnoremap <silent> <leader>gc :call LanguageClient_cquery_derived()<cr>
+    nnoremap <silent> <leader>gc :call LanguageClient_cquery_callers()<cr>
 endif
 
 " :W sudo saves the file
@@ -912,7 +908,7 @@ function! DisplayReloadTheme()
     " overrite color scheme for the listchars "#649a9a
 
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
-    highlight QuickFixLine term=reverse ctermbg=235 guibg=#272727
+    highlight QuickFixLine term=reverse gui=reverse ctermbg=254 guibg=#000000
 
     if v:version >= 800
         " change cursor style dependent on mode

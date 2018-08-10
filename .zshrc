@@ -23,6 +23,8 @@ esac
 alias vi='vim'
 alias vimc='vim -i NONE -u NONE -N'
 
+alias g='git'
+
 alias docker_clean_images='docker rmi -f $(docker images -a --filter=dangling=true -q)'
 alias docker_clean_ps='docker rmi -f $(docker ps --filter=status=exited --filter=status=created -q)'
 

@@ -1,0 +1,14 @@
+[alias]
+    s  = status
+    su = !git status -uno
+    d  = diff
+    ds = !git diff --stat
+    dn = !git diff --name-only
+	dt = difftool
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[user]
+	name = Robin
+	email = deqzhang@usc.edu
