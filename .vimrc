@@ -247,10 +247,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
     """"""""""""""""""""""""""""""
-    " Plug 'michaeljsmith/vim-indent-object'
-    """"""""""""""""""""""""""""""
-    " Plug 'piping/vim-surround', { 'on': [ '<Plug>Dsurround', '<Plug>Ysurround', '<Plug>Csurround' ] }
-    """"""""""""""""""""""""""""""
     Plug 'wellle/targets.vim'
     """"""""""""""""""""""""""""""
 
@@ -276,40 +272,23 @@ let mapleader = "\<space>"
 """""""""""""""""""""""""""""""""""""""""
 " Recently Used Files
 " Overwrite default gf - open file under the cursor
-nmap <leader>F    :FZF <C-r>=getcwd()<cr>
-" Recently Used Cmd, Alt-Enter to execute command
+nmap <leader>cf   :FZF <C-r>=getcwd()<cr>
 nmap <leader>ch   :History<Cr>
-" Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
 nmap <leader>cc   :Commits<Cr>
+" Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
+" Recently Used Cmd, Alt-Enter to execute command
 nmap <leader>cm   :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 nmap <silent>     <leader>z  :Goyo<cr>:normal! zz<cr>
-nmap <nowait> gf  :call GoToFile()<cr>
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
-
-function! GoToFile()
-    let v:errmsg = ""
-    silent! normal! gf
-    if v:errmsg !~ 'E447'
-        bprevious
-        normal! vgf
-    elseif exists(':FZF')
-        " normal :FZF =getcwd()
-        execute "normal! :FZF \<C-R>=getcwd()\<cr>\<cr>"
-    endif
-endfunction
 
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
-" Repeat Last Macro
-nnoremap <leader>. @@
-"repeat last typed command
-nnoremap <leader>; @:
 " Go to Buffer
 nmap <leader>b :ls<cr>:buffer
 
@@ -335,7 +314,7 @@ noremap <C-y> <C-y>k
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Disable highlight when <space><enter> is pressed
-nmap <silent> <leader><cr> :noh<cr>
+nnoremap <silent> <cr> :noh<cr>
 
 " Esc, Ctrl, :, ^W, ^s, Tab, Alt
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

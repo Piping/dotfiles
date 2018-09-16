@@ -209,7 +209,7 @@ fi
 
 zmodules=(git git-info prompt completion syntax-highlighting autosuggestions fzf-zsh)
 zhighlighters=(main brackets cursor pattern)
-zprompt_theme='lean'
+zprompt_theme='adam2'
 PROMPT_LEAN_TMUX=""
 
 source $ZIM_HOME/init.zsh #make sure init after zmodules lists etcs..
