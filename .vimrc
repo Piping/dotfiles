@@ -41,93 +41,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     call plug#begin('~/.vim/plugged')
 
     """"""""""""""""""""""""""""""
-    "" LIGHTLINE PLUGIN
-    """"""""""""""""""""""""""""""
-
-    Plug 'itchyny/lightline.vim'
-    set laststatus=2 "In order to show the lightline
-    set showcmd      "Always print current keystroke
-    set ruler        "Always show current position
-    set cmdheight=1  "Height of the command bar
-    let g:lightline = {
-                \  'active': {
-                \     'left'  : [ [ 'mode', 'normal_submode', 'paste' ] ,
-                \                 [ 'filename', 'readonly', 'modified', 'lineinfo','truncate_start', 'percent', ] ],
-                \     'right' : [ [ 'bufnum' ], [ 'fileformat', 'filetype'], [ 'my_bufferlist','fileencoding', 'my_charvaluehex', 'charvalue' ], ]
-                \  },
-                \  'inactive': {
-                \   'left': [ [ ] ],
-                \   'right': [ ['bufnum'], [ 'relativepath', ] ]
-                \  },
-                \  'tabline': {
-                \     'left': [ [ 'my_text','vim_pwd','tabs' ], ],
-                \     'right': [ ]
-                \  },
-                \  'tab': {
-                \     'active': [ 'tabnum', 'my_path' ],
-                \     'inactive': [ 'tabnum', ],
-                \  },
-                \  'tabline_subseparator': {
-                \     'left': '',
-                \     'right': '',
-                \  },
-                \  'tab_component_function': {
-                \     'my_path': 'LightlineTabShowPath',
-                \  },
-                \  'component': {
-                \     'my_text': 'Tab:',
-                \     'my_charvaluehex': 'U+%B',
-                \     'truncate_start': '%<',
-                \  },
-                \  'component_function': {
-                \     'normal_submode': 'ShowExtraNormalMode',
-                \     'my_bufferlist': 'ShowCurrentBufferList',
-                \     'vim_pwd': 'getcwd',
-                \  },
-                \  'component_visible_condition': {
-                \     'truncate_start': 0,
-                \     'tabs': 0,
-                \  },
-                \  'component_function_visible_condition': {
-                \     'normal_submode': 0,
-                \  },
-                \  'component_type': {
-                \     'normal_submode': 'raw',
-                \     'truncate_start': 'raw',
-                \  },
-                \}
-
-    "the color scheme variable only available before VimEnter
-    "Tab_FG_Color,Tab_BG_Color
-    function! LightlineTabLineTheme()
-        let g:lightline#colorscheme#default#palette.tabline.tabsel = [[ '#f62d6c', '#2d2e27', 252, 66, 'bold' ]]
-        let g:lightline#colorscheme#default#palette.tabline.middle = [[ '#d0d0d0', '#2d2e27', 252, 66, 'bold' ]]
-        let g:lightline#colorscheme#default#palette.tabline.right  = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
-        let g:lightline#colorscheme#default#palette.tabline.left   = [[ '#606060', '#2d2e27', 252, 66, 'bold' ]]
-        let g:lightline#colorscheme#default#palette.inactive.right = [[ '#606060', '#202020', 252, 66, 'bold' ]]
-        let g:lightline#colorscheme#default#palette.inactive.middle = [[ '#606060', '#000000', 252, 66, 'bold' ]]
-    endfunction
-    command! LightlineTabLineTheme call LightlineTabLineTheme()
-
-    function! LightlineReload()
-        if exists('*lightline#init')
-            call lightline#init()
-            call lightline#colorscheme()
-            call lightline#update()
-        endif
-    endfunction
-    command! LightlineReload call LightlineReload()
-
-    function! LightlineTabShowPath(n)
-        return expand('%:.')
-    endfunction
-
-    function! ShowCurrentBufferList()
-        return '[正文]'
-    endfunction
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
     Plug 'mhinz/vim-startify'
     """"""""""""""""""""""""""""""
 
@@ -171,30 +84,29 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         """ this might take a few seconds to install, wait
         Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
         """ Python: pip install 'python-language-server[all]'
-        """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery  \
-        """      && mkdir build && cd build  \
-        """      && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
-        """      && make -j8 && make install
- 
+        """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && make -j8 && make install
+
         let g:LanguageClient_serverCommands = {
-                    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+                    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
                     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
                     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-                    \ 'python': ['/usr/bin/pyls'],
-                    \ 'cpp': ['~/.local/bin/cquery', '--log-file=~/.local/cquery.log', 
+                    \ 'python': ['pyls'],
+                    \ 'cpp': ['cquery', '--log-file=~/.local/cquery.log', 
                     \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
                     \        ],
-                    \ 'c':   ['~/.local/bin/cquery', '--log-file=~/.local/cquery.log', 
+                    \ 'c':   ['cquery', '--log-file=~/.local/cquery.log', 
                     \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
                     \        ],
                     \ }
-        let g:LanguageClient_fzfContextMenu=0
         let g:LanguageClient_selectionUI="quickfix"
 
         Plug 'maralla/completor.vim'
+        let g:completor_refresh_always = 0 "avoid flickering
+        "set trigger for language-client's omnifunc
+        let g:completor_python_omni_trigger = ".*" 
+        let g:completor_javascript_omni_trigger = ".*"
         inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
         inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-        inoremap <expr> <Cr>    pumvisible() ? "\<C-y>" : "\<Cr>"
         inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
     endif
     """"""""""""""""""""""""""""""
@@ -203,44 +115,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
     let g:goyo_width=130
     """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'junegunn/fzf', {'on': ['FZF','Ag','Commands','Commits', 'Buffers','History','Files']}
-    Plug 'junegunn/fzf.vim' , {'on': ['FZF','Ag','Commands', 'Commits', 'Buffers','History','Files']}
-    " CTRL-A CTRL-Q to select all and build quickfix list
-    " location list is similar to quickfix, specific to each window
-    function! s:build_quickfix_list(lines)
-        call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-        copen
-    endfunction
-    let g:fzf_action = {
-                \ 'ctrl-q': function('s:build_quickfix_list'),
-                \ 'ctrl-t': 'tab split',
-                \ 'ctrl-x': 'split',
-                \ 'ctrl-v': 'vsplit' }
-
-    if exists('*nvim_open_float_win')
-        function! FZF_Floating()
-            let b = nvim_create_buf(v:false)
-            call nvim_buf_set_option(b, "buftype", "nofile")
-            let opts = {'x':0, 'y':5, 'anchor': 'NE'}
-
-            let w =  nvim_open_float_win(b,v:true,&columns,&lines-10,opts)
-
-            hi Floating guibg=#000000
-            call setwinvar(w, '&winhl', 'Normal:Floating')
-            call setwinvar(w, '&number', 0)
-        endfunction
-        let g:fzf_layout = { 'window': 'call FZF_Floating()' }
-    else
-        let g:fzf_layout = { 'up': '~70%' }
-    endif
-    " let $FZF_DEFAULT_COMMAND = 'find . -path ''*/\.*\'' -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//'
-    let $FZF_DEFAULT_OPTS  = "--height 40% --bind ctrl-f:select-all,ctrl-g:deselect-all ".
-                \ "--header ' :: Tip <C-t> Open in new tab;<C-x> Open in split;\n".
-                \ " :: Tip <C-v> Open in vertical split;<Esc> or <C-d> Quit \n".
-                \ " :: Tip <C-f> select_all; <C-g> deselect_all;<C-q> send_to_quickfix;' "
-    """""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
     " VIM's OPERATOR/TEXT OBJECT "
@@ -256,11 +130,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     call plug#end()
     "}} PLUGIN MANAGER END 
-else
-    command! LightlineReload :normal! zz 
 endif
 
-packadd! matchit
+silent! packadd! matchit
 
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
@@ -270,14 +142,6 @@ let mapleader = "\<space>"
 """""""""""""""""""""""""""""""""""""""""
 ""PLUGIN LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
-" Recently Used Files
-" Overwrite default gf - open file under the cursor
-nmap <leader>cf   :FZF <C-r>=getcwd()<cr>
-nmap <leader>ch   :History<Cr>
-nmap <leader>cc   :Commits<Cr>
-" Fuzzy Search ALL Vim Commands<C-w>l<C-w>=<C-w>h
-" Recently Used Cmd, Alt-Enter to execute command
-nmap <leader>cm   :Commands<Cr>
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
@@ -291,6 +155,8 @@ nmap gcc          <Plug>CommentaryLine
 """""""""""""""""""""""""""""""""""""""""
 " Go to Buffer
 nmap <leader>b :ls<cr>:buffer
+
+nmap <leader>cc :copen<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -356,135 +222,24 @@ map <leader>f  :botright copen<cr>
 noremap <leader>r  :source $MYVIMRC<cr>
 
 function! TransBackground()
-    hi! Normal ctermbg=NONE guibg=NONE
-    hi! NonText ctermbg=NONE guibg=NONE
+    hi Normal ctermbg=NONE guibg=NONE
+    hi NonText ctermbg=NONE guibg=NONE
     hi clear CursorLine
     hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE
 endfunction
 
-let s:statusline_mode = 0
-function! ToggleHiddenAll()
-    if s:statusline_mode  == 0
-        let s:statusline_mode = 1
-        set showmode
-        set noruler
-        set laststatus=0
-        set showcmd
-        set cmdheight=1
-        if mode() == 'n'
-            echohl ModeMsg
-            echomsg '-- NORMAL --'
-            echohl None
-        endif
-    elseif s:statusline_mode == 1
-        " nothing is show
-        set noshowmode
-        set noruler
-        set laststatus=0
-        set noshowcmd
-        set cmdheight=1
-        let s:statusline_mode = 2
-        " call feedkeys("1\<C-g>")
-        echo ''
-    elseif s:statusline_mode == 2
-        " default status line
-        let s:statusline_mode = 0
-        set showmode
-        set ruler
-        set laststatus=2
-        set showcmd
-        set cmdheight=1
-        echo ''
-    endif
-endfunction
-nnoremap <leader>ht :call ToggleHiddenAll()<cr>
-"
-let s:auto_normal_mode = 0
-function! ToggleAutoNormalMode()
-    if s:auto_normal_mode == 1
-        let s:auto_normal_mode = 0
-        augroup AutoNormalMode
-            autocmd! *
-        augroup END
-        echohl ModeMsg | echo '-- NORMAL(PERSIST) --' | echohl None
-    else
-        let s:auto_normal_mode = 1
-        " Automitically enter the normal mode after sometime
-        augroup AutoNormalMode
-            autocmd! *
-            au CursorHoldI  * stopinsert au CursorMovedI * let updaterestore=&updatetime | set updatetime=500
-            au InsertEnter  * let updaterestore=&updatetime | set updatetime=2000
-            au InsertLeave  * let &updatetime=updaterestore
-        augroup END
-        echohl ModeMsg | echo '-- NORMAL(AUTO-ESC) --' | echohl None
-    endif
-endfunction
-" I Use Auto-Normal Mode by Default
-" silent call ToggleAutoNormalMode()
-nnoremap <leader>hn :call ToggleAutoNormalMode()<cr>
-
-let s:custom_mode_output = 0
-function! ShowExtraNormalMode()
-    let s:custom_mode_output = ''
-    if s:hjkl_compatiable_mode != 1
-        let s:custom_mode_output .= '[ijkl] '
-    endif
-    if s:auto_normal_mode != 0 && mode() == 'n'
-        let s:custom_mode_output .= '[ESC] '
-    endif
-    return s:custom_mode_output
-endfunction
-
-let s:hjkl_compatiable_mode = 1
-function! ToggleHJKLCompatiableMode()
-    if s:hjkl_compatiable_mode == 1
-        let s:hjkl_compatiable_mode = 0
-        vnoremap h o
-        vnoremap o i
-        vnoremap i k
-        vnoremap j h
-        vnoremap k j
-        vnoremap l l
-        nnoremap h o
-        nnoremap o i
-        nnoremap i k
-        nnoremap j h
-        nnoremap k j
-        nnoremap l l
-    else
-        let s:hjkl_compatiable_mode = 1
-        vunmap h
-        vunmap o
-        vunmap i
-        vunmap j
-        vunmap k
-        vunmap l
-        nunmap o
-        nunmap h
-        nunmap i
-        nunmap j
-        nunmap k
-        nunmap l
-    endif
-endfunction
-nnoremap <leader>hj :call ToggleHJKLCompatiableMode()<cr>
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 command! CloseHiddenBuffers call s:CloseHiddenBuffers()
 function! s:CloseHiddenBuffers()
     let open_buffers = []
-
     for i in range(tabpagenr('$'))
         call extend(open_buffers, tabpagebuflist(i + 1))
     endfor
-
     for num in range(1, bufnr("$") + 1)
         if buflisted(num) && index(open_buffers, num) == -1
             exec "bdelete ".num
         endif
     endfor
 endfunction
-map <leader>hc :CloseHiddenBuffers<cr>
 
 " Help Windows
 if v:version >= 800
@@ -520,8 +275,8 @@ endfunction
 " Extra Normal Mode Mapping 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
-noremap = gg=G''
-noremap \ $
+noremap \ gg=G''
+noremap = $
 noremap <nowait> q ZQ
 noremap <nowait> Q q
 
@@ -612,20 +367,18 @@ if executable("cquery")
     nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<cr>
     nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<cr>
     nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>:copen<cr>:wincmd L<cr>
-    nnoremap <silent> <leader>gn :call LanguageClient_textDocument_rename()<cr>
-    nnoremap <silent> <leader>gm :call LanguageClient_textDocument_implementation()<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_codeAction<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_rangeFormatting<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_completion()<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_textDocument_typeDefinition()<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_workspace_symbol()<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_workspace_applyEdit()<cr>
-    nnoremap <silent> <leader>gu :call LanguageClient_workspace_executeCommand()<cr>
-    nnoremap <silent> <leader>gx :call LanguageClient_contextMenu()<cr>
-    nnoremap <silent> <leader>gc :call LanguageClient_cquery_vars()<cr>
-    nnoremap <silent> <leader>gc :call LanguageClient_cquery_base()<cr>
-    nnoremap <silent> <leader>gc :call LanguageClient_cquery_derived()<cr>
-    nnoremap <silent> <leader>gc :call LanguageClient_cquery_callers()<cr>
+    nnoremap <silent> <leader>ge :call LanguageClient_textDocument_rename()<cr>
+    nnoremap <silent> <leader>gi :call LanguageClient_textDocument_implementation()<cr>
+    nnoremap <silent> <leader>ga :call LanguageClient_textDocument_codeAction()<cr>
+    nnoremap <silent> <leader>gt :call LanguageClient_textDocument_typeDefinition()<cr>
+    nnoremap <silent> <leader>gxs :call LanguageClient_workspace_symbol()<cr>
+    nnoremap <silent> <leader>gxa :call LanguageClient_workspace_applyEdit()<cr>
+    nnoremap <silent> <leader>gxe :call LanguageClient_workspace_executeCommand()<cr>
+    nnoremap <silent> <leader>gxx :call LanguageClient_contextMenu()<cr>
+    nnoremap <silent> <leader>gxv :call LanguageClient_cquery_vars()<cr>
+    nnoremap <silent> <leader>gxb :call LanguageClient_cquery_base()<cr>
+    nnoremap <silent> <leader>gxd :call LanguageClient_cquery_derived()<cr>
+    nnoremap <silent> <leader>gxc :call LanguageClient_cquery_callers()<cr>
 endif
 
 " :W sudo saves the file
@@ -675,7 +428,7 @@ func! Exec(command)
 endfunct!
 
 """""""""""""""""""""""""""""""""""""""""
-"" Code/Text AutoFormat
+"" Code/Text AutoFormat,AutoComplete
 """""""""""""""""""""""""""""""""""""""""
 function! SetAutoFormatProgram()
     if &filetype == 'c'
@@ -693,6 +446,8 @@ function! SetAutoFormatProgram()
     elseif &ft  == 'python'
         setlocal makeprg=python\ %
     endif
+    set formatexpr=LanguageClient_textDocument_rangeFormatting()
+    set omnifunc=LanguageClient#complete
 endfunction
 
 
@@ -726,8 +481,15 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
+" => VIM user interface element
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Statusline and necesagr options
+set laststatus=2 "In order to show the lightline
+set showcmd      "Always print current keystroke
+set ruler        "Always show current position
+set cmdheight=1  "Height of the command bar
+set statusline=
+
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='cn'
 set langmenu=cn
@@ -847,20 +609,15 @@ set scrolloff=0    " allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 function! DisplayReloadTheme()
     try 
         colorscheme sublimemonokai
     catch
         silent! colorscheme desert
     endtry
-
+    " Set the Syntax
     syntax on
-
     set cursorline
-
-    :LightlineReload
-
     " set extra options when running in gui mode
     if has("gui_running")
         set guioptions-=t
@@ -868,29 +625,24 @@ function! DisplayReloadTheme()
         set guitablabel=%m\ %t
         set t_Co=256
     endif
-
     if $TERM  =~? '256color'
         set t_Co=256
         if v:version >= 800
             set termguicolors
         endif
     endif
-
     set nonumber
     set foldcolumn=1
-
     " show hidden chars using shortcuts
     set list
     set listchars=tab:␉·,eol:␤,nbsp:▓
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " overrite color scheme for the listchars "#649a9a
-
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight QuickFixLine term=reverse gui=reverse ctermbg=254 guibg=#000000
-
+    " change cursor style dependent on mode
     if v:version >= 800
-        " change cursor style dependent on mode
         if empty($tmux)
             let &t_si = "\<esc>]50;cursorshape=1\x7"
             let &t_ei = "\<esc>]50;cursorshape=0\x7"
@@ -901,9 +653,22 @@ function! DisplayReloadTheme()
             let &t_sr = "\<esc>ptmux;\<esc>\<esc>]50;cursorshape=2\x7\<esc>\\"
         endif
     endif
-
-    :nohlsearch
-
+    " Statusline
+    set statusline=
+    set statusline+=\ ↑%n↑
+    set statusline+=\ %f\ %r%w         " filename and flags
+    set statusline+=\ %(行%l⋅列%c%)    " row,column,virtual-column
+    set statusline+=%=%<               " force space and start cut if too long
+    " set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight type on word
+    set statusline+=\ [%{&ft}]         " flags and filetype
+    set statusline+=\ [U+%B]:%-04O     " unicode under cursor && offset from start of file
+    set statusline+=\ %P\              " percentage of the file
+    highlight Statusline cterm=bold ctermfg=59 ctermbg=235 gui=bold guifg=black guibg=#b0dfe5
+    highlight StatusLineNC cterm=NONE ctermfg=239 ctermbg=59 gui=NONE guibg=#64645e guifg=#75715E
+    " Tabline
+    highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 gui=NONE guifg=black guibg=#555555 
+    highlight TabLineSel cterm=bold ctermfg=231 ctermbg=252 gui=bold guifg=red guibg=#36454F
+    highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 gui=NONE guifg=#8F908A guibg=#555555
 endfunction
 
 call DisplayReloadTheme()
@@ -915,8 +680,6 @@ call DisplayReloadTheme()
 if has("autocmd")
     augroup MYGROUP
         autocmd! *
-        " Apply my custom lightline theme
-        autocmd VimEnter * silent! LightlineTabLineTheme
 
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
@@ -952,7 +715,6 @@ if has("autocmd")
 
         autocmd FileType * :call SetAutoFormatProgram()
     augroup END
-
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -967,3 +729,4 @@ if exists("g:gui_oni")
     augroup END
 endif
 
+nohlsearch
