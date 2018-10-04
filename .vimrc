@@ -80,31 +80,30 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
+    """ this might take a few seconds to install, wait
+    Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
+    """ Python: pip install 'python-language-server[all]'
+    """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && make -j8 && make install
+    let g:LanguageClient_serverCommands = { 'rust': ['rustup', 'run', 'stable', 'rls'],
+                \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+                \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+                \ 'python': ['pyls'],
+                \ 'cpp': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery_cache/"}', ],
+                \ 'c':   ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery_cache/"}', ],
+                \ }
+    let g:LanguageClient_selectionUI="quickfix"
+    let g:LanguageClient_autoStop=0
+    let g:LanguageClient_fzfContextMenu=0
+
     if has( 'python' ) || has( 'python3' )
-        """ this might take a few seconds to install, wait
-        Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
-        """ Python: pip install 'python-language-server[all]'
-        """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && make -j8 && make install
-
-        let g:LanguageClient_serverCommands = {
-                    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
-                    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-                    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-                    \ 'python': ['pyls'],
-                    \ 'cpp': ['cquery', '--log-file=~/.local/cquery.log', 
-                    \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
-                    \        ],
-                    \ 'c':   ['cquery', '--log-file=~/.local/cquery.log', 
-                    \         '--init={"cacheDirectory":"~/.local/cquery_cache/"}',
-                    \        ],
-                    \ }
-        let g:LanguageClient_selectionUI="quickfix"
-
         Plug 'maralla/completor.vim'
         let g:completor_refresh_always = 0 "avoid flickering
-        "set trigger for language-client's omnifunc
+        let g:completor_complete_options = 'menuone,noselect'
         let g:completor_python_omni_trigger = ".*" 
         let g:completor_javascript_omni_trigger = ".*"
+        let g:completor_cpp_omni_trigger = '.*'
+        " let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
+        " nmap <tab> <Plug>CompletorCppJumpToPlaceholder
         inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
         inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
         inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
@@ -156,7 +155,9 @@ nmap gcc          <Plug>CommentaryLine
 " Go to Buffer
 nmap <leader>b :ls<cr>:buffer
 
-nmap <leader>cc :copen<cr>
+" quickfix window  displaying
+map <leader>f  :botright copen<cr>
+nmap <leader>d :cclose<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -198,6 +199,9 @@ map <leader>sp :setlocal spell!<cr>
 " Remove the Windows ^M - when the encodings gets messed up
 " noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
+" Repeat last typed command
+nnoremap <leader>; @:
+
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
 
@@ -213,59 +217,14 @@ map <leader>ez :e! ~/.zshrc<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>t  :tabnew<cr>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""        Special Windows Shortcuts    """"""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" quickfix window  displaying
-map <leader>f  :botright copen<cr>
-
 noremap <leader>r  :source $MYVIMRC<cr>
-
-function! TransBackground()
-    hi Normal ctermbg=NONE guibg=NONE
-    hi NonText ctermbg=NONE guibg=NONE
-    hi clear CursorLine
-    hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE
-endfunction
-
-command! CloseHiddenBuffers call s:CloseHiddenBuffers()
-function! s:CloseHiddenBuffers()
-    let open_buffers = []
-    for i in range(tabpagenr('$'))
-        call extend(open_buffers, tabpagebuflist(i + 1))
-    endfor
-    for num in range(1, bufnr("$") + 1)
-        if buflisted(num) && index(open_buffers, num) == -1
-            exec "bdelete ".num
-        endif
-    endfor
-endfunction
 
 " Help Windows
 if v:version >= 800
-    map <leader>hh :helpclose<cr>
+    map <leader>h :helpclose<cr>
 endif
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Zoomed Window
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nmap  <silent> <leader>z   :call ToggleOnlyWindow()<cr>:normal! zz<cr>
-let s:zoomed_windows_b = 0
-function! ToggleOnlyWindow()
-    if s:zoomed_windows_b == 0
-        let s:zoomed_windows_b = 1
-        wincmd _ " slient call feedkeys('\<C-w>_')
-        vertical resize 100
-        normal! zz
-    else
-        let s:zoomed_windows_b = 0
-        wincmd =
-        normal! zz
-    endif
-endfunction
-" mksession! ~/.vim/zoom_windows_layout_session_tmp.vim
-" wincmd o "only windows
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " END of Leader Key mapping
@@ -295,12 +254,12 @@ nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 " To go to the next/previous quickfix/linter entry
-nmap <silent> [p :cp<cr>zz 
-nmap <silent> ]p :cn<cr>zz
+nnoremap <silent> [p :cp<cr>zz 
+nnoremap <silent> ]p :cn<cr>zz
 
 " To go to the next/previous quickfix/linter entry in a different file
-nmap <silent> [l :cpf<cr>zz 
-nmap <silent> ]l :cnf<cr>zz
+nnoremap <silent> [l :cpf<cr>zz 
+nnoremap <silent> ]l :cnf<cr>zz
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -343,37 +302,31 @@ if has("cscope")
     set cscopeverbose
 
     " Find assignments to this symbol
-    map <leader>ga  :cs find a <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>ga  :cs find a <c-r>=expand("<cword>")<cr>
     " search for c symbol
-    map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr>
     " seach for global definition
-    map <leader>gg  :cs find g <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gg  :cs find g <c-r>=expand("<cword>")<cr>
     " search functions that call this function
-    map <leader>gc  :cs find c <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gc  :cs find c <c-r>=expand("<cword>")<cr>
     " search this string
-    map <leader>gt  :cs find t <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gt  :cs find t <c-r>=expand("<cword>")<cr>
     " egrep pattern matching
-    map <leader>ge  :cs find e <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>ge  :cs find e <c-r>=expand("<cword>")<cr>
     " search this file
-    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr>
     " search files that include this file
-    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr><cr>zz:botright copen<cr><c-w>p
+    map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr>
 endif
 
 if executable("cquery")
     nnoremap <silent> <leader>gh :call LanguageClient_textDocument_hover()<cr>
     nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<cr>
     nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<cr>
-    nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>:copen<cr>:wincmd L<cr>
+    nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>
     nnoremap <silent> <leader>ge :call LanguageClient_textDocument_rename()<cr>
-    nnoremap <silent> <leader>gi :call LanguageClient_textDocument_implementation()<cr>
-    nnoremap <silent> <leader>ga :call LanguageClient_textDocument_codeAction()<cr>
-    nnoremap <silent> <leader>gt :call LanguageClient_textDocument_typeDefinition()<cr>
-    nnoremap <silent> <leader>gxs :call LanguageClient_workspace_symbol()<cr>
-    nnoremap <silent> <leader>gxa :call LanguageClient_workspace_applyEdit()<cr>
-    nnoremap <silent> <leader>gxe :call LanguageClient_workspace_executeCommand()<cr>
     nnoremap <silent> <leader>gxx :call LanguageClient_contextMenu()<cr>
     nnoremap <silent> <leader>gxv :call LanguageClient_cquery_vars()<cr>
     nnoremap <silent> <leader>gxb :call LanguageClient_cquery_base()<cr>
@@ -419,6 +372,10 @@ func! CleanExtraSpaces()
     call setreg('/', old_query)
 endfun
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""        Utility Functions    """"""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " userful to redirect internal command output to paste buffer
 func! Exec(command)
     redir =>output
@@ -427,33 +384,39 @@ func! Exec(command)
     return output
 endfunct!
 
-"""""""""""""""""""""""""""""""""""""""""
-"" Code/Text AutoFormat,AutoComplete
-"""""""""""""""""""""""""""""""""""""""""
-function! SetAutoFormatProgram()
-    if &filetype == 'c'
-        if executable('clang-format')
-            if empty(glob('~/.clang-format'))
-                setlocal equalprg=clang-format\ --style='Webkit'
-            else
-                setlocal equalprg=clang-format\ --style='file'
-            endif
-        endif
-    elseif &ft  == 'javascript'
-        if executable('js-beautify')
-            " setlocal equalprg='js-beautify '
-        endif
-    elseif &ft  == 'python'
-        setlocal makeprg=python\ %
-    endif
-    set formatexpr=LanguageClient_textDocument_rangeFormatting()
-    set omnifunc=LanguageClient#complete
+" The function Nr2Bin() returns the binary string representation of a number.
+function! Nr2Bin(nr)
+    let n = a:nr
+    let r = ""
+    while n
+        let r = '01'[n % 2] . r
+        let n = n / 2
+    endwhile
+    return r
+endfunc
+
+function! TransBackground()
+    hi Normal ctermbg=NONE guibg=NONE
+    hi NonText ctermbg=NONE guibg=NONE
+    hi clear CursorLine
+    hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE
 endfunction
 
+command! CloseHiddenBuffers call s:CloseHiddenBuffers()
+function! s:CloseHiddenBuffers()
+    let open_buffers = []
+    for i in range(tabpagenr('$'))
+        call extend(open_buffers, tabpagebuflist(i + 1))
+    endfor
+    for num in range(1, bufnr("$") + 1)
+        if buflisted(num) && index(open_buffers, num) == -1
+            exec "bdelete ".num
+        endif
+    endfor
+endfunction
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 iab xdate2 <c-r>=strftime("%F")<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -596,7 +559,6 @@ set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 set autowrite
 set mouse=a
 set notimeout
@@ -605,6 +567,33 @@ set timeoutlen=500 " For <leader> mapping
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
+
+"""""""""""""""""""""""""""""""""""""""""
+"" Code/Text AutoFormat,AutoComplete
+"""""""""""""""""""""""""""""""""""""""""
+function! SetupCodeEnvironment()
+    "set trigger for language-client's omnifunc
+    setlocal formatexpr=LanguageClient_textDocument_rangeFormatting()
+    setlocal omnifunc=LanguageClient#complete
+    if &filetype == 'c'
+        if executable('cquery-clang-format')
+            if empty(glob('~/.clang-format'))
+                setlocal equalprg=cquery-clang-format\ --style='Webkit'
+            else
+                setlocal equalprg=cquery-clang-format\ --style='file'
+            endif
+        endif
+    elseif &ft  == 'javascript'
+        if executable('js-beautify')
+            " setlocal equalprg='js-beautify '
+        endif
+    elseif &ft  == 'python'
+        setlocal makeprg=python\ %
+    else
+        setlocal formatexpr=
+        setlocal omnifunc=
+    endif
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
@@ -634,8 +623,8 @@ function! DisplayReloadTheme()
     set nonumber
     set foldcolumn=1
     " show hidden chars using shortcuts
-    set list
     set listchars=tab:␉·,eol:␤,nbsp:▓
+    set list
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " overrite color scheme for the listchars "#649a9a
@@ -713,7 +702,7 @@ if has("autocmd")
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
-        autocmd FileType * :call SetAutoFormatProgram()
+        autocmd FileType * :call SetupCodeEnvironment()
     augroup END
 endif
 
