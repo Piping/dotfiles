@@ -1,4 +1,3 @@
-
 " ███████╗██╗  ██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗
 " ██╔════╝██║  ╚██╗ ██╔╝████╗ ████║██╔══██╗████╗  ██║
 " █████╗  ██║   ╚████╔╝ ██╔████╔██║███████║██╔██╗ ██║
@@ -46,6 +45,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """""""""""""""""""""""""""""
     Plug 'ErichDonGubler/vim-sublime-monokai'
+    Plug 'sheerun/vim-polyglot'
     """"""""""""""""""""""""""""""
 
     """""""""""""""""""""""""""""" "On demand loading
@@ -81,19 +81,16 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """"""""""""""""""""""""""""""
     """ this might take a few seconds to install, wait
-    Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
+    " Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
     """ Python: pip install 'python-language-server[all]'
     """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && make -j8 && make install
-    let g:LanguageClient_serverCommands = { 'rust': ['rustup', 'run', 'stable', 'rls'],
-                \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-                \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-                \ 'python': ['pyls'],
-                \ 'cpp': ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery_cache/"}', ],
-                \ 'c':   ['cquery', '--log-file=/tmp/cquery.log', '--init={"cacheDirectory":"/tmp/cquery_cache/"}', ],
+
+    Plug 'natebosch/vim-lsc'
+    let g:lsc_server_commands = {
+                \ 'c': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
+                \ 'cpp': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
+                \ 'python' : 'pyls',
                 \ }
-    let g:LanguageClient_selectionUI="quickfix"
-    let g:LanguageClient_autoStop=0
-    let g:LanguageClient_fzfContextMenu=0
 
     if has( 'python' ) || has( 'python3' )
         Plug 'maralla/completor.vim'
@@ -101,7 +98,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         let g:completor_complete_options = 'menuone,noselect'
         let g:completor_python_omni_trigger = ".*" 
         let g:completor_javascript_omni_trigger = ".*"
-        let g:completor_cpp_omni_trigger = '.*'
+        let g:completor_cpp_omni_trigger = '.{3,}'
         " let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
         " nmap <tab> <Plug>CompletorCppJumpToPlaceholder
         inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -289,50 +286,11 @@ cnoremap <C-Y> <C-R>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Code Navigation - Cscope/LanguageClient
+" => Terminal mode mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("cscope")
-    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
-
-    " add any cscope database in current directory
-    map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
-
-    " show msg when any other cscope db added
-    set cscopeverbose
-
-    " Find assignments to this symbol
-    map <leader>ga  :cs find a <c-r>=expand("<cword>")<cr>
-    " search for c symbol
-    map <leader>gs  :cs find s <c-r>=expand("<cword>")<cr>
-    " seach for global definition
-    map <leader>gg  :cs find g <c-r>=expand("<cword>")<cr>
-    " search functions that call this function
-    map <leader>gc  :cs find c <c-r>=expand("<cword>")<cr>
-    " search this string
-    map <leader>gt  :cs find t <c-r>=expand("<cword>")<cr>
-    " egrep pattern matching
-    map <leader>ge  :cs find e <c-r>=expand("<cword>")<cr>
-    " search this file
-    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr>
-    " search files that include this file
-    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
-    " search for functions are called by this function
-    map <leader>gd  :cs find d <c-r>=expand("<cword>")<cr>
-endif
-
-if executable("cquery")
-    nnoremap <silent> <leader>gh :call LanguageClient_textDocument_hover()<cr>
-    nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<cr>
-    nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<cr>
-    nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<cr>
-    nnoremap <silent> <leader>ge :call LanguageClient_textDocument_rename()<cr>
-    nnoremap <silent> <leader>gxx :call LanguageClient_contextMenu()<cr>
-    nnoremap <silent> <leader>gxv :call LanguageClient_cquery_vars()<cr>
-    nnoremap <silent> <leader>gxb :call LanguageClient_cquery_base()<cr>
-    nnoremap <silent> <leader>gxd :call LanguageClient_cquery_derived()<cr>
-    nnoremap <silent> <leader>gxc :call LanguageClient_cquery_callers()<cr>
-endif
+tnoremap <Esc> <c-\><c-n>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
@@ -568,18 +526,60 @@ set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Code Navigation - Cscope/LanguageClient
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cscope")
+    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+    " add any cscope database in current directory
+    map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
+    " show msg when any other cscope db added
+    set cscopeverbose
+    " Find assignments to this symbol
+    map <leader>ga  :cs find a <c-r><c-w><cr>
+    " search for c symbol
+    map <leader>gs  :cs find s <c-r><c-w><cr>
+    " seach for global definition
+    map <leader>gg  :cs find g <c-r><c-w><cr>
+    " search functions that call this function
+    map <leader>gc  :cs find c <c-r><c-w><cr>
+    " search this string
+    map <leader>gt  :cs find t <c-r><c-w><cr>
+    " egrep pattern matching
+    map <leader>ge  :cs find e <c-r><c-w><cr>
+    " search this file
+    map <leader>gf  :cs find f <c-r><c-p><cr>
+    " search files that include this file
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
+    " search for functions are called by this function
+    map <leader>gd  :cs find d <c-r><c-w><cr>
+endif
+if executable("cquery")
+    nnoremap <silent> <leader>gh :LSClientShowHover<cr>
+    nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
+    nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
+    nnoremap <silent> <leader>gs :LSClientDocumentSymbol<cr>
+    nnoremap <silent> <leader>gn :LSClientRename<cr>
+    nnoremap <silent> <leader>gxx :LSClientFindCodeActions<cr>
+    nnoremap <silent> <leader>gxi :LSClientFindImplementations<cr>
+    nnoremap <silent> <leader>gxs :LSClientWorkspaceSymbol<cr>
+endif
+
 """""""""""""""""""""""""""""""""""""""""
 "" Code/Text AutoFormat,AutoComplete
 """""""""""""""""""""""""""""""""""""""""
 function! SetupCodeEnvironment()
     "set trigger for language-client's omnifunc
-    setlocal formatexpr=LanguageClient_textDocument_rangeFormatting()
-    setlocal omnifunc=LanguageClient#complete
-    if &filetype == 'c'
+    setlocal formatprg=
+    setlocal formatexpr=
+    setlocal omnifunc=lsc#complete#complete
+    if &filetype == 'c' || &filetype == 'cpp'
         if executable('cquery-clang-format')
             if empty(glob('~/.clang-format'))
+                setlocal formatprg=cquery-clang-format\ --style='Webkit'
                 setlocal equalprg=cquery-clang-format\ --style='Webkit'
             else
+                setlocal formatprg=cquery-clang-format\ --style='file'
                 setlocal equalprg=cquery-clang-format\ --style='file'
             endif
         endif
@@ -590,6 +590,8 @@ function! SetupCodeEnvironment()
     elseif &ft  == 'python'
         setlocal makeprg=python\ %
     else
+        setlocal formatprg=
+        setlocal formatexpr=
         setlocal formatexpr=
         setlocal omnifunc=
     endif
@@ -658,6 +660,8 @@ function! DisplayReloadTheme()
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 gui=NONE guifg=black guibg=#555555 
     highlight TabLineSel cterm=bold ctermfg=231 ctermbg=252 gui=bold guifg=red guibg=#36454F
     highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 gui=NONE guifg=#8F908A guibg=#555555
+    " Customer User Color %1*text%0* 
+    " highlight User1 cterm=NONE ctermfg=59 ctermfg=235 gui=bold guifg=red guibg=#b0dfe5
 endfunction
 
 call DisplayReloadTheme()
