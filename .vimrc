@@ -39,21 +39,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     call plug#begin('~/.vim/plugged')
 
-    """"""""""""""""""""""""""""""
-    Plug 'mhinz/vim-startify'
-    """"""""""""""""""""""""""""""
-
-    """""""""""""""""""""""""""""
-    Plug 'ErichDonGubler/vim-sublime-monokai'
-    Plug 'sheerun/vim-polyglot'
-    """"""""""""""""""""""""""""""
-
     """""""""""""""""""""""""""""" "On demand loading
     Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'posva/vim-vue', { 'for': 'vue' }
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -67,44 +54,16 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
     " Command Line Maunal
-    " Option name      	 Shortcut key    	 Abbreviated 	 Global variable
-    " filter           	 CTRL-F          	 [gv]/.*/
-    " left_margin      	 CTRL-L          	 l[0-9]+
-    " right_margin     	 CTRL-R          	 r[0-9]+
-    " stick_to_left    	 <Left>, <Right> 	 < or >
-    " ignore_groups    	 CTRL-G          	 ig\[.*\]    	 g:easy_align_ignore_groups
-    " ignore_unmatched 	 CTRL-U          	 iu[01]      	 g:easy_align_ignore_unmatched
-    " indentation      	 CTRL-I          	 i[ksdn]     	 g:easy_align_indentation
-    " delimiter_align  	 CTRL-D          	 d[lrc]      	 g:easy_align_delimiter_align
-    " align            	 CTRL-A          	 a[lrc*]*
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    """ this might take a few seconds to install, wait
-    " Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', }
-    """ Python: pip install 'python-language-server[all]'
-    """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && make -j8 && make install
-
-    Plug 'natebosch/vim-lsc'
-    let g:lsc_server_commands = {
-                \ 'c': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
-                \ 'cpp': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
-                \ 'python' : 'pyls',
-                \ }
-
-    if has( 'python' ) || has( 'python3' )
-        Plug 'maralla/completor.vim'
-        let g:completor_refresh_always = 0 "avoid flickering
-        let g:completor_complete_options = 'menuone,noselect'
-        let g:completor_python_omni_trigger = ".*" 
-        let g:completor_javascript_omni_trigger = ".*"
-        let g:completor_cpp_omni_trigger = '.{3,}'
-        " let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
-        " nmap <tab> <Plug>CompletorCppJumpToPlaceholder
-        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
-    endif
+    " Option name       Shortcut key      Abbreviated   Global variable
+    " filter            CTRL-F            [gv]/.*/
+    " left_margin       CTRL-L            l[0-9]+
+    " right_margin      CTRL-R            r[0-9]+
+    " stick_to_left     <Left>, <Right>   < or >
+    " ignore_groups     CTRL-G            ig\[.*\]      g:easy_align_ignore_groups
+    " ignore_unmatched  CTRL-U            iu[01]        g:easy_align_ignore_unmatched
+    " indentation       CTRL-I            i[ksdn]       g:easy_align_indentation
+    " delimiter_align   CTRL-D            d[lrc]        g:easy_align_delimiter_align
+    " align             CTRL-A            a[lrc*]*
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -119,6 +78,46 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'wellle/targets.vim'
     """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'natebosch/vim-lsc'
+    let g:lsc_server_commands = {
+                \ 'c': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
+                \ 'cpp': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
+                \ 'python' : 'pyls',
+                \ }
+    """ Language Server Installation hint:
+    """ Python: pip install 'python-language-server[all]'
+    """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build 
+    """      cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
+    """      make -j8 && make install
+
+    if has( 'python' ) || has( 'python3' )
+        Plug 'maralla/completor.vim'
+        let g:completor_refresh_always = 0 "avoid flickering
+        let g:completor_complete_options = 'menuone,noselect'
+        let g:completor_python_omni_trigger = ".*" 
+        let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
+
+        """ for c/cpp, using either trigger or built-in support
+        " let g:completor_cpp_omni_trigger = '(\\.|->|#|::)\\s*(\\w*)$'
+        let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
+        nmap <tab> <Plug>CompletorCppJumpToPlaceholder
+
+        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    endif
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'mhinz/vim-startify'
+    """"""""""""""""""""""""""""""
+
+    """"""""""syntax and colorscheme"""""""""""""""""""
+    Plug 'ErichDonGubler/vim-sublime-monokai'
+    Plug 'sheerun/vim-polyglot'
+    """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
     Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -285,7 +284,6 @@ cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-Y> <C-R>"
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Terminal mode mappings
