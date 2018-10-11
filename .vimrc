@@ -598,6 +598,32 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Rename tabs to show tab number.
+" (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
+function! MyTabLine()
+    let s = ''
+    let t = tabpagenr()
+    let i = 1
+    while i <= tabpagenr('$')
+        let buflist = tabpagebuflist(i)
+        let winnr = tabpagewinnr(i)
+        let s .= (i == t ? '%#TabNumSel#' : '%#TabNum#')
+        let s .= ' ' . i . ' '
+        let s .= (i == t ? '%#TabLineSel#' : '%#TabLine#')
+        let file = bufname(buflist[winnr - 1])
+        let file = pathshorten(fnamemodify(file, ':p:~:.'))
+        let s .= ' ' . (file =='' ? '[No Name]' : file)
+        let nwins = tabpagewinnr(i, '$')
+        if nwins > 1
+            let s .= ' ' . '(' . winnr . '/' . nwins . ')'
+        endif
+        let s .= i < tabpagenr('$') ? ' %#TabLine#|' : ' '
+        let i = i + 1
+    endwhile
+    let s .= '%T%#TabLineFill#'
+    return s
+endfunction
+
 function! DisplayReloadTheme()
     try 
         colorscheme sublimemonokai
@@ -652,6 +678,7 @@ function! DisplayReloadTheme()
     set statusline+=\ [%{&ft}]         " flags and filetype
     set statusline+=\ [U+%B]:%-04O     " unicode under cursor && offset from start of file
     set statusline+=\ %P\              " percentage of the file
+    set tabline=%!MyTabLine()
     highlight Statusline cterm=bold ctermfg=59 ctermbg=235 gui=bold guifg=black guibg=#b0dfe5
     highlight StatusLineNC cterm=NONE ctermfg=239 ctermbg=59 gui=NONE guibg=#64645e guifg=#75715E
     " Tabline
