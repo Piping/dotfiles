@@ -39,37 +39,14 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     call plug#begin('~/.vim/plugged')
 
-    """""""""""""""""""""""""""""" "On demand loading
-    Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
+    """"""""""""""""""""""""""""""
+    Plug 'mhinz/vim-startify'
     """"""""""""""""""""""""""""""
 
-    """"""""""""""""""""""""""""""
-    Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
-    " Command Line Maunal
-    " Option name       Shortcut key      Abbreviated   Global variable
-    " filter            CTRL-F            [gv]/.*/
-    " left_margin       CTRL-L            l[0-9]+
-    " right_margin      CTRL-R            r[0-9]+
-    " stick_to_left     <Left>, <Right>   < or >
-    " ignore_groups     CTRL-G            ig\[.*\]      g:easy_align_ignore_groups
-    " ignore_unmatched  CTRL-U            iu[01]        g:easy_align_ignore_unmatched
-    " indentation       CTRL-I            i[ksdn]       g:easy_align_indentation
-    " delimiter_align   CTRL-D            d[lrc]        g:easy_align_delimiter_align
-    " align             CTRL-A            a[lrc*]*
-    """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
-    let g:goyo_width=130
-    """"""""""""""""""""""""""""""
+    """"""""""syntax and colorscheme"""""""""""""""""""
+    Plug 'ErichDonGubler/vim-sublime-monokai'
+    Plug 'sheerun/vim-polyglot'
+    """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
     " VIM's OPERATOR/TEXT OBJECT "
@@ -96,31 +73,44 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         Plug 'maralla/completor.vim'
         let g:completor_refresh_always = 0 "avoid flickering
         let g:completor_complete_options = 'menuone,noselect'
-        let g:completor_python_omni_trigger = ".*" 
         let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
-
+        let g:completor_python_omni_trigger = ".*" 
         """ for c/cpp, using either trigger or built-in support
         " let g:completor_cpp_omni_trigger = '(\\.|->|#|::)\\s*(\\w*)$'
         let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
         nmap <tab> <Plug>CompletorCppJumpToPlaceholder
-
-        inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-        inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-        inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+    else " use vim-lsc's complete functionality
+        set completeopt-=preview
     endif
+    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
     """"""""""""""""""""""""""""""
-
-    """"""""""""""""""""""""""""""
-    Plug 'mhinz/vim-startify'
-    """"""""""""""""""""""""""""""
-
-    """"""""""syntax and colorscheme"""""""""""""""""""
-    Plug 'ErichDonGubler/vim-sublime-monokai'
-    Plug 'sheerun/vim-polyglot'
-    """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
     Plug 'tmux-plugins/vim-tmux-focus-events'
+    """"""""""""""""""""""""""""""
+
+    """""""""""""""""""""""""""""" "On demand loading
+    Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    ":h easyalign "check the helpdoc line 468 after load the plugin
+    Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)','EasyAlign']}
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
+    let g:goyo_width=130
     """"""""""""""""""""""""""""""
 
     call plug#end()
@@ -152,7 +142,7 @@ nmap gcc          <Plug>CommentaryLine
 nmap <leader>b :ls<cr>:buffer
 
 " quickfix window  displaying
-map <leader>f  :botright copen<cr>
+map <leader>cc  :botright copen<cr>
 nmap <leader>d :cclose<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -527,40 +517,39 @@ set scrolloff=0    " allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("cscope")
+if has("cscope") || executable("cquery") || true
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     " add any cscope database in current directory
     map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
     " show msg when any other cscope db added
     set cscopeverbose
     " Find assignments to this symbol
-    map <leader>ga  :cs find a <c-r><c-w><cr>
+    map <leader>fa  :cs find a <c-r><c-w><cr>
     " search for c symbol
-    map <leader>gs  :cs find s <c-r><c-w><cr>
+    map <leader>fs  :cs find s <c-r><c-w><cr>
     " seach for global definition
-    map <leader>gg  :cs find g <c-r><c-w><cr>
+    map <leader>fg  :cs find g <c-r><c-w><cr>
     " search functions that call this function
-    map <leader>gc  :cs find c <c-r><c-w><cr>
+    map <leader>fc  :cs find c <c-r><c-w><cr>
     " search this string
-    map <leader>gt  :cs find t <c-r><c-w><cr>
+    map <leader>ft  :cs find t <c-r><c-w><cr>
     " egrep pattern matching
-    map <leader>ge  :cs find e <c-r><c-w><cr>
+    map <leader>fe  :cs find e <c-r><c-w><cr>
     " search this file
-    map <leader>gf  :cs find f <c-r><c-p><cr>
+    map <leader>ff  :cs find f <c-r><c-p><cr>
     " search files that include this file
-    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
+    map <leader>fi  :cs find i <c-r>=expand("%:t")<cr><cr>
     " search for functions are called by this function
-    map <leader>gd  :cs find d <c-r><c-w><cr>
-endif
-if executable("cquery")
+    map <leader>fd  :cs find d <c-r><c-w><cr>
+
     nnoremap <silent> <leader>gh :LSClientShowHover<cr>
     nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
     nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
     nnoremap <silent> <leader>gs :LSClientDocumentSymbol<cr>
-    nnoremap <silent> <leader>gn :LSClientRename<cr>
-    nnoremap <silent> <leader>gxx :LSClientFindCodeActions<cr>
-    nnoremap <silent> <leader>gxi :LSClientFindImplementations<cr>
-    nnoremap <silent> <leader>gxs :LSClientWorkspaceSymbol<cr>
+    nnoremap <silent> <leader>gN :LSClientRename<cr>
+    nnoremap <silent> <leader>gx :LSClientFindCodeActions<cr>
+    nnoremap <silent> <leader>gI :LSClientFindImplementations<cr>
+    nnoremap <silent> <leader>gS :LSClientWorkspaceSymbol<cr>
 endif
 
 """""""""""""""""""""""""""""""""""""""""
@@ -568,8 +557,6 @@ endif
 """""""""""""""""""""""""""""""""""""""""
 function! SetupCodeEnvironment()
     "set trigger for language-client's omnifunc
-    setlocal formatprg=
-    setlocal formatexpr=
     setlocal omnifunc=lsc#complete#complete
     if &filetype == 'c' || &filetype == 'cpp'
         if executable('cquery-clang-format')
@@ -590,7 +577,7 @@ function! SetupCodeEnvironment()
     else
         setlocal formatprg=
         setlocal formatexpr=
-        setlocal formatexpr=
+        setlocal equalprg=
         setlocal omnifunc=
     endif
 endfunction
