@@ -566,18 +566,27 @@ function! SetupCodeEnvironment()
                 setlocal formatprg=cquery-clang-format\ --style='file'
                 setlocal equalprg=cquery-clang-format\ --style='file'
             endif
+        else
+            LSClientDisable
         endif
     elseif &ft  == 'javascript'
         if executable('js-beautify')
             " setlocal equalprg='js-beautify '
+        else
+            LSClientDisable
         endif
     elseif &ft  == 'python'
-        setlocal makeprg=python\ %
+        if executable('pyls')
+            setlocal makeprg=python\ %
+        else
+            LSClientDisable
+        endif
     else
         setlocal formatprg=
         setlocal formatexpr=
         setlocal equalprg=
         setlocal omnifunc=
+        LSClientDisable
     endif
 endfunction
 
