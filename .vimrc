@@ -68,28 +68,25 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build 
     """      cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
     """      make -j8 && make install
-
-    if has( 'python' ) || has( 'python3' )
-        Plug 'maralla/completor.vim'
-        let g:completor_refresh_always = 0 "avoid flickering
-        let g:completor_complete_options = 'menuone,noselect'
-        let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
-        let g:completor_python_omni_trigger = ".*" 
-        """ for c/cpp, using either trigger or built-in support
-        " let g:completor_cpp_omni_trigger = '(\\.|->|#|::)\\s*(\\w*)$'
-        let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
-        nmap <tab> <Plug>CompletorCppJumpToPlaceholder
-    else " use vim-lsc's complete functionality
-        set completeopt-=preview
-    endif
+    set pumheight=25
     inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
-    """"""""""""""""""""""""""""""
 
-    """"""""""""""""""""""""""""""
-    Plug 'tmux-plugins/vim-tmux-focus-events'
-    """"""""""""""""""""""""""""""
+    if has( 'python3' )
+        Plug 'maralla/completor.vim'
+        " let g:completor_refresh_always = 0 "avoid flickering
+        let g:completor_complete_options = 'menuone,noselect'
+        let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
+        " builtin support
+        let g:completor_python_binary = "/usr/local/bin/python3" 
+        let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
+        nmap <tab> <Plug>CompletorCppJumpToPlaceholder
+    else " use vim-lsc's complete functionality
+        Plug 'piping/vim-asyncomplete'
+        set completeopt-=preview
+    endif
+    """""""""""""""""""""""""""""
 
     """""""""""""""""""""""""""""" "On demand loading
     Plug 'chrisbra/Colorizer', { 'on': [ 'ColorHighlight', 'ColorToggle' ] }
