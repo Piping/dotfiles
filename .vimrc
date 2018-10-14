@@ -63,6 +63,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
                 \ 'cpp': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
                 \ 'python' : 'pyls',
                 \ }
+    let g:lsc_enable_diagnostics = 0
     """ Language Server Installation hint:
     """ Python: pip install 'python-language-server[all]'
     """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build 
@@ -73,7 +74,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 
-    if has( 'python3' )
+    if has( 'python3' ) || has('python')
         Plug 'maralla/completor.vim'
         " let g:completor_refresh_always = 0 "avoid flickering
         let g:completor_complete_options = 'menuone,noselect'
@@ -82,9 +83,10 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         let g:completor_python_binary = "/usr/local/bin/python3" 
         let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
         nmap <tab> <Plug>CompletorCppJumpToPlaceholder
-    else " use vim-lsc's complete functionality
-        Plug 'piping/vim-asyncomplete'
-        set completeopt-=preview
+    else
+        echohl WarningMsg
+        echomsg "maralla/completor is not enabled due to lack of python support"
+        echohl NONE
     endif
     """""""""""""""""""""""""""""
 
