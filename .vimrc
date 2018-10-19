@@ -557,6 +557,7 @@ endif
 function! SetupCodeEnvironment()
     "set trigger for language-client's omnifunc
     setlocal omnifunc=lsc#complete#complete
+    let s:code_support_enabled = 0
     if &filetype == 'c' || &filetype == 'cpp'
         if executable('cquery-clang-format')
             if empty(glob('~/.clang-format'))
@@ -566,18 +567,21 @@ function! SetupCodeEnvironment()
                 setlocal formatprg=cquery-clang-format\ --style='file'
                 setlocal equalprg=cquery-clang-format\ --style='file'
             endif
+            let s:code_support_enabled = 1
         else
             LSClientDisable
         endif
     elseif &ft  == 'javascript'
         if executable('js-beautify')
             " setlocal equalprg='js-beautify '
+            let s:code_support_enabled = 1
         else
             LSClientDisable
         endif
     elseif &ft  == 'python'
         if executable('pyls')
             setlocal makeprg=python\ %
+            let s:code_support_enabled = 1
         else
             LSClientDisable
         endif
@@ -587,6 +591,13 @@ function! SetupCodeEnvironment()
         setlocal equalprg=
         setlocal omnifunc=
         LSClientDisable
+        " only cares about above filetypes
+        let s:code_support_enabled = 1
+    endif
+    if s:code_support_enabled == 0
+        echohl WarningMsg
+        echomsg "LanguageClient is not enabled due to lack of ".&ft." Language Server Support"
+        echohl NONE
     endif
 endfunction
 
