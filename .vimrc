@@ -581,6 +581,7 @@ function! SetupCodeEnvironment()
     elseif &ft  == 'python'
         if executable('pyls')
             setlocal makeprg=python\ %
+            setlocal equalprg=autopep8\ --in-place\ --aggressive
             let s:code_support_enabled = 1
         else
             LSClientDisable
@@ -659,9 +660,11 @@ function! DisplayReloadTheme()
     set list
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
-    " overrite color scheme for the listchars "#649a9a
+    " override color scheme for the listchars "#649a9a
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight QuickFixLine term=reverse gui=reverse ctermbg=254 guibg=#000000
+    " override Seach Highlight to make cursor more obvious
+    highlight Search cterm=bold ctermbg=Brown ctermfg=White gui=bold guibg=Brown guifg=White
     " change cursor style dependent on mode
     if v:version >= 800
         if empty($tmux)
@@ -726,8 +729,8 @@ if has("autocmd")
             autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
             autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
             " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-            autocmd FocusGained * :call DisplayReloadTheme()
-            autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
+            " autocmd FocusGained * :call DisplayReloadTheme()
+            " autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
         endif
 
         " smart cursorline
