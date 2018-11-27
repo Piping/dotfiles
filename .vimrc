@@ -557,7 +557,7 @@ endif
 function! SetupCodeEnvironment()
     "set trigger for language-client's omnifunc
     setlocal omnifunc=lsc#complete#complete
-    let s:code_support_enabled = 0
+    let s:code_support_no_warning = 0
     if &filetype == 'c' || &filetype == 'cpp'
         if executable('cquery-clang-format')
             if empty(glob('~/.clang-format'))
@@ -567,14 +567,14 @@ function! SetupCodeEnvironment()
                 setlocal formatprg=cquery-clang-format\ --style='file'
                 setlocal equalprg=cquery-clang-format\ --style='file'
             endif
-            let s:code_support_enabled = 1
+            let s:code_support_no_warning = 1
         else
             LSClientDisable
         endif
     elseif &ft  == 'javascript'
         if executable('js-beautify')
             " setlocal equalprg='js-beautify '
-            let s:code_support_enabled = 1
+            let s:code_support_no_warning = 1
         else
             LSClientDisable
         endif
@@ -582,7 +582,7 @@ function! SetupCodeEnvironment()
         if executable('pyls')
             setlocal makeprg=python\ %
             setlocal equalprg=autopep8\ --in-place\ --aggressive
-            let s:code_support_enabled = 1
+            let s:code_support_no_warning = 1
         else
             LSClientDisable
         endif
@@ -593,10 +593,11 @@ function! SetupCodeEnvironment()
         setlocal omnifunc=
         LSClientDisable
         " only cares about above filetypes
-        let s:code_support_enabled = 1
+        let s:code_support_no_warning = 1
     endif
-    if s:code_support_enabled == 0
+    if s:code_support_no_warning == 0
         echohl WarningMsg
+        redraw " to avoid hit-enter prompt
         echomsg "LanguageClient is not enabled due to lack of ".&ft." Language Server Support"
         echohl NONE
     endif
@@ -653,7 +654,7 @@ function! DisplayReloadTheme()
             set termguicolors
         endif
     endif
-    set nonumber
+    set number
     set foldcolumn=1
     " show hidden chars using shortcuts
     set listchars=tab:␉·,eol:␤,nbsp:▓
