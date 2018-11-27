@@ -554,7 +554,7 @@ function! SetupCodeEnvironment()
                 " search for c symbol
                 map <leader>gs  :cs find s <c-r><c-w><cr>
                 " seach for global definition
-                map <leader>gg  :cs find g <c-r><c-w><cr>
+                map <leader>gd  :cs find g <c-r><c-w><cr>
                 " search functions that call this function
                 map <leader>gc  :cs find c <c-r><c-w><cr>
                 " search this string
@@ -565,8 +565,6 @@ function! SetupCodeEnvironment()
                 map <leader>gf  :cs find f <c-r><c-p><cr>
                 " search files that include this file
                 map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
-                " search for functions are called by this function
-                map <leader>gd  :cs find d <c-r><c-w><cr>
             endif
         endif
     elseif &ft  == 'javascript'
