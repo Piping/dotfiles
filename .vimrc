@@ -142,7 +142,7 @@ nmap <leader>b :ls<cr>:buffer
 
 " quickfix window  displaying
 map <leader>cc  :botright copen<cr>
-nmap <leader>d :cclose<cr>
+nmap <leader>cx :cclose<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -513,34 +513,13 @@ set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Code Navigation - Cscope/LanguageClient
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("cscope") || executable("cquery") || true
-    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
-    " add any cscope database in current directory
-    map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
-    " show msg when any other cscope db added
-    set cscopeverbose
-    " Find assignments to this symbol
-    map <leader>fa  :cs find a <c-r><c-w><cr>
-    " search for c symbol
-    map <leader>fs  :cs find s <c-r><c-w><cr>
-    " seach for global definition
-    map <leader>fg  :cs find g <c-r><c-w><cr>
-    " search functions that call this function
-    map <leader>fc  :cs find c <c-r><c-w><cr>
-    " search this string
-    map <leader>ft  :cs find t <c-r><c-w><cr>
-    " egrep pattern matching
-    map <leader>fe  :cs find e <c-r><c-w><cr>
-    " search this file
-    map <leader>ff  :cs find f <c-r><c-p><cr>
-    " search files that include this file
-    map <leader>fi  :cs find i <c-r>=expand("%:t")<cr><cr>
-    " search for functions are called by this function
-    map <leader>fd  :cs find d <c-r><c-w><cr>
-
+"""""""""""""""""""""""""""""""""""""""""
+"" Code/Text AutoFormat,AutoComplete
+"""""""""""""""""""""""""""""""""""""""""
+function! SetupCodeEnvironment()
+    "set trigger for language-client's omnifunc
+    setlocal omnifunc=lsc#complete#complete
+    " Language Client Shortcut Mapping
     nnoremap <silent> <leader>gh :LSClientShowHover<cr>
     nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
     nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
@@ -549,15 +528,8 @@ if has("cscope") || executable("cquery") || true
     nnoremap <silent> <leader>gx :LSClientFindCodeActions<cr>
     nnoremap <silent> <leader>gI :LSClientFindImplementations<cr>
     nnoremap <silent> <leader>gS :LSClientWorkspaceSymbol<cr>
-endif
 
-"""""""""""""""""""""""""""""""""""""""""
-"" Code/Text AutoFormat,AutoComplete
-"""""""""""""""""""""""""""""""""""""""""
-function! SetupCodeEnvironment()
-    "set trigger for language-client's omnifunc
-    setlocal omnifunc=lsc#complete#complete
-    let s:code_support_enabled = 0
+    let s:code_support_no_warning = 0
     if &filetype == 'c' || &filetype == 'cpp'
         if executable('cquery-clang-format')
             if empty(glob('~/.clang-format'))
@@ -567,14 +539,38 @@ function! SetupCodeEnvironment()
                 setlocal formatprg=cquery-clang-format\ --style='file'
                 setlocal equalprg=cquery-clang-format\ --style='file'
             endif
-            let s:code_support_enabled = 1
+            let s:code_support_no_warning = 1
         else
             LSClientDisable
+            " uses cscope as alternative
+            if has("cscope")
+                set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+                " add any cscope database in current directory
+                map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
+                " show msg when any other cscope db added
+                set cscopeverbose
+                " Find assignments to this symbol
+                map <leader>ga  :cs find a <c-r><c-w><cr>
+                " search for c symbol
+                map <leader>gs  :cs find s <c-r><c-w><cr>
+                " seach for global definition
+                map <leader>gd  :cs find g <c-r><c-w><cr>
+                " search functions that call this function
+                map <leader>gc  :cs find c <c-r><c-w><cr>
+                " search this string
+                map <leader>gt  :cs find t <c-r><c-w><cr>
+                " egrep pattern matching
+                map <leader>ge  :cs find e <c-r><c-w><cr>
+                " search this file
+                map <leader>gf  :cs find f <c-r><c-p><cr>
+                " search files that include this file
+                map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
+            endif
         endif
     elseif &ft  == 'javascript'
         if executable('js-beautify')
             " setlocal equalprg='js-beautify '
-            let s:code_support_enabled = 1
+            let s:code_support_no_warning = 1
         else
             LSClientDisable
         endif
@@ -582,7 +578,7 @@ function! SetupCodeEnvironment()
         if executable('pyls')
             setlocal makeprg=python\ %
             setlocal equalprg=autopep8\ --in-place\ --aggressive
-            let s:code_support_enabled = 1
+            let s:code_support_no_warning = 1
         else
             LSClientDisable
         endif
@@ -593,10 +589,11 @@ function! SetupCodeEnvironment()
         setlocal omnifunc=
         LSClientDisable
         " only cares about above filetypes
-        let s:code_support_enabled = 1
+        let s:code_support_no_warning = 1
     endif
-    if s:code_support_enabled == 0
+    if s:code_support_no_warning == 0
         echohl WarningMsg
+        redraw " to avoid hit-enter prompt
         echomsg "LanguageClient is not enabled due to lack of ".&ft." Language Server Support"
         echohl NONE
     endif
