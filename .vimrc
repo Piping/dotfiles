@@ -653,7 +653,7 @@ function! DisplayReloadTheme()
             set termguicolors
         endif
     endif
-    set nonumber
+    set number
     set foldcolumn=1
     " show hidden chars using shortcuts
     set listchars=tab:␉·,eol:␤,nbsp:▓
