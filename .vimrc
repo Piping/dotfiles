@@ -56,14 +56,15 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'wellle/targets.vim'
     """"""""""""""""""""""""""""""
 
-    """"""""""""""""""""""""""""""
-    Plug 'natebosch/vim-lsc'
-    let g:lsc_server_commands = {
-                \ 'c': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
-                \ 'cpp': 'cquery --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
-                \ 'python' : 'pyls',
-                \ }
-    let g:lsc_enable_diagnostics = 0
+    """""""""""""""""""""""""""""""
+    "Plug 'natebosch/vim-lsc'
+    "let g:lsc_server_commands = {
+    "            \ 'c': 'ccls --log-file=/tmp/cquery_cache/cquery.log --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
+    "            \ 'cpp': 'cquery --log-file=/tmp/cquery_cache/cquery.log --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
+    "            \ 'python' : 'pyls',
+    "            \ }
+    "let g:lsc_enable_diagnostics = 0
+
     """ Language Server Installation hint:
     """ Python: pip install 'python-language-server[all]'
     """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build 
@@ -142,12 +143,12 @@ nmap <leader>b :ls<cr>:buffer
 
 " quickfix window  displaying
 map <leader>cc  :botright copen<cr>
-nmap <leader>d :cclose<cr>
+map <leader>cq  :cclose<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :silent! set list!<cr>
+nmap <silent> <leader>l :silent! set list! <bar> silent! set number!<cr>
 
 "Join the line below with space
 " nnoremap <leader>j  J
@@ -221,7 +222,7 @@ endif
 " Remap = to line end $, like it, easier to press and remember
 noremap \ gg=G''
 noremap = $
-noremap <nowait> q ZQ
+noremap <nowait> q ZQ<cr>
 noremap <nowait> Q q
 
 " for practicing vim way
@@ -239,8 +240,8 @@ nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 " To go to the next/previous quickfix/linter entry
-nnoremap <silent> [p :cp<cr>zz 
-nnoremap <silent> ]p :cn<cr>zz
+nnoremap <silent> <leader>o :cprevious<cr>zz 
+nnoremap <silent> <leader>i :cnext<cr>zz
 
 " To go to the next/previous quickfix/linter entry in a different file
 nnoremap <silent> [l :cpf<cr>zz 
@@ -383,6 +384,7 @@ filetype indent on
 set autoread
 
 " Set utf8 as standard encoding and en_US as the standard language
+language en_US.utf8
 set encoding=utf8
 
 " Use Unix as the standard file type
@@ -494,7 +496,7 @@ set wrap "Wrap lines
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Specify the behavior when switching/opening new buffers
 if v:version >= 740
-    set switchbuf=useopen,usetab,vsplit
+    set switchbuf=useopen,usetab
 endif
 " Always Show tabline
 set showtabline=2
@@ -516,48 +518,41 @@ set scrolloff=0    " allow cursor to be at top and bottom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("cscope") || executable("cquery") || true
+if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     " add any cscope database in current directory
     map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
     " show msg when any other cscope db added
     set cscopeverbose
     " Find assignments to this symbol
-    map <leader>fa  :cs find a <c-r><c-w><cr>
+    map <leader>ga  :cs find a <c-r><c-w><cr>
     " search for c symbol
-    map <leader>fs  :cs find s <c-r><c-w><cr>
+    map <leader>gs  :cs find s <c-r><c-w><cr>
     " seach for global definition
-    map <leader>fg  :cs find g <c-r><c-w><cr>
+    noremap g]  :cs find g <c-r><c-w><cr>
     " search functions that call this function
-    map <leader>fc  :cs find c <c-r><c-w><cr>
+    map <leader>gc  :cs find c <c-r><c-w><cr>
     " search this string
-    map <leader>ft  :cs find t <c-r><c-w><cr>
+    map <leader>gt  :cs find t <c-r><c-w><cr>
     " egrep pattern matching
-    map <leader>fe  :cs find e <c-r><c-w><cr>
+    map <leader>ge  :cs find e <c-r><c-w><cr>
     " search this file
-    map <leader>ff  :cs find f <c-r><c-p><cr>
+    map <leader>gf  :cs find f <c-r><c-p><cr>
     " search files that include this file
-    map <leader>fi  :cs find i <c-r>=expand("%:t")<cr><cr>
-    " search for functions are called by this function
-    map <leader>fd  :cs find d <c-r><c-w><cr>
-
-    nnoremap <silent> <leader>gh :LSClientShowHover<cr>
-    nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
-    nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
-    nnoremap <silent> <leader>gs :LSClientDocumentSymbol<cr>
-    nnoremap <silent> <leader>gN :LSClientRename<cr>
-    nnoremap <silent> <leader>gx :LSClientFindCodeActions<cr>
-    nnoremap <silent> <leader>gI :LSClientFindImplementations<cr>
-    nnoremap <silent> <leader>gS :LSClientWorkspaceSymbol<cr>
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
 endif
+
+" nnoremap <silent> <leader>gk :LSClientShowHover<cr>
+" nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
+" nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
+" nnoremap <silent> <leader>gs :LSClientDocumentSymbol<cr>
+" nnoremap <silent> <leader>gn :LSClientRename<cr>
 
 """""""""""""""""""""""""""""""""""""""""
 "" Code/Text AutoFormat,AutoComplete
 """""""""""""""""""""""""""""""""""""""""
 function! SetupCodeEnvironment()
     "set trigger for language-client's omnifunc
-    setlocal omnifunc=lsc#complete#complete
-    let s:code_support_enabled = 0
     if &filetype == 'c' || &filetype == 'cpp'
         if executable('cquery-clang-format')
             if empty(glob('~/.clang-format'))
@@ -567,38 +562,21 @@ function! SetupCodeEnvironment()
                 setlocal formatprg=cquery-clang-format\ --style='file'
                 setlocal equalprg=cquery-clang-format\ --style='file'
             endif
-            let s:code_support_enabled = 1
-        else
-            LSClientDisable
         endif
     elseif &ft  == 'javascript'
         if executable('js-beautify')
             " setlocal equalprg='js-beautify '
-            let s:code_support_enabled = 1
-        else
-            LSClientDisable
         endif
     elseif &ft  == 'python'
         if executable('pyls')
             setlocal makeprg=python\ %
             setlocal equalprg=autopep8\ --in-place\ --aggressive
-            let s:code_support_enabled = 1
-        else
-            LSClientDisable
         endif
     else
         setlocal formatprg=
         setlocal formatexpr=
         setlocal equalprg=
         setlocal omnifunc=
-        LSClientDisable
-        " only cares about above filetypes
-        let s:code_support_enabled = 1
-    endif
-    if s:code_support_enabled == 0
-        echohl WarningMsg
-        echomsg "LanguageClient is not enabled due to lack of ".&ft." Language Server Support"
-        echohl NONE
     endif
 endfunction
 
@@ -618,7 +596,7 @@ function! MyTabLine()
         let s .= ' ' . i . ' '
         let s .= (i == t ? '%#TabLineSel#' : '%#TabLine#')
         let file = bufname(buflist[winnr - 1])
-        let file = pathshorten(fnamemodify(file, ':p:~:.'))
+        let file = fnamemodify(file, ':t')
         let s .= ' ' . (file =='' ? '[No Name]' : file)
         let nwins = tabpagewinnr(i, '$')
         if nwins > 1
@@ -679,14 +657,13 @@ function! DisplayReloadTheme()
     endif
     " Statusline
     set statusline=
-    set statusline+=\ ↑%n↑
+    set statusline+=\ [B:%n]
     set statusline+=\ %f\ %r%w         " filename and flags
-    set statusline+=\ %(行%l⋅列%c%)    " row,column,virtual-column
+    set statusline+=\ %(总%L行\ 列%c%)    " row,column,virtual-column
     set statusline+=%=%<               " force space and start cut if too long
     " set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight type on word
     set statusline+=\ [%{&ft}]         " flags and filetype
-    set statusline+=\ [U+%B]:%-04O     " unicode under cursor && offset from start of file
-    set statusline+=\ %P\              " percentage of the file
+    set statusline+=\ [UTF:%B]:%-04o\      " unicode under cursor && offset from start of file
     set tabline=%!MyTabLine()
     highlight Statusline cterm=bold ctermfg=59 ctermbg=235 gui=bold guifg=black guibg=#b0dfe5
     highlight StatusLineNC cterm=NONE ctermfg=239 ctermbg=59 gui=NONE guibg=#64645e guifg=#75715E
