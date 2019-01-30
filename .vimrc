@@ -46,6 +46,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""syntax and colorscheme"""""""""""""""""""
     Plug 'ErichDonGubler/vim-sublime-monokai'
     Plug 'sheerun/vim-polyglot'
+    Plug 'justinmk/vim-syntax-extra'
     """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -59,17 +60,12 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """""""""""""""""""""""""""""""
     "Plug 'natebosch/vim-lsc'
     "let g:lsc_server_commands = {
-    "            \ 'c': 'ccls --log-file=/tmp/cquery_cache/cquery.log --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
-    "            \ 'cpp': 'cquery --log-file=/tmp/cquery_cache/cquery.log --init="{\"cacheDirectory\": \"/tmp/cquery_cache\"}"',
     "            \ 'python' : 'pyls',
     "            \ }
     "let g:lsc_enable_diagnostics = 0
 
     """ Language Server Installation hint:
     """ Python: pip install 'python-language-server[all]'
-    """ C++: git clone https://github.com/cquery-project/cquery.git --recursive && cd cquery && mkdir build && cd build 
-    """      cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
-    """      make -j8 && make install
     set pumheight=25
     inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -222,7 +218,7 @@ endif
 " Remap = to line end $, like it, easier to press and remember
 noremap \ gg=G''
 noremap = $
-noremap <nowait> q ZQ<cr>
+noremap <nowait> q :q<cr>
 noremap <nowait> Q q
 
 " for practicing vim way
@@ -240,12 +236,15 @@ nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 " To go to the next/previous quickfix/linter entry
-nnoremap <silent> <leader>o :cprevious<cr>zz 
-nnoremap <silent> <leader>i :cnext<cr>zz
+nnoremap <silent> [p :cprevious<cr>zz 
+nnoremap <silent> ]p :cnext<cr>zz
 
 " To go to the next/previous quickfix/linter entry in a different file
 nnoremap <silent> [l :cpf<cr>zz 
 nnoremap <silent> ]l :cnf<cr>zz
+
+nnoremap <silent> '' <C-O>
+nnoremap <silent> ;; <C-i>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -278,8 +277,9 @@ cnoremap <C-N> <Down>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Terminal mode mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-tnoremap <Esc> <c-\><c-n>
-
+if v:version >= 801
+    tnoremap <Esc> <c-\><c-n>
+endif
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 command! W w !sudo tee % > /dev/null
@@ -393,12 +393,6 @@ set ffs=unix,dos,mac
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface element
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Statusline and necesagr options
-set laststatus=2 "In order to show the lightline
-set showcmd      "Always print current keystroke
-set ruler        "Always show current position
-set cmdheight=1  "Height of the command bar
-set statusline=
 
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='cn'
@@ -418,6 +412,7 @@ endif
 
 " A buffer becomes hidden when it is abandoned
 set hidden
+set confirm
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -524,27 +519,27 @@ if has("cscope")
     map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
     " show msg when any other cscope db added
     set cscopeverbose
+    " seach for definition
+    map <leader>gd  :cs find g <c-r><c-w><cr>
+    " search for this symbol
+    map <leader>gs  :cs find s <c-r><c-w><cr>
+    " find the file under the name
+    map <leader>gf  :cs find f <c-r><c-p><cr>
+    " search files that include this file
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
+    " egrep pattern matching
+    map <leader>ge  :cs find e <c-r><c-w><cr>
     " Find assignments to this symbol
     map <leader>ga  :cs find a <c-r><c-w><cr>
-    " search for c symbol
-    map <leader>gs  :cs find s <c-r><c-w><cr>
-    " seach for global definition
-    noremap g]  :cs find g <c-r><c-w><cr>
     " search functions that call this function
     map <leader>gc  :cs find c <c-r><c-w><cr>
     " search this string
     map <leader>gt  :cs find t <c-r><c-w><cr>
-    " egrep pattern matching
-    map <leader>ge  :cs find e <c-r><c-w><cr>
-    " search this file
-    map <leader>gf  :cs find f <c-r><c-p><cr>
-    " search files that include this file
-    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
 endif
 
 " nnoremap <silent> <leader>gk :LSClientShowHover<cr>
 " nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
-" nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
+nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
 " nnoremap <silent> <leader>gs :LSClientDocumentSymbol<cr>
 " nnoremap <silent> <leader>gn :LSClientRename<cr>
 
@@ -656,10 +651,14 @@ function! DisplayReloadTheme()
         endif
     endif
     " Statusline
+    set laststatus=2 "In order to show the lightline
+    set showcmd      "Always print current keystroke
+    set ruler        "Always show current position
+    set cmdheight=1  "Height of the command bar
     set statusline=
-    set statusline+=\ [B:%n]
+    set statusline+=\ %(第%c列%) 
     set statusline+=\ %f\ %r%w         " filename and flags
-    set statusline+=\ %(总%L行\ 列%c%)    " row,column,virtual-column
+    set statusline+=\ %(共%L行%) 
     set statusline+=%=%<               " force space and start cut if too long
     " set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight type on word
     set statusline+=\ [%{&ft}]         " flags and filetype
@@ -682,7 +681,7 @@ call DisplayReloadTheme()
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("autocmd")
-    augroup MYGROUP
+    augroup myvimrc
         autocmd! *
 
         " Auto reload conffiguration file, clean whitespace for some common code files
@@ -693,7 +692,7 @@ if has("autocmd")
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
         " Save the code folding if we had one
-        autocmd BufWinLeave * silent! mkview
+        " autocmd BufWinLeave * silent! mkview
         " autocmd BufWinEnter * silent! loadview
 
         " Properly disable sound on errors on MacVim
@@ -718,6 +717,7 @@ if has("autocmd")
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
 
         autocmd FileType * :call SetupCodeEnvironment()
+
     augroup END
 endif
 
