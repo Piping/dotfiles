@@ -390,6 +390,9 @@ set encoding=utf8
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
+" Work with longline
+set display+=lastline
+set breakat=" ^I!@*+;:,./?"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface element
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -661,7 +664,7 @@ function! DisplayReloadTheme()
     set statusline+=\ %(共%L行%) 
     set statusline+=%=%<               " force space and start cut if too long
     " set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight type on word
-    set statusline+=\ [%{&ft}]         " flags and filetype
+    set statusline+=\ [%{getcwd()}][%{&ft}]         " flags and filetype
     set statusline+=\ [UTF:%B]:%-04o\      " unicode under cursor && offset from start of file
     set tabline=%!MyTabLine()
     highlight Statusline cterm=bold ctermfg=59 ctermbg=235 gui=bold guifg=black guibg=#b0dfe5
