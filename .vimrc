@@ -208,10 +208,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """ Language Server Installation hint:
     """ Python: pip install 'python-language-server[all]'
-    set pumheight=25
-    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
 
     if has( 'python3' ) || has('python')
         Plug 'maralla/completor.vim'
@@ -220,6 +216,12 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
         let g:completor_python_binary = "/usr/local/bin/python3" 
     endif
+
+    set pumheight=25
+    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <C-Y>   pumvisible() ? "\<C-y>" : '\<C-R>"'
+
     """""""""""""""""""""""""""""
 
     """""""""""""""""""""""""""""" "On demand loading
@@ -291,11 +293,11 @@ nmap <silent> <leader>l :silent! set list! <bar> silent! set number!<cr>
 " Reverse of J
 nnoremap <leader>j v$hdO<Esc>pj
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Cursor Moving mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Keep the cursor at center while scrolling
-noremap <C-e> <C-e>j
-noremap <C-y> <C-y>k
+" Insert the character which is below the cursor
+noremap <C-e> i<C-e> <Esc>
+" Insert the character which is above the cursor
+noremap <C-y> i<C-y> <Esc>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ""Join the line below with space => Code Development - TagBar
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -619,7 +621,7 @@ function! DisplayReloadTheme()
     " override Seach Highlight to make cursor more obvious
     highlight Search cterm=bold ctermbg=Brown ctermfg=White gui=bold guibg=Brown guifg=White
     " change cursor style dependent on mode
-    if v:version >= 800
+    if v:version >= 810
         if empty($tmux)
             let &t_si = "\<esc>]50;cursorshape=1\x7"
             let &t_ei = "\<esc>]50;cursorshape=0\x7"
