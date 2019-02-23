@@ -5,6 +5,147 @@
 " ██║By   ███████╗██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
 " ╚═╝ROBIN╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""   UNIVERSAL VIM OPTIONS THAT WE ARE ALL AGGRED  """"""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Ignore case when searching
+set ignorecase
+
+" When searching try to be smart about cases
+set smartcase
+
+" Highlight search results
+set hlsearch
+
+" Makes search act like search in modern browsers
+set incsearch
+
+" Show matching brackets when text indicator is over them
+set showmatch
+
+" Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+" Turn on the Wild menu
+set wildmenu
+
+" Be smart when using tabs ;)
+set smarttab
+
+" 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+
+" Use spaces instead of tabs
+set expandtab
+
+set autoindent 
+set smartindent
+
+set showcmd      "Always print current keystroke
+set ruler        "Always show current position
+
+" Work with longline
+set display+=lastline
+
+set encoding=utf8
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General Options
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Sets how many lines of history VIM has to remember
+set history=500
+
+" Enable filetype plugins
+filetype plugin on
+filetype indent on
+
+" Set to auto read when a file is changed from the outside
+set autoread
+
+" Set utf8 as standard encoding and en_US as the standard language
+language en_US.utf8
+
+" Use Unix as the standard file type
+set ffs=unix,dos,mac
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VIM user interface element
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Avoid garbled characters in Chinese language windows OS
+let $LANG='cn'
+set langmenu=cn
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+" A buffer becomes hidden instead of dropped
+set hidden
+set confirm
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw
+
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" turn backup off, since most stuff is in svn, git et.c anyway...
+set nobackup
+set nowb
+set noswapfile
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Turn persistent undo on
+"    means that you can undo even when you close a buffer/vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+try
+    set undodir=~/.vim/temp_dirs/undodir
+    set undofile
+catch
+endtry
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Buffers, Split Windows, Tabs(Tabline)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Specify the behavior when switching/opening new buffers
+if v:version >= 740
+    set switchbuf=useopen,usetab
+endif
+" Always Show tabline
+set showtabline=2
+" Set Split Position
+set splitright
+set splitbelow
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set mouse=a
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set notimeout
+set timeoutlen=500 " For <leader> mapping
+set ttimeout
+set ttimeoutlen=0  " No keycode dealy - no esc dealy
+set scrolloff=0    " allow cursor to be at top and bottom
+" set virtualedit=all "allow cursor to be anywhere
+
 if empty(glob('~/.vim/autoload/plug.vim')) && !has('win32')
     silent! !mkdir -p ~/.vim/temp_dirs/undodir > /dev/null 2>&1
     silent! !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim > /dev/null 2>&1
@@ -47,6 +188,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'ErichDonGubler/vim-sublime-monokai'
     Plug 'sheerun/vim-polyglot'
     Plug 'justinmk/vim-syntax-extra'
+    Plug 'vim-scripts/Super-Shell-Indent'
     """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -76,14 +218,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
         " let g:completor_refresh_always = 0 "avoid flickering
         let g:completor_complete_options = 'menuone,noselect'
         let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
-        " builtin support
         let g:completor_python_binary = "/usr/local/bin/python3" 
-        let g:completor_clang_binary = '/usr/local/bin/cquery-clang'
-        nmap <tab> <Plug>CompletorCppJumpToPlaceholder
-    else
-        echohl WarningMsg
-        echomsg "maralla/completor is not enabled due to lack of python support"
-        echohl NONE
     endif
     """""""""""""""""""""""""""""
 
@@ -97,6 +232,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """"""""""""""""""""""""""""""
     Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+    let g:undotree_CustomUndotreeCmd = 'vertical aboveleft 32 new'
+    let g:undotree_CustomDiffpanelCmd= 'belowright 12 new'
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -107,6 +244,10 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
     let g:goyo_width=130
+    """"""""""""""""""""""""""""""
+
+    """"""""""""""""""""""""""""""
+    Plug 'tpope/vim-fugitive'
     """"""""""""""""""""""""""""""
 
     call plug#end()
@@ -125,7 +266,7 @@ let mapleader = "\<space>"
 """""""""""""""""""""""""""""""""""""""""
 " easy-alignment no argument go to interactive mode
 vmap <leader>a    :EasyAlign
-nmap <leader>u    :UndotreeToggle<Cr>:normal! zz<cr>
+nmap <leader>u    :UndotreeToggle<Cr>
 map  <leader>m    :TagbarToggle<cr>:wincmd = <cr>:normal! zz<cr>
 nmap <silent>     <leader>z  :Goyo<cr>:normal! zz<cr>
 map  gc           <Plug>Commentary
@@ -138,8 +279,7 @@ nmap gcc          <Plug>CommentaryLine
 nmap <leader>b :ls<cr>:buffer
 
 " quickfix window  displaying
-map <leader>cc  :botright copen<cr>
-map <leader>cq  :cclose<cr>
+map <leader>v  :botright copen<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -163,7 +303,7 @@ noremap <C-y> <C-y>k
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Disable highlight when <space><enter> is pressed
-nnoremap <silent> <cr> :noh<cr>
+nnoremap <silent> <expr> <cr> &buftype ==# 'quickfix' ? "\<cr>" : ":noh<cr>"
 
 " Esc, Ctrl, :, ^W, ^s, Tab, Alt
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -194,17 +334,7 @@ map <leader>ee :e! ~/.vimrc<cr>
 map <leader>et :e! ~/.tmux.conf<cr>
 map <leader>ez :e! ~/.zshrc<cr>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""      Buffer, Tab, Window Key Maps     """"""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>t  :tabnew<cr>
-
 noremap <leader>r  :source $MYVIMRC<cr>
-
-" Help Windows
-if v:version >= 800
-    map <leader>h :helpclose<cr>
-endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -243,8 +373,8 @@ nnoremap <silent> ]p :cnext<cr>zz
 nnoremap <silent> [l :cpf<cr>zz 
 nnoremap <silent> ]l :cnf<cr>zz
 
-nnoremap <silent> '' <C-O>
-nnoremap <silent> ;; <C-i>
+" TODO map shift-tab to cycle through jumps for differen file
+" nnoremap <silent> <S-Tab> <C-o>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => InertMode/CMDline Editing mappings
@@ -364,162 +494,13 @@ endfunction
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 iab xdate2 <c-r>=strftime("%F")<cr>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""    SET VIM OPTIONS      """""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General Options
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Sets how many lines of history VIM has to remember
-set history=500
-
-" Enable filetype plugins
-filetype plugin on
-filetype indent on
-
-" Set to auto read when a file is changed from the outside
-set autoread
-
-" Set utf8 as standard encoding and en_US as the standard language
-language en_US.utf8
-set encoding=utf8
-
-" Use Unix as the standard file type
-set ffs=unix,dos,mac
-
-" Work with longline
-set display+=lastline
-set breakat=" ^I!@*+;:,./?"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface element
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Avoid garbled characters in Chinese language windows OS
-let $LANG='cn'
-set langmenu=cn
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
-
-" Turn on the Wild menu
-set wildmenu
-" Ignore compiled files
-set wildignore=*.o,*~,*.pyc
-if has("win16") || has("win32")
-    set wildignore+=.git\*,.hg\*,.svn\*
-else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
-endif
-
-" A buffer becomes hidden when it is abandoned
-set hidden
-set confirm
-
-" Configure backspace so it acts as it should act
-set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
-
-" Ignore case when searching
-set ignorecase
-
-" When searching try to be smart about cases
-set smartcase
-
-" Highlight search results
-set hlsearch
-
-" Makes search act like search in modern browsers
-set incsearch
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-" For regular expressions turn magic on
-set magic
-
-" Show matching brackets when text indicator is over them
-set showmatch
-" How many tenths of a second to blink when matching brackets
-set mat=2
-
-" No annoying sound on errors
-set noerrorbells
-set novisualbell
-set t_vb=
-set tm=500
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => files, backups and undo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" turn backup off, since most stuff is in svn, git et.c anyway...
-set nobackup
-set nowb
-set noswapfile
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Turn persistent undo on
-"    means that you can undo even when you close a buffer/vim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-try
-    set undodir=~/.vim/temp_dirs/undodir
-    set undofile
-catch
-endtry
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use spaces instead of tabs
-set expandtab
-
-" Be smart when using tabs ;)
-set smarttab
-
-" 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
-
-" Linebreak on 500 characters
-set lbr
-set tw=500
-
-set ai "Auto indent
-set si "Smart indent
-set wrap "Wrap lines
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Buffers, Split Windows, Tabs(Tabline)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Specify the behavior when switching/opening new buffers
-if v:version >= 740
-    set switchbuf=useopen,usetab
-endif
-" Always Show tabline
-set showtabline=2
-" Set Split Position
-set splitright
-set splitbelow
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set autowrite
-set mouse=a
-set notimeout
-set ttimeout
-set timeoutlen=500 " For <leader> mapping
-set ttimeoutlen=0  " No keycode dealy - no esc dealy
-set scrolloff=0    " allow cursor to be at top and bottom
-" set virtualedit=all "allow cursor to be anywhere
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
     set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     " add any cscope database in current directory
-    map <leader>ca :cs add <C-r>=getcwd()<cr>/cscope.out <C-r>=getcwd()<cr>
+    map <leader>ca :cs add ~/414gr1_make/target/sources/sto/cscope.out ~/414gr1_make/target/sources/sto<cr>
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
@@ -542,7 +523,7 @@ endif
 
 " nnoremap <silent> <leader>gk :LSClientShowHover<cr>
 " nnoremap <silent> <leader>gd :LSClientGoToDefinition<cr>
-nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
+" nnoremap <silent> <leader>gr :LSClientFindReferences<cr>
 " nnoremap <silent> <leader>gs :LSClientDocumentSymbol<cr>
 " nnoremap <silent> <leader>gn :LSClientRename<cr>
 
@@ -571,10 +552,6 @@ function! SetupCodeEnvironment()
             setlocal equalprg=autopep8\ --in-place\ --aggressive
         endif
     else
-        setlocal formatprg=
-        setlocal formatexpr=
-        setlocal equalprg=
-        setlocal omnifunc=
     endif
 endfunction
 
@@ -611,7 +588,7 @@ function! DisplayReloadTheme()
     try 
         colorscheme sublimemonokai
     catch
-        silent! colorscheme desert
+        silent! colorscheme default
     endtry
     " Set the Syntax
     syntax on
@@ -654,7 +631,7 @@ function! DisplayReloadTheme()
         endif
     endif
     " Statusline
-    set laststatus=2 "In order to show the lightline
+    set laststatus=2 "In order to show the good statusline
     set showcmd      "Always print current keystroke
     set ruler        "Always show current position
     set cmdheight=1  "Height of the command bar
@@ -728,12 +705,3 @@ endif
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if exists("g:gui_oni")
-    augroup MYGROUP
-        autocmd! FocusGained *
-        autocmd! FocusLost *
-    augroup END
-endif
-
-nohlsearch
