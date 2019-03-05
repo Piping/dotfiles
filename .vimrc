@@ -547,12 +547,11 @@ function! DisplayReloadTheme()
     set cursorline
     if $TERM  =~? '256color'
         set t_Co=256
-        if v:version >= 800
+        if g:colors_name == "sublimemonokai"
             set termguicolors
         endif
     endif
     set number
-    set foldcolumn=1
     " show hidden chars using shortcuts
     set listchars=tab:␉·,eol:␤,nbsp:▓
     set list
@@ -564,7 +563,7 @@ function! DisplayReloadTheme()
     highlight QuickFixLine term=reverse ctermbg=254
     highlight QuickFixLine gui=reverse guibg=#000000
 
-    highlight Search cterm=bold ctermbg=Brown ctermfg=White
+    highlight Search cterm=bold ctermbg=Yellow ctermfg=Black
     highlight Search gui=bold guibg=Brown guifg=White
 
     set laststatus=2 "In order to show the good statusline
@@ -579,16 +578,16 @@ function! DisplayReloadTheme()
     set statusline+=\ [%{getcwd()}][%{&ft}]    " flags and filetype
     set statusline+=\ [UTF:%B][Buf:%n]\  " unicode under cursor
 
-    highlight Statusline cterm=bold ctermfg=59 ctermbg=235
+    highlight Statusline cterm=bold ctermfg=red ctermbg=235
     highlight Statusline gui=bold guifg=black guibg=#b0dfe5
 
-    highlight StatusLineNC cterm=NONE ctermfg=239 ctermbg=59 
+    highlight StatusLineNC cterm=NONE ctermfg=59 ctermbg=235 
     highlight StatuslineNC gui=NONE guibg=#64645e guifg=#75715E
-    " Tabline
+
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 
     highlight TabLine gui=NONE guifg=black guibg=#555555 
 
-    highlight TabLineSel cterm=bold ctermfg=231 ctermbg=252
+    highlight TabLineSel cterm=bold ctermfg=white ctermbg=black
     highlight TabLineSel gui=bold guifg=red guibg=#36454F
 
     highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 
