@@ -298,6 +298,40 @@ if has("cscope")
     map <leader>gt  :cs find t <c-r><c-w><cr>
 endif
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""    AUTO COMMANDS         """""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("autocmd")
+    augroup myvimrc
+        autocmd! *
+
+        " Auto reload conffiguration file, clean whitespace for some common code files
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
+        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+
+        " Return to last edit position when opening files (You want this!)
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+        " Save the code folding if we had one
+        " autocmd BufWinLeave * silent! mkview
+        " autocmd BufWinEnter * silent! loadview
+
+        " auto save 
+        if v:version >= 740
+        autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        endif
+
+        " smart cursorline
+        autocmd WinEnter * setlocal cursorline
+        autocmd WinLeave * setlocal nocursorline
+
+        " tab special for makefile 
+        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
+        autocmd FileType make :call CleanExtraSpaces()
+    augroup END
+endif
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -363,43 +397,6 @@ function! DisplayReloadTheme()
 endfunction
 
 call DisplayReloadTheme()
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""    AUTO COMMANDS         """""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("autocmd")
-    augroup myvimrc
-        autocmd! *
-
-        " Auto reload conffiguration file, clean whitespace for some common code files
-        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-
-        " reload display theme on file write
-        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-
-        " Return to last edit position when opening files (You want this!)
-        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-        " Save the code folding if we had one
-        " autocmd BufWinLeave * silent! mkview
-        " autocmd BufWinEnter * silent! loadview
-
-        " auto save 
-        autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-        autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-
-        " smart cursorline
-        autocmd WinEnter * setlocal cursorline
-        autocmd WinLeave * setlocal nocursorline
-
-        " tab special for makefile 
-        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
-        autocmd FileType make :call CleanExtraSpaces()
-    augroup END
-endif
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
