@@ -202,7 +202,6 @@ nnoremap <silent> <S-Tab> <C-i>
 " Additionaly you can use c-f to editing cmd in normal mode window
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
-cnoremap <C-Z> <S-Left>
 cnoremap <C-S> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-P> <Up>
@@ -305,6 +304,7 @@ endif
 function! DisplayReloadTheme()
     silent! colorscheme default
     " Set the Syntax
+    syntax on
     set cursorline
     if $TERM  =~? '256color'
         set t_Co=256
@@ -375,6 +375,9 @@ if has("autocmd")
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
         autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+
+        " reload display theme on file write
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
 
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
