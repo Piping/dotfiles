@@ -307,7 +307,7 @@ if has("autocmd")
 
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -328,7 +328,6 @@ if has("autocmd")
 
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
-        autocmd FileType make :call CleanExtraSpaces()
     augroup END
 endif
 
