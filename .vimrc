@@ -34,8 +34,8 @@ set wildmenu
 set smarttab
 
 " 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=8
+set tabstop=8
 
 " Use spaces instead of tabs
 set expandtab
@@ -64,11 +64,10 @@ filetype indent on
 " Set to auto read when a file is changed from the outside
 set autoread
 
-" Set utf8 as standard encoding and en_US as the standard language
-language en_US.utf8
-
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
+
+language en_US.UTF-8
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface element
@@ -213,14 +212,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """ Language Server Installation hint:
     """ Python: pip install 'python-language-server[all]'
-    if has( 'python3' ) || has('python')
-        Plug 'maralla/completor.vim'
-        " let g:completor_refresh_always = 0 "avoid flickering
-        let g:completor_complete_options = 'menuone,noselect'
-        let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
-        let g:completor_python_binary = "/usr/local/bin/python3" 
-    endif
-
     """""""""""""""""""""""""""""
 
     """""""""""""""""""""""""""""" "On demand loading
@@ -285,7 +276,7 @@ map <leader>v  :botright copen<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :silent! set list! <bar> silent! set number!<cr>
+nmap <silent> <leader>l :silent! set nolist <bar> silent! set number!<cr>
 
 "Join the line below with space
 " nnoremap <leader>j  J
@@ -548,13 +539,15 @@ function! DisplayReloadTheme()
     if $TERM  =~? '256color'
         set t_Co=256
         if g:colors_name == "sublimemonokai"
-            set termguicolors
+            if $COLORTERM =~? 'truecolor'
+                set termguicolors
+            endif
         endif
     endif
     set number
     " show hidden chars using shortcuts
     set listchars=tab:␉·,eol:␤,nbsp:▓
-    set list
+    set nolist
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
