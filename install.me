@@ -1,0 +1,8 @@
+#!/bin/bash
+D=~/.local/dotfiles
+mkdir -p $D
+git clone https://github.com/piping/dotfiles $D
+ln -s $D/tmux.conf.me ~/.tmux.conf
+ln -s $D/vimrc.me ~/.vimrc
+ln -s $D/clang-format.me ~/.clang-format
+ln -s $D/zshrc.me ~/.zshrc
