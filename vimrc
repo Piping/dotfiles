@@ -275,6 +275,8 @@ endfunction
 " Turn vim into a pager with a header row
 " Adapted from https://unix.stackexchange.com/a/27840/143088
 fun! HeadPager()
+    " reset all options to default
+    set all&
     " If you didn't get three lines, shortcut out
     if line('$') < 3
         set nocompatible
