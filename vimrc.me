@@ -76,7 +76,6 @@ language en_US.UTF-8
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface element
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='cn'
 set langmenu=cn
@@ -139,9 +138,8 @@ set splitright
 set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set mouse=a
+" Keyboard Feedback Configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 set notimeout
 set timeoutlen=500 " For <leader> mapping
 set ttimeout
@@ -149,13 +147,16 @@ set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 " set virtualedit=all "allow cursor to be anywhere
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Word Completion Popup Menu Configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set pumheight=25
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 
 """""""""""""""""""""""""""""""""""""""""
-""PLUGIN LEADER KEY MAPPING"
+""LEADER KEY MAPPING"
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -357,6 +358,102 @@ endfunction
 
 iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 iab xdate2 <c-r>=strftime("%F")<cr>
+
+" :HeadPager
+" Turn vim into a pager with a header row
+" Adapted from https://unix.stackexchange.com/a/27840/143088
+fun! HeadPager()
+    " If you didn't get three lines, shortcut out
+    if line('$') < 3
+        set nocompatible
+        nmap <silent> q :qa!<c-M>
+        nmap <silent> Q :qa!<c-M>
+        return
+    endif
+
+    set noswapfile
+    set nocompatible
+    set nowrap
+    set scrollopt=hor
+    set scrollbind
+
+    " Hide statusline in lower window
+    set laststatus=0
+    " Explain mapped chars in status line.
+    set statusline=\ \ \ Q\ to\ quit\.\ Arrows\ or\ mousewheel\ to\ scroll\.\ \(Vim\ commands\ work\,\ too\.\)
+
+    " Delete/copy header lines
+    silent execute '1,2d'
+
+    " Split screen with new buffer (opens at top)
+    execute 'new'
+
+    " Switch to upper split
+    wincmd k
+
+    " Paste the header over the blank line
+    execute 'norm! Vp'
+
+    " Header highlighting
+    syn match Pipe "|"
+    hi def Pipe ctermfg=blue
+    syn match Any /[^|]\+/
+    hi def Any ctermfg=yellow
+
+    " Switch back to lower split for scrolling
+    wincmd j
+
+    " Set lower split height to maximum
+    execute "norm! \<c-W>_"
+
+    " Syntax highlighting
+    syn cluster CellContents contains=None
+    syn match Pipe "|" contained nextgroup=@CellContents skipwhite
+    hi def Pipe ctermfg=blue
+
+    " Start with newline or |. End right before next | or EOL
+    syn region Cell start=/\v(^|\|)\s*/ end=/\v(\||$)\@=/ contains=LineNumber,Pipe
+
+    syn match NumPos /\v\+?\d+(,?\d{3})*\.?\d*\ze *(\||$)\@=/ contained
+    syn match NumNeg   /\v-\d+(,?\d{3})*\.?\d*\ze *(\||$)\@=/ contained
+    syn match NumZero         /\v[+-]?0+\.?0*\ze *(\||$)\@=/  contained
+    hi def NumPos ctermfg=cyan
+    hi def NumNeg ctermfg=red
+    hi def NumZero ctermfg=NONE
+    syn cluster CellContents add=NumPos,NumNeg,NumZero
+
+    syn match DateVal /\v\d{4}-\d{2}-\d{2}/ contained nextgroup=TimeVal skipwhite
+    syn match TimeVal /\v\d{1,2}:\d{2}(:\d{2})?(\.\d+)?(Z| ?\c[AP]M)?\ze *(\||$)\@=/ contained
+    hi def DateVal ctermfg=magenta
+    hi def TimeVal ctermfg=magenta
+    syn cluster CellContents add=DateVal,TimeVal
+
+    syn match TrueVal /\v\c(t(rue)?|y(es)?)\ze *(\||$)\@=/ contained
+    syn match FalseVal /\v\c(f(alse)?|no?)\ze *(\||$)\@=/ contained
+    hi def TrueVal ctermfg=green
+    hi def FalseVal ctermfg=red
+    syn match NullVal /\v\cnull?\ze *(\||$)\@=/ contained
+    hi def NullVal ctermbg=gray ctermfg=black
+    syn cluster CellContents add=TrueVal,FalseVal,NullVal
+
+    syn match LineNumber /^ *\d\+/ contained
+    hi def LineNumber ctermfg=yellow
+
+    " Arrows do scrolling instead of moving
+    nmap <silent> <Up> 3<c-Y>
+    nmap <silent> <Down> 3<c-E>
+    nmap <silent> <Left> zH
+    nmap <silent> <Right> zL
+    nmap <Space> <PageDown>
+    " Faster quit (I tend to forget about the upper panel)
+    nmap <silent> q :qa!<c-M>
+    nmap <silent> Q :qa!<c-M>
+
+    " Ignore external updates to the buffer
+    autocmd! FileChangedShell */fd/*
+    autocmd! FileChangedRO */fd/*
+endfun
+command! -nargs=0 HeadPager call HeadPager()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Code Navigation - Cscope/LanguageClient
