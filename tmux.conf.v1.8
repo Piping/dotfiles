@@ -13,6 +13,7 @@ set-option -g allow-rename off
 #use `<prefix>q <number>` to select panes
 #use `<prefix><number>` to select windows
 #use `<prefix>z` to zoom panes
+#use `<prefix><Ctrl><Arrows>` to adjust panes
 setw -g mode-mouse off
 set -g mouse-select-pane off
 set -g mouse-resize-pane off
@@ -66,7 +67,8 @@ bind-key  o split-window \; split-window \; split-window \; select-layout 8afe,2
 setw -g mode-keys vi
 bind-key -t vi-copy 'v' begin-selection
 bind-key -t vi-copy 'y' copy-selection
-bind-key -t vi-copy 'V' rectangle-toggle
+bind-key -t vi-copy 'C-v' rectangle-toggle
+bind-key -t vi-copy 'V' select-line
 bind-key p paste-buffer
 
 ######################
