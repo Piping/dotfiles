@@ -10,7 +10,13 @@ set -sg escape-time 1
 # don't rename windows automatically
 set-option -g allow-rename off
 
-setw -g mode-mouse on
+#use `<prefix>q <number>` to select panes
+#use `<prefix><number>` to select windows
+#use `<prefix>z` to zoom panes
+setw -g mode-mouse off
+set -g mouse-select-pane off
+set -g mouse-resize-pane off
+set -g mouse-select-window off
 
 set -g set-clipboard on
 
@@ -27,14 +33,14 @@ set-option -g prefix2 `
 #""""""""""""""""""""""""""""""""""""""""
 # press <prefix> twice to send
 # actual prefix keystroke to application inside tmux
-# bind-key -t prefix C-b send-prefix
+# bind-key  C-b send-prefix
 bind-key  ` send-prefix -2
 
 # for nested tmux session, use this to pass prefix to innser tmux easier
 bind-key  * set-option -g prefix2 C-b 
 
 # split panes using | and -, make sure they open in the same path
-bind-key v split-window -h -c "#{pane_current_path}"
+bind-key  v split-window -h -c "#{pane_current_path}"
 bind-key  s split-window -v -c "#{pane_current_path}"
 
 bind-key  a last-window
@@ -48,25 +54,20 @@ bind-key  r source-file ~/.tmux.conf \; display-message 'Messgae: Tmux Configura
 
 # move Pane Between Windows, use <preifx> m to mark pane, <prefix> M to paste pane
 bind-key  M join-pane 
-bind-key  J command-prompt -p "join pane from"  "join-pane -s '%%'"
-bind-key  S command-prompt -p "send pane to:"  "join-pane -t '%%'"
 
 bind-key  y set synchronize-panes  \; display-message 'Message: Toggled Panel Input Synchronization'
-
-# go to panel with hjkl keys
-bind-key  k select-pane -U
-bind-key  j select-pane -D
-bind-key  h select-pane -L
-bind-key  l select-pane -R
 
 # pane title rename
 bind-key  T command-prompt -p "new pane title:" 'select-pane -t "%%"'
 
 bind-key  o split-window \; split-window \; split-window \; select-layout 8afe,204x50,0,0{47x50,0,0,0,105x50,48,0[105x25,48,0,3,105x24,48,26,5],50x50,154,0,4}
 
-
 # enable vi mode keys
-set-window-option -g mode-keys vi
+setw -g mode-keys vi
+bind-key -t vi-copy 'v' begin-selection
+bind-key -t vi-copy 'y' copy-selection
+bind-key -t vi-copy 'V' rectangle-toggle
+bind-key p paste-buffer
 
 ######################
 ###  UX/UI CHANGES ###
