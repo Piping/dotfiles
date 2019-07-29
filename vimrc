@@ -67,7 +67,7 @@ filetype indent on
 set autoread
 
 " Set utf8 as standard encoding and en_US as the standard language
-language en_US.utf8
+language C.UTF-8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
