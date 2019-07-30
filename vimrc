@@ -145,6 +145,7 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 silent! packadd! matchit
 
+nnoremap q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -372,27 +373,28 @@ command! -nargs=0 HeadPager call HeadPager()
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
-    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+    "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+    set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :cs add /sources/sto/cscope.out /sources/sto<cr>
+    map <leader>ca :cs add cscope.out
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
-    map <leader>gd  :cs find g <c-r><c-w><cr>
+    map <leader>gd  :cs find g <c-r><c-w>
     " search for this symbol
-    map <leader>gs  :cs find s <c-r><c-w><cr>
+    map <leader>gs  :cs find s <c-r><c-w>
     " find the file under the name
-    map <leader>gf  :cs find f <c-r><c-p><cr>
+    map <leader>gf  :cs find f <c-r><c-p>
     " search files that include this file
-    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr>
     " egrep pattern matching
-    map <leader>ge  :cs find e <c-r><c-w><cr>
+    map <leader>ge  :cs find e <c-r><c-w>
     " Find assignments to this symbol
-    map <leader>ga  :cs find a <c-r><c-w><cr>
+    map <leader>ga  :cs find a <c-r><c-w>
     " search functions that call this function
-    map <leader>gc  :cs find c <c-r><c-w><cr>
+    map <leader>gc  :cs find c <c-r><c-w>
     " search this string
-    map <leader>gt  :cs find t <c-r><c-w><cr>
+    map <leader>gt  :cs find t <c-r><c-w>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
