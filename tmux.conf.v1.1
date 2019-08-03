@@ -7,14 +7,15 @@ set -g base-index 1
 #use `<prefix>q <number>` to select panes
 #use `<prefix><number>` to select windows
 #use `<prefix><Ctrl><Arrows>` to adjust panes
-setw -g mode-mouse off
+#setw -g mode-mouse off
+set -g mouse off
 
 set -g history-limit 99999
 
 # set default terminal mode to 256 colors
 set -g default-terminal "xterm-256color"
 
-set -g prefix C-b
+set -g prefix `
 
 #""""""""""""""""""""""""""""""""""""""""
 #" TMUX KEYTABLE OPTIONS
