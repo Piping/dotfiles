@@ -136,6 +136,9 @@ set ttimeout
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Word Completion Popup Menu Configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set pumheight=25
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -146,14 +149,19 @@ nnoremap q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
+"""""""""""""""""""""""""""""""""""""""""
+"" All leader key mapping
+"""""""""""""""""""""""""""""""""""""""""
+" Go to Buffer
+nmap <leader>b :ls<cr>:buffer
+
 " quickfix window  displaying
 map <leader>v  :botright copen<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :silent! set list! <bar> silent! set number!<cr>
-
+nmap <silent> <leader>l :set number!<cr>
 "Join the line below with space
 " nnoremap <leader>j  J
 " Reverse of J
@@ -394,39 +402,6 @@ if has("cscope")
     map <leader>gt  :cs find t <c-r><c-w>
 endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""    AUTO COMMANDS         """""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("autocmd")
-    augroup myvimrc
-        autocmd! *
-
-        " Auto reload conffiguration file, clean whitespace for some common code files
-        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-
-        " Return to last edit position when opening files (You want this!)
-        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-        " Save the code folding if we had one
-        " autocmd BufWinLeave * silent! mkview
-        " autocmd BufWinEnter * silent! loadview
-
-        " auto save 
-        if v:version >= 740
-        autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-        autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-        endif
-
-        " smart cursorline
-        autocmd WinEnter * setlocal cursorline
-        autocmd WinLeave * setlocal nocursorline
-
-        " tab special for makefile 
-        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
-    augroup END
-endif
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -437,13 +412,11 @@ function! DisplayReloadTheme()
     set cursorline
     if $TERM  =~? '256color'
         set t_Co=256
-        if g:colors_name == "sublimemonokai"
-            set termguicolors
-        endif
     endif
     set number
     " show hidden chars using shortcuts
     set listchars=tab:␉·,eol:␤,nbsp:▓
+    set nolist
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
@@ -499,7 +472,39 @@ endfunction
 
 call DisplayReloadTheme()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""    AUTO COMMANDS         """""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("autocmd")
+    augroup myvimrc
+        autocmd! *
+
+        " Auto reload conffiguration file, clean whitespace for some common code files
+        autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
+        autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+
+        " Return to last edit position when opening files (You want this!)
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+        " Save the code folding if we had one
+        " autocmd BufWinLeave * silent! mkview
+        " autocmd BufWinEnter * silent! loadview
+
+        " auto save 
+        if v:version >= 740
+        autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        endif
+
+        " smart cursorline
+        autocmd WinEnter * setlocal cursorline
+        autocmd WinLeave * setlocal nocursorline
+
+        " tab special for makefile 
+        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
+    augroup END
+endif
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim: ft=vim
+" vim: set ft=vim :

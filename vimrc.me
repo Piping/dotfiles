@@ -10,8 +10,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 
-set mouse=a
-
 " Ignore case when searching
 set ignorecase
 
@@ -38,8 +36,8 @@ set wildmenu
 set smarttab
 
 " 1 tab == 4 spaces
-set shiftwidth=8
-set tabstop=8
+set shiftwidth=4
+set tabstop=4
 
 " Use spaces instead of tabs
 set expandtab
@@ -71,16 +69,9 @@ set autoread
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
-language en_US.UTF-8
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface element
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Avoid garbled characters in Chinese language windows OS
-let $LANG='cn'
-set langmenu=cn
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
 
 " A buffer becomes hidden instead of dropped
 set hidden
@@ -138,14 +129,12 @@ set splitright
 set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Keyboard Feedback Configuration
+" => Set Preferred Input Timeout
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set notimeout
-set timeoutlen=500 " For <leader> mapping
 set ttimeout
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
-" set virtualedit=all "allow cursor to be anywhere
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Word Completion Popup Menu Configuration
@@ -154,9 +143,9 @@ set pumheight=25
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
+silent! packadd! matchit
 
-"""""""""""""""""""""""""""""""""""""""""
-""LEADER KEY MAPPING"
+nnoremap q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -172,8 +161,7 @@ map <leader>v  :botright copen<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :silent! set nolist <bar> silent! set number!<cr>
-
+nmap <silent> <leader>l :set number!<cr>
 "Join the line below with space
 " nnoremap <leader>j  J
 " Reverse of J
@@ -252,7 +240,7 @@ nnoremap <silent> ]p :cnext<cr>zz
 nnoremap <silent> [l :cpf<cr>zz 
 nnoremap <silent> ]l :cnf<cr>zz
 
-" TODO map shift-tab to cycle through jumps for differen file
+" Map shift-tab to cycle through jumps for differen file
 nnoremap <silent> <Tab> <C-o>
 nnoremap <silent> <S-Tab> <C-i>
 
@@ -273,8 +261,9 @@ cnoremap <C-Y> <C-R>"
 " => Terminal mode mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if v:version >= 801
-    tnoremap <Esc> <c-\><c-n>
+    tnoremap <Esc> <c-W><c-n>
 endif
+
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 command! W w !sudo tee % > /dev/null
@@ -317,13 +306,6 @@ endfun
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""        Utility Functions    """"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" userful to redirect internal command output to paste buffer
-func! Exec(command)
-    redir =>output
-    silent exec a:command
-    redir END
-    return output
-endfunct!
 
 " returns the binary string representation of a number.
 function! Nr2Bin(nr)
@@ -335,13 +317,6 @@ function! Nr2Bin(nr)
     endwhile
     return r
 endfunc
-
-function! TransBackground()
-    hi Normal ctermbg=NONE guibg=NONE
-    hi NonText ctermbg=NONE guibg=NONE
-    hi clear CursorLine
-    hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE
-endfunction
 
 command! CloseHiddenBuffers call s:CloseHiddenBuffers()
 function! s:CloseHiddenBuffers()
@@ -363,6 +338,8 @@ iab xdate2 <c-r>=strftime("%F")<cr>
 " Turn vim into a pager with a header row
 " Adapted from https://unix.stackexchange.com/a/27840/143088
 fun! HeadPager()
+    " reset all options to default
+    set all&
     " If you didn't get three lines, shortcut out
     if line('$') < 3
         set nocompatible
@@ -459,27 +436,28 @@ command! -nargs=0 HeadPager call HeadPager()
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("cscope")
-    set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+    "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
+    set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :cs add cscope.out /sources/sto<cr>
+    map <leader>ca :cs add cscope.out
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
-    map <leader>gd  :cs find g <c-r><c-w><cr>
+    map <leader>gd  :cs find g <c-r><c-w>
     " search for this symbol
-    map <leader>gs  :cs find s <c-r><c-w><cr>
+    map <leader>gs  :cs find s <c-r><c-w>
     " find the file under the name
-    map <leader>gf  :cs find f <c-r><c-p><cr>
+    map <leader>gf  :cs find f <c-r><c-p>
     " search files that include this file
-    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr><cr>
+    map <leader>gi  :cs find i <c-r>=expand("%:t")<cr>
     " egrep pattern matching
-    map <leader>ge  :cs find e <c-r><c-w><cr>
+    map <leader>ge  :cs find e <c-r><c-w>
     " Find assignments to this symbol
-    map <leader>ga  :cs find a <c-r><c-w><cr>
+    map <leader>ga  :cs find a <c-r><c-w>
     " search functions that call this function
-    map <leader>gc  :cs find c <c-r><c-w><cr>
+    map <leader>gc  :cs find c <c-r><c-w>
     " search this string
-    map <leader>gt  :cs find t <c-r><c-w><cr>
+    map <leader>gt  :cs find t <c-r><c-w>
 endif
 
 """""""""""""""""""""""""""""""""""""""""
@@ -638,8 +616,11 @@ function! DisplayReloadTheme()
     highlight QuickFixLine term=reverse ctermbg=254
     highlight QuickFixLine gui=reverse guibg=#000000
 
-    highlight Search cterm=bold ctermbg=Yellow ctermfg=Black
-    highlight Search gui=bold guibg=Brown guifg=White
+    highlight Visual cterm=bold ctermbg=grey ctermfg=Black
+    highlight Visual gui=bold guibg=grey guifg=White
+
+    highlight Search cterm=bold ctermbg=Yellow ctermfg=black
+    highlight Search gui=bold guibg=Brown guifg=black
 
     set laststatus=2 "In order to show the good statusline
     set showcmd      "Always print current keystroke
@@ -651,12 +632,12 @@ function! DisplayReloadTheme()
     set statusline+=\ %(共%L行%) 
     set statusline+=%=%<      " force space and start cut if too long
     set statusline+=\ [%{getcwd()}][%{&ft}]    " flags and filetype
-    set statusline+=\ [UTF:%B][Buf:%n]\  " unicode under cursor
+    set statusline+=\ [UTF-8:%B][Buf:%n]\  " unicode under cursor
 
-    highlight Statusline cterm=bold ctermfg=red ctermbg=235
+    highlight Statusline cterm=bold ctermfg=black ctermbg=white
     highlight Statusline gui=bold guifg=black guibg=#b0dfe5
 
-    highlight StatusLineNC cterm=NONE ctermfg=59 ctermbg=235 
+    highlight StatusLineNC cterm=NONE ctermfg=black ctermbg=grey
     highlight StatuslineNC gui=NONE guibg=#64645e guifg=#75715E
 
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 
@@ -667,13 +648,23 @@ function! DisplayReloadTheme()
 
     highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 
     highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
+
+    highlight DiffAdd cterm=bold ctermfg=green ctermbg=white
+    highlight DiffChange cterm=bold ctermfg=black ctermbg=white
+    highlight DiffDelete cterm=bold ctermfg=red ctermbg=white
+    highlight DiffText cterm=bold ctermfg=brown ctermbg=white
+
+    highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
+
+    highlight Pmenu    cterm=bold ctermfg=black ctermbg=magenta
+    highlight PmenuSel cterm=bold ctermfg=white ctermbg=magenta
+    highlight PmenuThumb cterm=bold ctermbg=white
     " Customer User Color %1*text%0* 
     " highlight User1 cterm=NONE ctermfg=59 ctermfg=235
     " highlight User1 gui=bold guifg=red guibg=#b0dfe5
 endfunction
 
 call DisplayReloadTheme()
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
@@ -722,4 +713,4 @@ endif
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim: set ft=vim
+" vim: set ft=vim :
