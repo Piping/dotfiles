@@ -455,8 +455,8 @@ function! DisplayReloadTheme()
     highlight Visual cterm=bold ctermbg=grey ctermfg=Black
     highlight Visual gui=bold guibg=grey guifg=White
 
-    highlight Search cterm=bold ctermbg=Yellow ctermfg=Black
-    highlight Search gui=bold guibg=Brown guifg=White
+    highlight Search cterm=bold ctermbg=Yellow ctermfg=black
+    highlight Search gui=bold guibg=Brown guifg=black
 
     set laststatus=2 "In order to show the good statusline
     set showcmd      "Always print current keystroke
@@ -489,6 +489,12 @@ function! DisplayReloadTheme()
     highlight DiffChange cterm=bold ctermfg=black ctermbg=white
     highlight DiffDelete cterm=bold ctermfg=red ctermbg=white
     highlight DiffText cterm=bold ctermfg=brown ctermbg=white
+
+    highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
+
+    highlight Pmenu    cterm=bold ctermfg=black ctermbg=magenta
+    highlight PmenuSel cterm=bold ctermfg=white ctermbg=magenta
+    highlight PmenuThumb cterm=bold ctermbg=white
 endfunction
 
 call DisplayReloadTheme()
