@@ -129,6 +129,13 @@ set splitright
 set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Word Completion Popup Menu Configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set pumheight=25
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Set Preferred Input Timeout
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set notimeout
@@ -136,39 +143,30 @@ set ttimeout
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Word Completion Popup Menu Configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set pumheight=25
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 silent! packadd! matchit
 
-nnoremap q :q<cr>
+nnoremap <nowait>q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
-" Go to Buffer
-nmap <leader>b :ls<cr>:buffer
-
+" Select Buffer And Go
+nnoremap <leader>b :ls<cr>:buffer
+" Open empty tab or with filename
+nnoremap <leader>t :tabe<space>
 " quickfix window  displaying
-map <leader>v  :botright copen<cr>
+nnoremap <leader>q :botright copen<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap <silent> <leader>l :set number!<cr>
-"Join the line below with space
-" nnoremap <leader>j  J
-" Reverse of J
+
+"Split the line below with space, reverse of J
 nnoremap <leader>j v$hdO<Esc>pj
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""Join the line below with space => Code Development - TagBar
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
@@ -192,7 +190,7 @@ map <leader>sp :setlocal spell!<cr>
 " noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Repeat last typed command
-nnoremap <leader>; @:
+nnoremap <leader><space> @:
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Fast editing and reloading of vimrc configs
@@ -213,9 +211,8 @@ noremap <leader>r :source $MYVIMRC<cr>
 " Extra Normal Mode Mapping 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
-noremap \ gg=G''
 noremap = $
-noremap <nowait> q :q<cr>
+noremap \ gg=G''
 noremap <nowait> Q q
 
 " for practicing vim way
@@ -664,8 +661,6 @@ function! DisplayReloadTheme()
     " highlight User1 gui=bold guifg=red guibg=#b0dfe5
 endfunction
 
-call DisplayReloadTheme()
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -675,7 +670,7 @@ if has("autocmd")
 
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
 
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -709,6 +704,8 @@ if has("autocmd")
 
     augroup END
 endif
+
+call DisplayReloadTheme()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""

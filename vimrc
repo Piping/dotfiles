@@ -129,6 +129,13 @@ set splitright
 set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Word Completion Popup Menu Configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set pumheight=25
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Set Preferred Input Timeout
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set notimeout
@@ -136,39 +143,30 @@ set ttimeout
 set ttimeoutlen=0  " No keycode dealy - no esc dealy
 set scrolloff=0    " allow cursor to be at top and bottom
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Word Completion Popup Menu Configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set pumheight=25
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 silent! packadd! matchit
 
-nnoremap q :q<cr>
+nnoremap <nowait>q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
 """""""""""""""""""""""""""""""""""""""""
 "" All leader key mapping
 """""""""""""""""""""""""""""""""""""""""
-" Go to Buffer
-nmap <leader>b :ls<cr>:buffer
-
+" Select Buffer And Go
+nnoremap <leader>b :ls<cr>:buffer
+" Open empty tab or with filename
+nnoremap <leader>t :tabe<space>
 " quickfix window  displaying
-map <leader>v  :botright copen<cr>
+nnoremap <leader>q :botright copen<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nmap <silent> <leader>l :set number!<cr>
-"Join the line below with space
-" nnoremap <leader>j  J
-" Reverse of J
+
+"Split the line below with space, reverse of J
 nnoremap <leader>j v$hdO<Esc>pj
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""Join the line below with space => Code Development - TagBar
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
@@ -178,6 +176,7 @@ nnoremap <silent> <expr> <cr> &buftype ==# 'quickfix' ? "\<cr>" : ":noh<cr>"
 noremap <leader>r :source /etc/vimrc<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Repeate last command line execution
 nnoremap <leader><space> @:
 
 " Quickly add empty lines
@@ -188,15 +187,11 @@ nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
-" To go to the next/previous quickfix/linter entry
-nnoremap <silent> [p :cprevious<cr>zz 
-nnoremap <silent> ]p :cnext<cr>zz
-
 " To go to the next/previous quickfix/linter entry in a different file
-nnoremap <silent> [l :cpf<cr>zz 
-nnoremap <silent> ]l :cnf<cr>zz
+" nnoremap <silent> [l :cpf<cr>zz 
+" nnoremap <silent> ]l :cnf<cr>zz
 
-" Map shift-tab to cycle through jumps for differen file
+" Utilize jumps and jumplist easier
 nnoremap <silent> <Tab> <C-o>
 nnoremap <silent> <S-Tab> <C-i>
 
@@ -213,7 +208,7 @@ cnoremap <C-N> <Down>
 cnoremap <C-Y> <C-R>"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Pattern Match, Search Highlight
+" => Pattern Match, Search Highlight with * key
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Normal mode pressing * or # searches for word under cursor
 " enable * # for visual selected text
@@ -470,7 +465,6 @@ function! DisplayReloadTheme()
     highlight PmenuThumb cterm=bold ctermbg=white
 endfunction
 
-call DisplayReloadTheme()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""    AUTO COMMANDS         """""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -503,6 +497,8 @@ if has("autocmd")
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
     augroup END
 endif
+
+call DisplayReloadTheme()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""    END OF VIM OPTIONS SETTING    """"""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
