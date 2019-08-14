@@ -372,11 +372,21 @@ command! -nargs=0 HeadPager call HeadPager()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! LoadCscope()
+  let db = findfile("cscope.out", ".;")
+  if (!empty(db))
+    let path = strpart(db, 0, match(db, "/cscope.out$"))
+    exe "cs add " . db . " " . path
+  " else add the database pointed to by environment variable 
+  elseif $CSCOPE_DB != "" 
+    cs add $CSCOPE_DB
+  endif
+endfunction
 if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :cs add cscope.out
+    map <leader>ca :call LoadCscope()<cr>
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
@@ -393,8 +403,6 @@ if has("cscope")
     map <leader>ga  :cs find a <c-r><c-w>
     " search functions that call this function
     map <leader>gc  :cs find c <c-r><c-w>
-    " search this string
-    map <leader>gt  :cs find t <c-r><c-w>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -420,8 +428,8 @@ function! DisplayReloadTheme()
     highlight QuickFixLine term=reverse ctermbg=254
     highlight QuickFixLine gui=reverse guibg=#000000
 
-    highlight Visual cterm=bold ctermbg=grey ctermfg=Black
-    highlight Visual gui=bold guibg=grey guifg=White
+    highlight Visual cterm=bold ctermbg=white ctermfg=Black
+    highlight Visual gui=bold guibg=white guifg=Black
 
     highlight Search cterm=bold ctermbg=Yellow ctermfg=black
     highlight Search gui=bold guibg=Brown guifg=black
@@ -460,8 +468,8 @@ function! DisplayReloadTheme()
 
     highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
 
-    highlight Pmenu    cterm=bold ctermfg=black ctermbg=magenta
-    highlight PmenuSel cterm=bold ctermfg=white ctermbg=magenta
+    highlight Pmenu    cterm=bold ctermfg=white ctermbg=brown
+    highlight PmenuSel cterm=reverse ctermfg=white ctermbg=brown
     highlight PmenuThumb cterm=bold ctermbg=white
 endfunction
 
@@ -471,30 +479,25 @@ endfunction
 if has("autocmd")
     augroup myvimrc
         autocmd! *
-
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
         autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
         " Save the code folding if we had one
         " autocmd BufWinLeave * silent! mkview
         " autocmd BufWinEnter * silent! loadview
-
         " auto save 
         if v:version >= 740
         autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         endif
-
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
-
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
+        autocmd VimEnter * :call LoadCscope()
     augroup END
 endif
 
