@@ -138,7 +138,7 @@ set scrolloff=0    " allow cursor to be at top and bottom
 
 silent! packadd! matchit
 
-nnoremap <nowait>q :q<cr>
+nnoremap q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -206,7 +206,7 @@ noremap <leader>r :source $MYVIMRC<cr>
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
 noremap \ gg=G''
-noremap <nowait> Q q
+noremap Q q
 
 " for practicing vim way
 " nnoremap <silent> <up>    <NOP>
@@ -446,7 +446,7 @@ if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :call LoadCscope()<cr>
+    map <leader>ca :cs add cscope.out<space>
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
@@ -524,7 +524,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     call plug#begin('~/.vim/plugged')
 
     """"""""""""""""""""""""""""""
-    Plug 'mhinz/vim-startify'
+    "Plug 'mhinz/vim-startify'
     """"""""""""""""""""""""""""""
 
     """"""""""syntax and colorscheme"""""""""""""""""""
@@ -701,7 +701,7 @@ if has("autocmd")
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
         autocmd FileType * :call SetupCodeEnvironment()
-        autocmd VimEnter * :call LoadCscope()
+        autocmd VimEnter :call LoadCscope()
     augroup END
 endif
 

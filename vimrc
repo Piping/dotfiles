@@ -145,7 +145,7 @@ set scrolloff=0    " allow cursor to be at top and bottom
 
 silent! packadd! matchit
 
-nnoremap <nowait>q :q<cr>
+nnoremap q :q<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -386,7 +386,7 @@ if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :call LoadCscope()<cr>
+    map <leader>ca :cs add cscope.out<space>
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
