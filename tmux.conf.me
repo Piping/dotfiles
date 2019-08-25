@@ -46,28 +46,27 @@ bind-key -T prefix c new-window -c "#{pane_current_path}"
 # reload config file
 bind-key -T prefix r source-file ~/.tmux.conf \; display-message 'Messgae: Tmux Configuration Reloaded'
 
-# move Pane Between Windows, use <preifx> m to mark pane, <prefix> M to paste pane
-bind-key -T prefix M join-pane 
+# move Pane Between Windows, use <preifx> m to mark pane and :join-pane to paste the pane
 
-bind-key -T prefix y set synchronize-panes  \; display-message 'Message: Toggled Panel Input Synchronization'
+# <prefix> M to toggle Mouse Support
+bind-key -T prefix M setw -g mouse
+
+bind-key -T prefix y set synchronize-panes
 
 #one pre-configured layout
 bind-key -T prefix o split-window \; split-window \; split-window \; select-layout 8afe,204x50,0,0{47x50,0,0,0,105x50,48,0[105x25,48,0,3,105x24,48,26,5],50x50,154,0,4}
 
 # COPY
-bind-key -T prefix Enter copy-mode \; display-message 'Messgae: Enter the Copy-Mode; Use vi key-binding'
-bind-key -T prefix /     copy-mode \; command-prompt -p "(search up)" "send -X search-backward \"%%%\""
-bind-key -T prefix C-u   copy-mode \; send-keys -X page-up 
+# default: prefix [ enter copy-mode
+# default: prefix ] paste tmux buffer
 bind-key -T prefix MouseDrag1Pane copy-mode
-# PASTE
-bind-key -T prefix p paste-buffer
 
 # enable vi mode keys
 set-window-option -g mode-keys vi
 bind-key -T copy-mode-vi '='   send-keys -X end-of-line
 bind-key -T copy-mode-vi 'v'   send-keys -X begin-selection
 bind-key -T copy-mode-vi 'y'   send-keys -X copy-selection
-bind-key -T copy-mode-vi Enter send-keys -X copy-selection-and-cancel \; display-message 'Message: Exit Copy Mode; Selection Copied To Clipboard'
+bind-key -T copy-mode-vi Enter send-keys -X copy-selection-and-cancel
 
 ######################
 ###  UX/UI CHANGES ###
@@ -101,42 +100,36 @@ set-option -g visual-silence off
 set-option -g bell-action none
 set-window-option -g monitor-activity off
 
-# The modes {
-setw -g clock-mode-colour colour135
-# Style for copy-mode, copy-mode search
+# modes {
+# copy-mode, copy-mode search highlight
 setw -g mode-style 'bold,bg=colour196,fg=#000000'
+# clock-mode
+setw -g clock-mode-colour colour135
 # }
-# The panes {
 
+# The panes {
 # set pane title
 set -g pane-border-status bottom
 set -g pane-border-format \
-'#{?pane_active,,#[fg=#808080]}'\
-':#{window_index}.#{pane_index} '\
-'#{?#{==:#H,#T},#{pane_tty},#T}'\
-'#{?#{==:#{pane_mode},copy-mode}, [COPY],}'
-
+'#{?pane_active,,#[fg=#808080]}:#{window_index}.#{pane_index} '\
+'#{?#{==:#H,#T},#{pane_tty},#T}#{?#{==:#{pane_mode},copy-mode}, [COPY],}'
 # set pane border colors
 set -g pane-border-style fg=$T_PANE_COLOR
 set -g pane-active-border-style fg=$T_PANE_COLOR,bold
 # }
 
 # The statusbar {
-
 set -g status-position top
 set -g status-bg $T_BAR_COLOR
 set -g status-fg $T_BAR_FG_COLOR
 set -g status-left \
 '#[bg=#323024]#[fg=#a6e22e]#[bright,blink]'\
 '#{?client_prefix,[PREFIX],} #S '
-
 set -g status-right '#[fg=colour0] "#H" %A %F %T ' #shiftime format
 set -g status-right-length 50
 set -g status-left-length 20
-
 # normal windows-tab-list
 setw -g window-status-format ' #I#[fg=colour0]:#[fg=colour0]#W#[fg=colour0]'
-
 # active windows-tab-list on selection
 setw -g window-status-current-format \
 '#[reverse] '\
@@ -145,5 +138,5 @@ setw -g window-status-current-format \
 '#{?window_zoomed_flag,*ZOOM,}'\
 '#{?pane_synchronized,*SYN,}'\
 ' #[bg=#f0f0f0]#[underscore]#W#[nounderscore] '
-
 # }
+# vim: set ft=conf:
