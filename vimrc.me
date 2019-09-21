@@ -358,7 +358,7 @@ if has("cscope")
     " search for this symbol
     map <leader>gs  :cs find s <c-r><c-w>
     " find the file under the name
-    map <leader>gf  :cs find f <c-r><c-p>
+    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr>
     " search files that include this file
     map <leader>gi  :cs find i <c-r>=expand("%:t")<cr>
     " egrep pattern matching
