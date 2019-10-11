@@ -51,7 +51,7 @@ bind-key  c new-window -c "#{pane_current_path}"
 bind-key  r source-file ~/.tmux.conf \; display-message 'Messgae: Tmux Configuration Reloaded'
 
 # move Pane Between Windows, use <preifx> m to mark pane, <prefix> M to paste pane
-bind-key  M join-pane 
+bind-key  M setw -g mouse
 
 bind-key  y set synchronize-panes  \; display-message 'Message: Toggled Panel Input Synchronization'
 
@@ -92,6 +92,5 @@ set -g status-left-length 20
 set -g status-position bottom
 set -g status-right-length 50
 
-setw -g window-status-current-format \
-'[#{?window_zoomed_flag,Z.,}#{?pane_synchronized,S.,}'\
-'#I:#[underscore]#W#[nounderscore]]'
+setw -g status-left '#{?client_prefix,[PREFIX] ,}[#S] '
+setw -g window-status-current-format '[#{?window_zoomed_flag,Z.,}#{?pane_synchronized,S.,}#I:#[underscore]#W#[nounderscore]]'
