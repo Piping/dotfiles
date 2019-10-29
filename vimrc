@@ -146,6 +146,7 @@ set scrolloff=0    " allow cursor to be at top and bottom
 silent! packadd! matchit
 
 nnoremap q :q<cr>
+nnoremap K K<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -274,7 +275,13 @@ endfunction
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! LoadCscope()
+  let pwd = getcwd()
+  lcd %:p:h
   let db = findfile("cscope.out", ".;")
+  if (empty(db))
+    let db = findfile("cscope.out", ".;")
+  endif
+  set nocscopeverbose
   if (!empty(db))
     let path = strpart(db, 0, match(db, "/cscope.out$"))
     exe "cs add " . db . " " . path
@@ -282,6 +289,8 @@ function! LoadCscope()
   elseif $CSCOPE_DB != "" 
     cs add $CSCOPE_DB
   endif
+  set cscopeverbose
+  exe "lcd" . " " . pwd
 endfunction
 if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
