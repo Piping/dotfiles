@@ -10,6 +10,10 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 
+set mouse=a
+
+set modeline
+
 " Ignore case when searching
 set ignorecase
 
@@ -207,6 +211,7 @@ noremap <leader>r :source $MYVIMRC<cr>
 noremap = $
 noremap \ gg=G''
 noremap Q q
+noremap K K<cr>
 
 " for practicing vim way
 " nnoremap <silent> <up>    <NOP>
@@ -337,7 +342,13 @@ iab xdate2 <c-r>=strftime("%F")<cr>
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! LoadCscope()
+  let pwd = getcwd()
+  lcd %:p:h
   let db = findfile("cscope.out", ".;")
+  if (empty(db))
+    let db = findfile("cscope.out", ".;")
+  endif
+  set nocscopeverbose
   if (!empty(db))
     let path = strpart(db, 0, match(db, "/cscope.out$"))
     exe "cs add " . db . " " . path
@@ -345,7 +356,10 @@ function! LoadCscope()
   elseif $CSCOPE_DB != "" 
     cs add $CSCOPE_DB
   endif
+  set cscopeverbose
+  exe "lcd" . " " . pwd
 endfunction
+
 if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=
@@ -435,7 +449,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'sheerun/vim-polyglot'
     "Plug 'ErichDonGubler/vim-sublime-monokai'
     "Plug 'justinmk/vim-syntax-extra'
-    "Plug 'vim-scripts/Super-Shell-Indent'
     """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -521,6 +534,7 @@ function! DisplayReloadTheme()
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight CursorLineNR guibg=#404040 gui=bold cterm=bold ctermbg=234
 
     highlight QuickFixLine term=reverse ctermbg=254
     highlight QuickFixLine gui=reverse guibg=#000000
@@ -581,7 +595,7 @@ if has("autocmd")
         autocmd! *
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,*.wiki :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
         " Save the code folding if we had one
@@ -599,13 +613,14 @@ if has("autocmd")
             " autocmd FocusGained * :call DisplayReloadTheme()
             " autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
         endif
+        autocmd VimEnter :silent clearjumps
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
         " tab special for makefile 
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
         autocmd FileType * :call SetupCodeEnvironment()
-        autocmd VimEnter :call LoadCscope()
+        autocmd BufReadPost * :call LoadCscope()
     augroup END
 endif
 

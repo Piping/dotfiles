@@ -334,6 +334,7 @@ function! DisplayReloadTheme()
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight CursorLineNR guibg=#404040 gui=bold cterm=bold ctermbg=234
 
     highlight QuickFixLine term=reverse ctermbg=254
     highlight QuickFixLine gui=reverse guibg=#000000
@@ -402,6 +403,7 @@ if has("autocmd")
         autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         endif
+        autocmd VimEnter :silent clearjumps
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
