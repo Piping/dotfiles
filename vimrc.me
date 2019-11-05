@@ -262,8 +262,8 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Terminal mode mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if v:version >= 801
-    tnoremap <Esc> <c-W><c-n>
+if has('terminal')
+"to be configured" 
 endif
 
 " :W sudo saves the file
