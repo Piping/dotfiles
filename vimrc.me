@@ -263,7 +263,7 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 " => Terminal mode mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has('terminal')
-"to be configured" 
+    packadd termdebug
 endif
 
 " :W sudo saves the file
@@ -562,6 +562,13 @@ function! DisplayReloadTheme()
 
     highlight StatusLineNC cterm=NONE ctermfg=black ctermbg=grey
     highlight StatuslineNC gui=NONE guibg=#64645e guifg=#75715E
+
+    if has('terminal')
+        highlight StatuslineTerm cterm=bold ctermfg=black ctermbg=cyan
+        highlight StatuslineTerm gui=bold guifg=black guibg=#b0dfe5
+        highlight StatusLineTermNC cterm=NONE ctermfg=black ctermbg=grey
+        highlight StatuslineTermNC gui=NONE guibg=#64645e guifg=#75715E
+    endif
 
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 
     highlight TabLine gui=NONE guifg=black guibg=#555555 

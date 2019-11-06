@@ -208,6 +208,13 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 cnoremap <C-Y> <C-R>"
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vim Built-in Terminal related config
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has('terminal')
+    packadd termdebug
+endif
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Pattern Match, Search Highlight with * key
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -359,9 +366,15 @@ function! DisplayReloadTheme()
 
     highlight Statusline cterm=bold ctermfg=black ctermbg=white
     highlight Statusline gui=bold guifg=black guibg=#b0dfe5
-
     highlight StatusLineNC cterm=NONE ctermfg=black ctermbg=grey
     highlight StatuslineNC gui=NONE guibg=#64645e guifg=#75715E
+
+    if has('terminal')
+        highlight StatuslineTerm cterm=bold ctermfg=black ctermbg=cyan
+        highlight StatuslineTerm gui=bold guifg=black guibg=#b0dfe5
+        highlight StatusLineTermNC cterm=NONE ctermfg=black ctermbg=grey
+        highlight StatuslineTermNC gui=NONE guibg=#64645e guifg=#75715E
+    endif
 
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 
     highlight TabLine gui=NONE guifg=black guibg=#555555 
