@@ -416,7 +416,7 @@ if has("autocmd")
         autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         endif
-        autocmd VimEnter :silent clearjumps
+        autocmd VimEnter * :let i = 0 | while i < 100 | mark ' | let i = i + 1 | endwhile
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
