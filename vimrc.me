@@ -137,6 +137,13 @@ set splitright
 set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Word Completion Popup Menu Configuration
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set pumheight=25
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Set Preferred Input Timeout
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set notimeout
@@ -147,6 +154,7 @@ set scrolloff=0    " allow cursor to be at top and bottom
 silent! packadd! matchit
 
 nnoremap q :q<cr>
+nnoremap K K<cr>
 """""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<space>"
 
@@ -256,13 +264,6 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 cnoremap <C-Y> <C-R>"
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Word Completion Popup Menu Configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set pumheight=10
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vim Built-in Terminal related config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -363,7 +364,6 @@ function! LoadCscope()
   set cscopeverbose
   exe "lcd" . " " . pwd
 endfunction
-
 if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=

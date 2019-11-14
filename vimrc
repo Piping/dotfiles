@@ -115,6 +115,10 @@ else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
 
+" For gf shortcut, last resort to remove leading slash from filename to find
+" the file
+set includeexpr=substitute(v:fname,'^/','','-g')
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Buffers, Split Windows, Tabs(Tabline)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -214,6 +218,10 @@ cnoremap <C-Y> <C-R>"
 if has('terminal')
     packadd termdebug
 endif
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+command! W w !sudo tee % > /dev/null
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Pattern Match, Search Highlight with * key
@@ -346,8 +354,8 @@ function! DisplayReloadTheme()
     highlight QuickFixLine term=reverse ctermbg=254
     highlight QuickFixLine gui=reverse guibg=#000000
 
-    highlight Visual cterm=bold ctermbg=white ctermfg=Black
-    highlight Visual gui=bold guibg=white guifg=Black
+    highlight Visual cterm=bold ctermbg=white ctermfg=black
+    highlight Visual gui=bold guibg=white guifg=black
 
     highlight Search cterm=bold ctermbg=Yellow ctermfg=black
     highlight Search gui=bold guibg=Brown guifg=black
@@ -385,15 +393,17 @@ function! DisplayReloadTheme()
     highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 
     highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
-    highlight DiffAdd cterm=bold ctermfg=green ctermbg=white
-    highlight DiffChange cterm=bold ctermfg=black ctermbg=white
-    highlight DiffDelete cterm=bold ctermfg=red ctermbg=white
-    highlight DiffText cterm=bold ctermfg=brown ctermbg=white
+    highlight DiffAdd cterm=bold ctermfg=green ctermbg=black
+    highlight DiffDelete cterm=bold ctermfg=red ctermbg=black
+    highlight DiffText cterm=bold ctermfg=brown ctermbg=black
+    highlight DiffChange cterm=bold ctermfg=black ctermbg=black
 
     highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
 
-    highlight Pmenu    cterm=bold ctermfg=white ctermbg=brown
-    highlight PmenuSel cterm=reverse ctermfg=white ctermbg=brown
+    highlight Folded cterm=bold ctermfg=cyan ctermbg=none
+
+    highlight Pmenu    cterm=bold ctermfg=white ctermbg=DarkMagenta
+    highlight PmenuSel cterm=reverse ctermfg=white ctermbg=DarkMagenta
     highlight PmenuThumb cterm=bold ctermbg=white
 endfunction
 
@@ -411,11 +421,14 @@ if has("autocmd")
         " Save the code folding if we had one
         " autocmd BufWinLeave * silent! mkview
         " autocmd BufWinEnter * silent! loadview
-        " auto save 
-        if v:version >= 740
-        autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-        autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-        endif
+        " if v:version >= 800
+        "     " auto save 
+        "     autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        "     autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
+        "     " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
+        "     " autocmd FocusGained * :call DisplayReloadTheme()
+        "     " autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
+        " endif
         autocmd VimEnter * :let i = 0 | while i < 100 | mark ' | let i = i + 1 | endwhile
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
