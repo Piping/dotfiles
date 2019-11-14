@@ -119,6 +119,10 @@ else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
 
+" For gf shortcut, last resort to remove leading slash from filename to find
+" the file
+set includeexpr=substitute(v:fname,'^/','','-g')
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Buffers, Split Windows, Tabs(Tabline)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -260,7 +264,7 @@ inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Terminal mode mappings
+" => Vim Built-in Terminal related config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has('terminal')
     packadd termdebug
@@ -448,7 +452,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""syntax and colorscheme"""""""""""""""""""
     Plug 'sheerun/vim-polyglot'
     "Plug 'ErichDonGubler/vim-sublime-monokai'
-    "Plug 'justinmk/vim-syntax-extra'
     """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -480,7 +483,8 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """"""""""""""""""""""""""""""
     Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
-    let g:goyo_width=130
+    let g:goyo_width='95%'
+    let g:toggle_zoom_for_goyo=0
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -499,10 +503,20 @@ silent! packadd! matchit
 vmap <leader>a    :EasyAlign
 nmap <leader>u    :UndotreeToggle<cr>
 map  <leader>m    :TagbarToggle<cr>
-nmap <silent>     <leader>z  :Goyo<cr>:normal! zz<cr>
+nmap <silent>     <leader>z  :call ToggleZoom()<cr>
 map  gc           <Plug>Commentary
 nmap gcc          <Plug>CommentaryLine
 
+function ToggleZoom()
+    if g:toggle_zoom_for_goyo == 0
+        :Goyo
+        let g:toggle_zoom_for_goyo = 1
+    else
+        :Goyo!
+        :call DisplayReloadTheme()
+        let g:toggle_zoom_for_goyo = 0
+    endif
+endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " End of Plugin and External Dependency
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -559,7 +573,6 @@ function! DisplayReloadTheme()
 
     highlight Statusline cterm=bold ctermfg=black ctermbg=white
     highlight Statusline gui=bold guifg=black guibg=#b0dfe5
-
     highlight StatusLineNC cterm=NONE ctermfg=black ctermbg=grey
     highlight StatuslineNC gui=NONE guibg=#64645e guifg=#75715E
 
@@ -579,12 +592,14 @@ function! DisplayReloadTheme()
     highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 
     highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
-    highlight DiffAdd cterm=bold ctermfg=green ctermbg=white
-    highlight DiffChange cterm=bold ctermfg=black ctermbg=white
-    highlight DiffDelete cterm=bold ctermfg=red ctermbg=white
-    highlight DiffText cterm=bold ctermfg=brown ctermbg=white
+    highlight DiffAdd cterm=bold ctermfg=green ctermbg=black
+    highlight DiffDelete cterm=bold ctermfg=red ctermbg=black
+    highlight DiffText cterm=bold ctermfg=brown ctermbg=black
+    highlight DiffChange cterm=bold ctermfg=black ctermbg=black
 
     highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
+
+    highlight Folded cterm=bold ctermfg=cyan ctermbg=none
 
     highlight Pmenu    cterm=bold ctermfg=white ctermbg=DarkMagenta
     highlight PmenuSel cterm=reverse ctermfg=white ctermbg=DarkMagenta
