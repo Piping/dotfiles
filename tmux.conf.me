@@ -56,11 +56,15 @@ bind-key -T prefix y set synchronize-panes
 #one pre-configured layout
 bind-key -T prefix o split-window \; split-window \; split-window \; select-layout 8afe,204x50,0,0{47x50,0,0,0,105x50,48,0[105x25,48,0,3,105x24,48,26,5],50x50,154,0,4}
 
-# COPY
+bind-key -T prefix  h select-pane -L
+bind-key -T prefix  j select-pane -D
+bind-key -T prefix  k select-pane -U
+bind-key -T prefix  l select-pane -R
+
+# Copy Mode
 # default: prefix [ enter copy-mode
 # default: prefix ] paste tmux buffer
-bind-key -T prefix MouseDrag1Pane copy-mode
-
+# mode-key refer to scroll buffer (copy mode) navigation key binding
 # enable vi mode keys
 set-window-option -g mode-keys vi
 bind-key -T copy-mode-vi '='   send-keys -X end-of-line
@@ -119,7 +123,7 @@ set -g pane-active-border-style fg=$T_PANE_COLOR,bold
 # }
 
 # The statusbar {
-set -g status-position top
+set -g status-position bottom
 set -g status-bg $T_BAR_COLOR
 set -g status-fg $T_BAR_FG_COLOR
 set -g status-left \
