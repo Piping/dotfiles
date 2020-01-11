@@ -46,7 +46,7 @@ set tabstop=4
 " Use spaces instead of tabs
 set expandtab
 
-set autoindent 
+set autoindent
 set smartindent
 
 set showcmd      "Always print current keystroke
@@ -56,6 +56,9 @@ set ruler        "Always show current position
 set display+=lastline
 
 set encoding=utf8
+
+" Disable all bell audio sound
+set belloff=all
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Options
@@ -211,7 +214,7 @@ noremap <leader>r :source $MYVIMRC<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Extra Normal Mode Mapping 
+" Extra Normal Mode Mapping
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap = to line end $, like it, easier to press and remember
 noremap = $
@@ -329,28 +332,34 @@ iab xdate2 <c-r>=strftime("%F")<cr>
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! LoadCscope()
-  let pwd = getcwd()
-  lcd %:p:h
-  let db = findfile("cscope.out", ".;")
-  if (empty(db))
-    let db = findfile("cscope.out", ".;")
-  endif
-  set nocscopeverbose
-  if (!empty(db))
-    let path = strpart(db, 0, match(db, "/cscope.out$"))
-    exe "cs add " . db . " " . path
-  " else add the database pointed to by environment variable 
-  elseif $CSCOPE_DB != "" 
-    cs add $CSCOPE_DB
-  endif
-  set cscopeverbose
-  exe "lcd" . " " . pwd
+    let pwd = getcwd()
+    lcd %:p:h
+    if executable('gtags-cscope')
+        set cscopeprg=gtags-cscope
+        let db = findfile("GTAGS", ";.")
+    else
+        let db = findfile("cscope.out", ";.")
+    endif
+    set nocscopeverbose
+    if (!empty(db))
+        if executable('gtags-cscope')
+            exe "cs add " . db . " " . fnamemodify(db,":p:h") . " -a"
+        else
+            exe "cs add " . db . " " . fnamemodify(db,":p:h")
+        endif
+    elseif $CSCOPE_DB != ""
+        "add database pointed to by environment variable
+        cs add $CSCOPE_DB $CSCOPE_DB_PREFIX
+    endif
+    set cscopeverbose
+    exe "lcd" . " " . pwd
+    redraw
 endfunction
 if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :cs add cscope.out<space>
+    map <leader>ca :call LoadCscope()<cr>
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
@@ -375,14 +384,10 @@ endif
 function! SetupCodeEnvironment()
     "set trigger for language-client's omnifunc
     if &filetype == 'c' || &filetype == 'cpp'
+        call LoadCscope()
         if executable('clang-format')
-            if empty(glob('~/.clang-format'))
-                setlocal formatprg=clang-format\ --style='Webkit'
-                setlocal equalprg=clang-format\ --style='Webkit'
-            else
-                setlocal formatprg=clang-format\ --style='file'
-                setlocal equalprg=clang-format\ --style='file'
-            endif
+            setlocal formatprg=clang-format\ --style='Webkit'
+            setlocal equalprg=clang-format\ --style='Webkit'
         endif
     elseif &ft  == 'javascript'
     elseif &ft  == 'python'
@@ -468,7 +473,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     call plug#end()
-    "}} PLUGIN MANAGER END 
+    "}} PLUGIN MANAGER END
 endif
 
 silent! packadd! matchit
@@ -489,7 +494,7 @@ nmap gcc          <Plug>CommentaryLine
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! DisplayReloadTheme()
-    try 
+    try
         colorscheme sublimemonokai
     catch
         silent! colorscheme default
@@ -529,9 +534,9 @@ function! DisplayReloadTheme()
     set ruler        "Always show current position
     set cmdheight=1  "Height of the command bar
     set statusline=
-    set statusline+=\ %(第%c列%) 
+    set statusline+=\ %(第%c列%)
     set statusline+=\ %f\ %r%w         " filename and flags
-    set statusline+=\ %(共%L行%) 
+    set statusline+=\ %(共%L行%)
     set statusline+=%=%<      " force space and start cut if too long
     set statusline+=\ [%{getcwd()}][%{&ft}]    " flags and filetype
     set statusline+=\ [UTF-8:%B][Buf:%n]\  " unicode under cursor
@@ -548,13 +553,13 @@ function! DisplayReloadTheme()
         highlight StatuslineTermNC gui=NONE guibg=#64645e guifg=#75715E
     endif
 
-    highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 
-    highlight TabLine gui=NONE guifg=black guibg=#555555 
+    highlight TabLine cterm=NONE ctermfg=252 ctermbg=239
+    highlight TabLine gui=NONE guifg=black guibg=#555555
 
     highlight TabLineSel cterm=bold ctermfg=white ctermbg=black
     highlight TabLineSel gui=bold guifg=red guibg=#36454F
 
-    highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 
+    highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239
     highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
     highlight DiffAdd cterm=bold ctermfg=green ctermbg=black
@@ -569,7 +574,7 @@ function! DisplayReloadTheme()
     highlight Pmenu    cterm=bold ctermfg=white ctermbg=DarkMagenta
     highlight PmenuSel cterm=reverse ctermfg=white ctermbg=DarkMagenta
     highlight PmenuThumb cterm=bold ctermbg=white
-    " Customer User Color %1*text%0* 
+    " Customer User Color %1*text%0*
     " highlight User1 cterm=NONE ctermfg=59 ctermfg=235
     " highlight User1 gui=bold guifg=red guibg=#b0dfe5
 endfunction
@@ -593,7 +598,7 @@ if has("autocmd")
             autocmd GUIEnter * set vb t_vb=
         endif
         " if v:version >= 800
-        "     " auto save 
+        "     " auto save
         "     autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         "     autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         " endif
@@ -601,10 +606,9 @@ if has("autocmd")
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
-        " tab special for makefile 
+        " tab special for makefile
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
         autocmd FileType * :call SetupCodeEnvironment()
-        autocmd BufReadPost * :call LoadCscope()
     augroup END
 endif
 
