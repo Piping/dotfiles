@@ -220,7 +220,6 @@ noremap <leader>r :source $MYVIMRC<cr>
 noremap = $
 noremap \ gg=G''
 noremap Q q
-noremap K K<cr>
 
 " for practicing vim way
 " nnoremap <silent> <up>    <NOP>
@@ -239,13 +238,6 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 cnoremap <C-Y> <C-R>"
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Word Completion Popup Menu Configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set pumheight=10
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vim Built-in Terminal related config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -258,7 +250,7 @@ endif
 command! W w !sudo tee % > /dev/null
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Pattern Match, Search Highlight
+" => Pattern Match, Search Highlight with * key
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Normal mode pressing * or # searches for word under cursor
 " enable * # for visual selected text
@@ -587,16 +579,12 @@ if has("autocmd")
         autocmd! *
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre Makefile,*.wiki :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,vimrc,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
         " Save the code folding if we had one
         " autocmd BufWinLeave * silent! mkview
         " autocmd BufWinEnter * silent! loadview
-        " Properly disable sound on errors on MacVim
-        if has("gui_macvim")
-            autocmd GUIEnter * set vb t_vb=
-        endif
         " if v:version >= 800
         "     " auto save
         "     autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif

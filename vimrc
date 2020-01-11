@@ -42,7 +42,7 @@ set tabstop=4
 " Use spaces instead of tabs
 set expandtab
 
-set autoindent 
+set autoindent
 set smartindent
 
 set showcmd      "Always print current keystroke
@@ -52,6 +52,9 @@ set ruler        "Always show current position
 set display+=lastline
 
 set encoding=utf8
+
+" Disable all bell audio sound
+set belloff=all
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Options
@@ -133,13 +136,6 @@ set splitright
 set splitbelow
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Word Completion Popup Menu Configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set pumheight=25
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Set Preferred Input Timeout
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set notimeout
@@ -163,6 +159,7 @@ nnoremap <leader>b :ls<cr>:buffer
 nnoremap <leader>t :tabe<space>
 " quickfix window  displaying
 nnoremap <leader>q :botright copen<cr>
+nnoremap <leader>z :-tab split<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
@@ -193,7 +190,7 @@ nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
 nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 " To go to the next/previous quickfix/linter entry in a different file
-" nnoremap <silent> [l :cpf<cr>zz 
+" nnoremap <silent> [l :cpf<cr>zz
 " nnoremap <silent> ]l :cnf<cr>zz
 
 " Utilize jumps and jumplist easier
@@ -206,7 +203,6 @@ nnoremap <silent> <S-Tab> <C-i>
 " Additionaly you can use c-f to editing cmd in normal mode window
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
-cnoremap <C-S> <S-Right>
 cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
@@ -290,22 +286,28 @@ endfunction
 " => Code Navigation - Cscope/LanguageClient
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! LoadCscope()
-  let pwd = getcwd()
-  lcd %:p:h
-  let db = findfile("cscope.out", ".;")
-  if (empty(db))
-    let db = findfile("cscope.out", ".;")
-  endif
-  set nocscopeverbose
-  if (!empty(db))
-    let path = strpart(db, 0, match(db, "/cscope.out$"))
-    exe "cs add " . db . " " . path
-  " else add the database pointed to by environment variable 
-  elseif $CSCOPE_DB != "" 
-    cs add $CSCOPE_DB
-  endif
-  set cscopeverbose
-  exe "lcd" . " " . pwd
+    let pwd = getcwd()
+    lcd %:p:h
+    if executable('gtags-cscope')
+        set cscopeprg=gtags-cscope
+        let db = findfile("GTAGS", ";.")
+    else
+        let db = findfile("cscope.out", ";.")
+    endif
+    set nocscopeverbose
+    if (!empty(db))
+        if executable('gtags-cscope')
+            exe "cs add " . db . " " . fnamemodify(db,":p:h") . " -a"
+        else
+            exe "cs add " . db . " " . fnamemodify(db,":p:h")
+        endif
+    elseif $CSCOPE_DB != ""
+        "add database pointed to by environment variable
+        cs add $CSCOPE_DB $CSCOPE_DB_PREFIX
+    endif
+    set cscopeverbose
+    exe "lcd" . " " . pwd
+    redraw
 endfunction
 if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
@@ -319,7 +321,7 @@ if has("cscope")
     " search for this symbol
     map <leader>gs  :cs find s <c-r><c-w>
     " find the file under the name
-    map <leader>gf  :cs find f <c-r><c-p>
+    map <leader>gf  :cs find f <c-r>=expand("<cfile>")<cr>
     " search files that include this file
     map <leader>gi  :cs find i <c-r>=expand("%:t")<cr>
     " egrep pattern matching
@@ -351,8 +353,8 @@ function! DisplayReloadTheme()
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight CursorLineNR guibg=#404040 gui=bold cterm=bold ctermbg=234
 
-    highlight QuickFixLine term=reverse ctermbg=254
-    highlight QuickFixLine gui=reverse guibg=#000000
+    highlight QuickFixLine cterm=bold ctermfg=brown ctermbg=black
+    highlight QuickFixLine gui=bold guibg=black
 
     highlight Visual cterm=bold ctermbg=white ctermfg=black
     highlight Visual gui=bold guibg=white guifg=black
@@ -365,9 +367,9 @@ function! DisplayReloadTheme()
     set ruler        "Always show current position
     set cmdheight=1  "Height of the command bar
     set statusline=
-    set statusline+=\ %(Col:%c%) 
+    set statusline+=\ %(Col:%c%)
     set statusline+=\ %f\ %r%w         " filename and flags
-    set statusline+=\ %(LoC:%L%) 
+    set statusline+=\ %(LoC:%L%)
     set statusline+=%=%<      " force space and start cut if too long
     set statusline+=\ [%{getcwd()}][%{&ft}]    " flags and filetype
     set statusline+=\ [UTF-8:%B][Buf:%n]\  " unicode under cursor
@@ -384,13 +386,13 @@ function! DisplayReloadTheme()
         highlight StatuslineTermNC gui=NONE guibg=#64645e guifg=#75715E
     endif
 
-    highlight TabLine cterm=NONE ctermfg=252 ctermbg=239 
-    highlight TabLine gui=NONE guifg=black guibg=#555555 
+    highlight TabLine cterm=NONE ctermfg=252 ctermbg=239
+    highlight TabLine gui=NONE guifg=black guibg=#555555
 
     highlight TabLineSel cterm=bold ctermfg=white ctermbg=black
     highlight TabLineSel gui=bold guifg=red guibg=#36454F
 
-    highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239 
+    highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239
     highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
     highlight DiffAdd cterm=bold ctermfg=green ctermbg=black
@@ -415,25 +417,22 @@ if has("autocmd")
         autocmd! *
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePre Makefile,Makefrag,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,vimrc,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
         " Save the code folding if we had one
         " autocmd BufWinLeave * silent! mkview
         " autocmd BufWinEnter * silent! loadview
         " if v:version >= 800
-        "     " auto save 
+        "     " auto save
         "     autocmd TextChanged * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
         "     autocmd InsertLeave * let v:errmsg = '' | silent! write | if v:errmsg == '' | write | endif
-        "     " Focus: only work in GUI or under tmux + vim-tmux-focus plugin
-        "     " autocmd FocusGained * :call DisplayReloadTheme()
-        "     " autocmd FocusLost   * :highlight Normal ctermbg=0 guibg=#101010
         " endif
         autocmd VimEnter * :let i = 0 | while i < 100 | mark ' | let i = i + 1 | endwhile
         " smart cursorline
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
-        " tab special for makefile 
+        " tab special for makefile
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
         autocmd VimEnter * :call LoadCscope()
     augroup END
