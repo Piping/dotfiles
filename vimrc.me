@@ -374,7 +374,7 @@ endif
 
 function! LoadRust()
     map <buffer> <leader>gd  :call LanguageClient#textDocument_definition()<cr>
-    map <buffer> <leader>gs  :call LanguageClient#workspace_symbol()<cr>
+    map <buffer> <leader>gs  :call LanguageClient#textDocument_references()<cr>
     map <buffer> <leader>gr  :call LanguageClient#textDocument_rename()<cr>
     nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
 endfunction
@@ -483,7 +483,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
-    let g:LanguageClient_serverCommands = { 'rust': ['~/.cargo/bin/ra_lsp_server'] }
+    let g:LanguageClient_serverCommands = { 'rust': ['~/.cargo/bin/rust-analyzer'] }
     """"""""""""""""""""""""""""""
 
 
