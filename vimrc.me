@@ -165,6 +165,8 @@ nnoremap <leader>t :tabe<space>
 nnoremap <leader>q :botright copen<cr>
 nnoremap <leader>z :-tab split<cr>
 
+nnoremap ]p :cnext<cr>
+nnoremap [p :cprev<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -370,6 +372,13 @@ if has("cscope")
     map <leader>gc  :cs find c <c-r><c-w>
 endif
 
+function! LoadRust()
+    map <buffer> <leader>gd  :call LanguageClient#textDocument_definition()<cr>
+    map <buffer> <leader>gs  :call LanguageClient#workspace_symbol()<cr>
+    map <buffer> <leader>gr  :call LanguageClient#textDocument_rename()<cr>
+    nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""
 "" Code/Text AutoFormat,AutoComplete
 """""""""""""""""""""""""""""""""""""""""
@@ -383,6 +392,10 @@ function! SetupCodeEnvironment()
         endif
     elseif &ft  == 'javascript'
     elseif &ft  == 'python'
+    elseif &ft  == 'make'
+        setlocal noexpandtab tabstop=8 shiftwidth=8
+    elseif &ft  == 'rust'
+        call LoadRust()
     endif
 endfunction
 
@@ -464,6 +477,16 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'tpope/vim-fugitive', {'on': ['Gwrite','Git']}
     """"""""""""""""""""""""""""""
 
+    """"""""""""""""""""""""""""""
+    " Mostly for Rust Analyzer before something like cscope appears
+    Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+    let g:LanguageClient_serverCommands = { 'rust': ['~/.cargo/bin/ra_lsp_server'] }
+    """"""""""""""""""""""""""""""
+
+
     call plug#end()
     "}} PLUGIN MANAGER END
 endif
@@ -509,6 +532,8 @@ function! DisplayReloadTheme()
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
+    highlight CursorColumn  guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight CursorColumnNR  guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight CursorLineNR guibg=#404040 gui=bold cterm=bold ctermbg=234
 
@@ -595,7 +620,6 @@ if has("autocmd")
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
         " tab special for makefile
-        autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
         autocmd FileType * :call SetupCodeEnvironment()
     augroup END
 endif
