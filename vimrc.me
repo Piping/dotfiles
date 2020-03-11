@@ -328,17 +328,16 @@ iab xdate2 <c-r>=strftime("%F")<cr>
 function! LoadCscope()
     let pwd = getcwd()
     lcd %:p:h
+    set nocscopeverbose
     if executable('gtags-cscope')
         set cscopeprg=gtags-cscope
         let db = findfile("GTAGS", ";.")
-    else
-        let db = findfile("cscope.out", ";.")
-    endif
-    set nocscopeverbose
-    if (!empty(db))
-        if executable('gtags-cscope')
+        if (!empty(db))
             exe "cs add " . db . " " . fnamemodify(db,":p:h") . " -a"
-        else
+        endif
+    elseif executable('cscope')
+        let db = findfile("cscope.out", ";.")
+        if (!empty(db))
             exe "cs add " . db . " " . fnamemodify(db,":p:h")
         endif
     elseif $CSCOPE_DB != ""
@@ -482,6 +481,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
+    \ 'on': ['LoadRust'],
     \ }
     let g:LanguageClient_serverCommands = { 'rust': ['~/.cargo/bin/rust-analyzer'] }
     """"""""""""""""""""""""""""""
