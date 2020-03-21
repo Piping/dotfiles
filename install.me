@@ -18,6 +18,7 @@ Enable_login_display_manager_to_respect_HiDPI_setting () {
 
 Change_Capslock_key_to_Escape () {
   /usr/bin/setxkbmap -option "caps:swapescape"
+  dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
 }
 
 Allow_root_login_to_gnome_gdm () {
