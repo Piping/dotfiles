@@ -1,8 +1,27 @@
 #!/bin/bash
-D=~/.local/dotfiles
-mkdir -p $D
-git clone https://github.com/piping/dotfiles $D
-ln -s $D/tmux.conf.me ~/.tmux.conf
-ln -s $D/vimrc.me ~/.vimrc
-ln -s $D/clang-format.me ~/.clang-format
-ln -s $D/zshrc.me ~/.zshrc
+
+Install_dotfiles () {
+  D=~/.local/dotfiles
+  mkdir -p $D
+  git clone https://github.com/piping/dotfiles $D
+  ln -s $D/tmux.conf.me ~/.tmux.conf
+  ln -s $D/vimrc.me ~/.vimrc
+  ln -s $D/clang-format.me ~/.clang-format
+  ln -s $D/zshrc.me ~/.zshrc
+}
+
+Enable_login_display_manager_to_respect_HiDPI_setting () {
+  sudo xhost +SI:localuser:gdm
+  sudo su gdm -s /bin/bash -c 'gsettings set org.gnome.desktop.interface scaling-factor 2'
+  echo done setting hidpi for gdm
+}
+
+Change_Capslock_key_to_Escape () {
+  /usr/bin/setxkbmap -option "caps:swapescape"
+}
+
+Allow_root_login_to_gnome_gdm () {
+  grep -qxF 'AllowRoot=true' /etc/gdm3/custom.conf || \
+  ( echo Editting the file on place && sudo sed -i '/security/a AllowRoot=true' /etc/gdm3/custom.conf )
+  sudo sed -i 's/^auth.*root quiet_success/#&/' /etc/pam.d/gdm-password
+}
