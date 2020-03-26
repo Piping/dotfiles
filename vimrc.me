@@ -371,11 +371,21 @@ if has("cscope")
     map <leader>gc  :cs find c <c-r><c-w>
 endif
 
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 function! LoadRust()
-    map <buffer> <leader>gd  :call LanguageClient#textDocument_definition()<cr>
-    map <buffer> <leader>gs  :call LanguageClient#textDocument_references()<cr>
-    map <buffer> <leader>gr  :call LanguageClient#textDocument_rename()<cr>
-    nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
+    " CoC
+    map <buffer> <leader>gd <Plug>(coc-definition)
+    map <buffer> <leader>gi <Plug>(coc-implementation)
+    map <buffer> <leader>gs <Plug>(coc-references)
+    map <buffer> <leader>gr <Plug>(coc-rename)
+    map <buffer> <leader>gx <Plug>(coc-codeaction)
+    nnoremap <buffer> <silent> K :call <SID>show_documentation()<cr>
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""
@@ -477,15 +487,12 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
-    " Mostly for Rust Analyzer before something like cscope appears
-    Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ 'on': ['LoadRust'],
-    \ }
-    let g:LanguageClient_serverCommands = { 'rust': ['~/.cargo/bin/rust-analyzer'] }
+    " !curl -sL install-node.now.sh/lts | bash
+    " :CocInstall coc-rust-analyzer
+    " :CocCommand rust-analyzer.analyzerStatus
+    " LSP for Rust with rust-analyzer
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'on': ['LoadRust']}
     """"""""""""""""""""""""""""""
-
 
     call plug#end()
     "}} PLUGIN MANAGER END
