@@ -381,10 +381,9 @@ endfunction
 function! LoadRust()
     " CoC
     map <buffer> <leader>gd <Plug>(coc-definition)
-    map <buffer> <leader>gi <Plug>(coc-implementation)
     map <buffer> <leader>gs <Plug>(coc-references)
     map <buffer> <leader>gr <Plug>(coc-rename)
-    map <buffer> <leader>gx <Plug>(coc-codeaction)
+    map <buffer> <leader>gi <Plug>(coc-implementation)
     nnoremap <buffer> <silent> K :call <SID>show_documentation()<cr>
 endfunction
 
@@ -491,7 +490,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " :CocInstall coc-rust-analyzer
     " :CocCommand rust-analyzer.analyzerStatus
     " LSP for Rust with rust-analyzer
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'on': ['LoadRust']}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'rust'}
     """"""""""""""""""""""""""""""
 
     call plug#end()
