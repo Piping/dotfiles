@@ -3,13 +3,8 @@
 #""""""""""""""""""""""""""""""""""""""""
 # set default terminal mode to 256 colors
 set -g default-terminal "xterm-256color"
-# add second tmux prefix key
-# set-option -g prefix C-b
-set-option -g prefix2 `
-
 ## start with window 1 (instead of 0)
 set -g base-index 1
-# start with pane 1
 set -g pane-base-index 1
 # shorten command delay
 set -sg escape-time 1
@@ -25,6 +20,10 @@ setw -g mouse on
 set -g set-clipboard on
 
 set -g history-limit 99999
+
+# add second tmux prefix key
+# set-option -g prefix C-b
+set-option -g prefix2 `
 
 #""""""""""""""""""""""""""""""""""""""""
 #" TMUX KEYTABLE OPTIONS
@@ -62,13 +61,16 @@ bind-key -T prefix  j select-pane -D
 bind-key -T prefix  k select-pane -U
 bind-key -T prefix  l select-pane -R
 
+# Copy Mode
+# default: prefix [ enter copy-mode
+# default: prefix ] paste tmux buffer
+# mode-key refer to scroll buffer (copy mode) navigation key binding
 # enable vi mode keys
 setw -g mode-keys vi
 bind-key -t vi-copy 'v' begin-selection
 bind-key -t vi-copy 'y' copy-selection
 bind-key -t vi-copy 'C-v' rectangle-toggle
 bind-key -t vi-copy 'V' select-line
-bind-key p paste-buffer
 
 ######################
 ###  UX/UI CHANGES ###
