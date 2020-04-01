@@ -11,14 +11,6 @@ set -sg escape-time 1
 # don't rename windows automatically
 set-option -g allow-rename off
 
-#use `<prefix>q <number>` to select panes
-#use `<prefix><number>` to select windows
-#use `<prefix>z` to zoom panes
-#use `<prefix><Ctrl><Arrows>` to adjust panes
-setw -g mouse on
-
-set -g set-clipboard on
-
 set -g history-limit 99999
 
 # add second tmux prefix key
@@ -28,6 +20,11 @@ set-option -g prefix2 `
 #""""""""""""""""""""""""""""""""""""""""
 #" TMUX KEYTABLE OPTIONS
 #""""""""""""""""""""""""""""""""""""""""
+#use `<prefix>q <number>` to select panes
+#use `<prefix><number>` to select windows
+#use `<prefix>z` to zoom panes
+#use `<prefix><Ctrl><Arrows>` to adjust panes
+
 # press <prefix> twice to send
 # actual prefix keystroke to application inside tmux
 # bind-key  C-b send-prefix
@@ -66,9 +63,11 @@ bind-key -T prefix  l select-pane -R
 # default: prefix ] paste tmux buffer
 # mode-key refer to scroll buffer (copy mode) navigation key binding
 # enable vi mode keys
+setw -g mouse on
 setw -g mode-keys vi
+set-option -s set-clipboard off
 bind-key -t vi-copy 'v' begin-selection
-bind-key -t vi-copy 'y' copy-selection
+bind-key -t vi-copy 'y' copy-pipe 'xclip -in -selection clipboard'
 bind-key -t vi-copy 'C-v' rectangle-toggle
 bind-key -t vi-copy 'V' select-line
 

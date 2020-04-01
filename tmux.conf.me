@@ -24,8 +24,6 @@ set-option -g allow-rename off
 #use `<prefix><Ctrl><Arrows>` to adjust panes
 setw -g mouse on
 
-set -g set-clipboard on
-
 set -g history-limit 99999
 
 # add second tmux prefix key
@@ -62,9 +60,7 @@ bind-key -T prefix M setw -g mouse
 
 bind-key -T prefix y set synchronize-panes
 
-#one pre-configured layout
-bind-key -T prefix o split-window \; split-window \; split-window \; select-layout 8afe,204x50,0,0{47x50,0,0,0,105x50,48,0[105x25,48,0,3,105x24,48,26,5],50x50,154,0,4}
-
+# easy switch between panel <prefix> { can move panel
 bind-key -T prefix  h select-pane -L
 bind-key -T prefix  j select-pane -D
 bind-key -T prefix  k select-pane -U
@@ -78,8 +74,9 @@ bind-key -T prefix  l select-pane -R
 set-window-option -g mode-keys vi
 bind-key -T copy-mode-vi '='   send-keys -X end-of-line
 bind-key -T copy-mode-vi 'v'   send-keys -X begin-selection
-bind-key -T copy-mode-vi 'y'   send-keys -X copy-selection
+bind-key -t copy-mode-vi 'y'   copy-pipe-and-cancel 'xclip -in -selection clipboard'
 bind-key -T copy-mode-vi Enter send-keys -X copy-selection-and-cancel
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -se c -i"
 
 ######################
 ###  UX/UI CHANGES ###
