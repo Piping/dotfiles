@@ -12,6 +12,8 @@ set nocompatible
 
 set mouse=a
 
+set ttymouse=sgr
+
 set modeline
 
 " Ignore case when searching
@@ -218,9 +220,8 @@ noremap <leader>r :source $MYVIMRC<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Extra Normal Mode Mapping
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remap = to line end $, like it, easier to press and remember
-noremap = $
-noremap \ gg=G''
+" Remap - to line end $, like it, easier to press
+noremap - $
 noremap Q q
 
 " for practicing vim way
@@ -384,6 +385,7 @@ function! LoadRust()
     map <buffer> <leader>gs <Plug>(coc-references)
     map <buffer> <leader>gr <Plug>(coc-rename)
     map <buffer> <leader>gi <Plug>(coc-implementation)
+    map <buffer> <silent> = :call CocAction('format')<cr>
     nnoremap <buffer> <silent> K :call <SID>show_documentation()<cr>
 endfunction
 
@@ -403,7 +405,9 @@ function! SetupCodeEnvironment()
     elseif &ft  == 'make'
         setlocal noexpandtab tabstop=8 shiftwidth=8
     elseif &ft  == 'rust'
-        call LoadRust()
+        call LoadCoc()
+    elseif &ft  == 'elm'
+        call LoadCoc()
     endif
 endfunction
 
@@ -437,7 +441,6 @@ if has('nvim')
 else
     "nviminfo is not compatable with viminfo
     set viminfo+=n~/.vim/.viminfo
-    set ttymouse=xterm2 "| if $TMUX=="" | set ttymouse=xterm | endif
 endif
 
 " PLUGIN MANAGER START {{
@@ -490,6 +493,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " !curl -sL install-node.now.sh/lts | bash
     " :CocInstall coc-rust-analyzer
     " :CocCommand rust-analyzer.analyzerStatus
+    " npm install -g @elm-tooling/elm-language-server elm elm-test elm-format
     " LSP for Rust with rust-analyzer
     Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'rust'}
     """"""""""""""""""""""""""""""
@@ -516,21 +520,12 @@ nmap gcc          <Plug>CommentaryLine
 " => colors , fonts, display, highlight
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! DisplayReloadTheme()
-    try
-        colorscheme sublimemonokai
-    catch
-        silent! colorscheme default
-    endtry
+    silent! colorscheme default
     " Set the Syntax
     syntax on
     set cursorline
     if $TERM  =~? '256color'
         set t_Co=256
-        if g:colors_name == "sublimemonokai"
-            if $COLORTERM =~? 'truecolor'
-                set termguicolors
-            endif
-        endif
     endif
     set number
     " show hidden chars using shortcuts
@@ -575,6 +570,8 @@ function! DisplayReloadTheme()
         highlight StatuslineTerm gui=bold guifg=black guibg=#b0dfe5
         highlight StatusLineTermNC cterm=NONE ctermfg=black ctermbg=grey
         highlight StatuslineTermNC gui=NONE guibg=#64645e guifg=#75715E
+        " for vim debug highlight
+        highlight debugPC ctermbg=red ctermfg=white cterm=bold
     endif
 
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239
@@ -586,11 +583,11 @@ function! DisplayReloadTheme()
     highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239
     highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
+    "DiffText name is misleading, it mean text that is different
+    "DiffChange name is misleading, it mean text that is the same
     highlight DiffAdd cterm=bold ctermfg=green ctermbg=black
     highlight DiffDelete cterm=bold ctermfg=red ctermbg=black
-    "DiffText name is misleading, it mean text that is different
     highlight DiffText cterm=bold ctermfg=brown ctermbg=black
-    "DiffChange name is misleading, it mean text that is the same
     highlight DiffChange cterm=bold ctermfg=white ctermbg=black
 
     highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
@@ -600,6 +597,7 @@ function! DisplayReloadTheme()
     highlight Pmenu    cterm=bold ctermfg=white ctermbg=DarkMagenta
     highlight PmenuSel cterm=reverse ctermfg=white ctermbg=DarkMagenta
     highlight PmenuThumb cterm=bold ctermbg=white
+
     " Customer User Color %1*text%0*
     " highlight User1 cterm=NONE ctermfg=59 ctermfg=235
     " highlight User1 gui=bold guifg=red guibg=#b0dfe5
@@ -631,6 +629,7 @@ if has("autocmd")
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
         " tab special for makefile
+        autocmd FileType json syntax match Comment +\/\/.\+$+
         autocmd FileType * :call SetupCodeEnvironment()
     augroup END
 endif
