@@ -384,6 +384,7 @@ function! DisplayReloadTheme()
         highlight StatuslineTerm gui=bold guifg=black guibg=#b0dfe5
         highlight StatusLineTermNC cterm=NONE ctermfg=black ctermbg=grey
         highlight StatuslineTermNC gui=NONE guibg=#64645e guifg=#75715E
+        highlight debugPC cterm=bold ctermfg=white ctermbg=red
     endif
 
     highlight TabLine cterm=NONE ctermfg=252 ctermbg=239
