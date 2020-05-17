@@ -75,7 +75,7 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls --color=auto --group-directories-first'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
@@ -120,9 +120,21 @@ parse_git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
     [ -t 1 ] && echo -n "$(tput sgr0)"
 }
+stty -ixon
+ps-1() {
+    local -r cmd=$1
+    echo $(( $(smem -a -c "pss  command" | rg $cmd | awk '{print $1}' | paste -sd+ | bc) )) KB
+}
+
+rust-debug() {
+    echo -n "$1" | xargs -0 -I{} vim '+:let termdebugger = "rust-gdb" | TermdebugCommand {}'
+}
+
+bind "set completion-ignore-case on"
 export EDITOR=vim
 alias mk.='make -f dev.mk'
 alias cd.='cd /p4factory'
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 
 trap 'SECONDS=0' DEBUG
 
