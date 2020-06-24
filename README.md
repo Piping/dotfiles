@@ -8,8 +8,8 @@ All files work flawlessly on development and production server.
 - put them under your home folder. E.g. `~/.vimrc`
 
 ## Principle
-- never remove or replace the default keybinding, applies your knowledge, only enhancements.
-- compatible across different terminals, linux distrubutions, and OS
+- never remove or replace the default keybinding, only enhancements.
+- applies your knowledge to different terminals, linux distrubutions, and OS
 - productive and professional 
 - minimal redundant information on USER Interface! It is clean while infomative!
 
@@ -24,7 +24,6 @@ All files work flawlessly on development and production server.
   - crafted UX that is modern and prove its quality in details
   - search visual selection with * or # key
   - straightforward buffer list management
-  - quick and accurate file search using fzf, also (commits,grep,commands, history ...)
   - user-firendly and efficient undotree panel
   - **works without any plugins** if thats your style
 
@@ -37,16 +36,13 @@ All files work flawlessly on development and production server.
 ## Dependency && Install
 Most up to date desktop linux does not need install anything and it will work with full features.
 For server users, here is a list of troubleshoots and environement configurations.
-- vim8.0+ and compiled with python is required to use full features (atuocomplete), make sure in vim `:echo has('python')` return 1;
-- vim should be compiled with python, and huge-feature-set, (better highlight, 24bit color support, file bufer switching behavior)
-- tmux need version 2.6+
 - if the color does not looks right, do the following 
-    - `yum install xterm`
-    - `export TERM=xterm-256color`
+    - `yum install xterm` or `apt install xterm`
+    - `export TERM=xterm`
     - `export TERMINFO=/usr/share/terminfo`
     - put above exports into your bashrc or zshrc
     - `source ~/.bashrc`
-    - if above tips do not help, change your terminal emulator to iTerm2/Chrome Secure Shell Extension
+    - if above tips do not help, change your terminal emulator to Alacritty/ST/iTerm2/Chrome Secure Shell Extension
 
 ## Sreencast, configurations, key-mapping explained
 - #### TMUX
@@ -84,15 +80,12 @@ For server users, here is a list of troubleshoots and environement configuration
     - `<prefix> \   `; create vertical split
   - TMUX pane features
     - `<prefix> a`   ; go to last acessed window
-    - `<prefix> o`   ; create a split layout like H
     - `<prefix> z`   ; ZOOM the current pane to use all display space
     - `<prefix> s`   ; synchornize the input in all panels under the same window
     - `<prefix> x`   ; kill the current panel
     - `<prefix> ,`   ; rename the windows
     - `<prefix> T`   ; rename the pane
     - `<prefix> t`   ; show clock
-    - `<prefix> m`   ; mark the pane
-    - `<prefix> M`   ; merge marked pane to current window
   - TMUX command line
     - `<prefix> :`   ; enter command line
     - `<esc>`        ; editing cmdline with vi-key binding
