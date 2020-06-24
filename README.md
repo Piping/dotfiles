@@ -8,7 +8,7 @@ All files work flawlessly on development and production server.
 - put them under your home folder. E.g. `~/.vimrc`
 
 ## Principle
-- never remove or replace the deault keybinding, applies your knowledge, only enhancements.
+- never remove or replace the default keybinding, applies your knowledge, only enhancements.
 - compatible across different terminals, linux distrubutions, and OS
 - productive and professional 
 - minimal redundant information on USER Interface! It is clean while infomative!
