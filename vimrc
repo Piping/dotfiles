@@ -313,7 +313,7 @@ if has("cscope")
     "set cscopequickfix=g-,s-,c-,f-,i-,t-,d-,e-
     set cscopequickfix=
     " add any cscope database in current directory
-    map <leader>ca :cs add cscope.out<space>
+    map <leader>ca :call LoadCscope()<cr>
     " show msg when any other cscope db added
     set cscopeverbose
     " seach for definition
@@ -399,7 +399,7 @@ function! DisplayReloadTheme()
     highlight DiffAdd cterm=bold ctermfg=green ctermbg=black
     highlight DiffDelete cterm=bold ctermfg=red ctermbg=black
     highlight DiffText cterm=bold ctermfg=brown ctermbg=black
-    highlight DiffChange cterm=bold ctermfg=black ctermbg=black
+    highlight DiffChange cterm=bold ctermfg=white ctermbg=black
 
     highlight MatchParen cterm=bold ctermfg=white ctermbg=brown
 
@@ -435,7 +435,6 @@ if has("autocmd")
         autocmd WinLeave * setlocal nocursorline
         " tab special for makefile
         autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8
-        autocmd VimEnter * :call LoadCscope()
     augroup END
 endif
 

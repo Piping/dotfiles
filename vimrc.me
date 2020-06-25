@@ -611,7 +611,6 @@ if has("autocmd")
         autocmd! *
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
-        autocmd BufWritePost ~/.config/sxhkd/sxhkdrc :call system('kill -SIGUSR1 $(pgrep sxhkd)')
         autocmd BufWritePost ~/.Xresources :call system('xrdb -merge ~/.Xresources')
         autocmd BufWritePre Makefile,vimrc,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
