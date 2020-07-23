@@ -498,6 +498,9 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'rust'}
     """"""""""""""""""""""""""""""
 
+    Plug 'vimwiki/vimwiki'
+    let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+
     call plug#end()
     "}} PLUGIN MANAGER END
 endif
