@@ -98,6 +98,9 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" Filename
+set isfname-==
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -172,7 +175,7 @@ nnoremap [p :cprev<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :set number!<cr>
+nmap <silent> <leader>l :set number! list!<cr>
 
 "Split the line below with space, reverse of J
 nnoremap <leader>j v$hdO<Esc>pj
@@ -182,6 +185,9 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Disable highlight when <space><enter> is pressed
 nnoremap <silent> <expr> <cr> &buftype ==# 'quickfix' ? "\<cr>" : ":noh<cr>"
+
+map <MiddleMouse> <Nop>
+imap <MiddleMouse> <Nop>
 
 " Esc, Ctrl, :, ^W, ^s, Tab, Alt
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -379,7 +385,7 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
-function! LoadRust()
+function! LoadCoc()
     " CoC
     map <buffer> <leader>gd <Plug>(coc-definition)
     map <buffer> <leader>gs <Plug>(coc-references)
@@ -406,6 +412,7 @@ function! SetupCodeEnvironment()
         setlocal noexpandtab tabstop=8 shiftwidth=8
     elseif &ft  == 'rust'
         call LoadCoc()
+        let termdebugger = "rust-gdb"
     elseif &ft  == 'elm'
         call LoadCoc()
     endif
@@ -495,7 +502,7 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " :CocCommand rust-analyzer.analyzerStatus
     " npm install -g @elm-tooling/elm-language-server elm elm-test elm-format
     " LSP for Rust with rust-analyzer
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'rust'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['rust', 'elm']}
     """"""""""""""""""""""""""""""
 
     Plug 'vimwiki/vimwiki'
@@ -532,15 +539,16 @@ function! DisplayReloadTheme()
     endif
     set number
     " show hidden chars using shortcuts
-    set listchars=tab:␉·,eol:␤,nbsp:▓
-    set nolist
+    " tab:␉·,eol:␤,nbsp:▓
+    set listchars=tab:␉·,nbsp:▓
+    set list
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
     highlight CursorColumn  guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight CursorColumnNR  guibg=#404040 gui=bold cterm=bold ctermbg=234
-    highlight CursorLine cterm=bold ctermfg=black ctermbg=green
-    highlight CursorLineNR cterm=bold ctermbg=black
+    highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight CursorLineNR guibg=#404040 gui=bold cterm=bold ctermbg=234
 
     highlight QuickFixLine cterm=bold ctermfg=brown ctermbg=black
     highlight QuickFixLine gui=bold guibg=black
@@ -600,7 +608,6 @@ function! DisplayReloadTheme()
     highlight Pmenu    cterm=bold ctermfg=white ctermbg=DarkMagenta
     highlight PmenuSel cterm=reverse ctermfg=white ctermbg=DarkMagenta
     highlight PmenuThumb cterm=bold ctermbg=white
-
     " Customer User Color %1*text%0*
     " highlight User1 cterm=NONE ctermfg=59 ctermfg=235
     " highlight User1 gui=bold guifg=red guibg=#b0dfe5
@@ -614,6 +621,7 @@ if has("autocmd")
         autocmd! *
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
+        autocmd BufWritePost ~/.config/sxhkd/sxhkdrc :call system('kill -SIGUSR1 $(pgrep sxhkd)')
         autocmd BufWritePost ~/.Xresources :call system('xrdb -merge ~/.Xresources')
         autocmd BufWritePre Makefile,vimrc,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
