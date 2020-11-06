@@ -98,6 +98,9 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" Filename
+set isfname-==
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -172,7 +175,7 @@ nnoremap [p :cprev<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Vim Editor Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>l :set number!<cr>
+nmap <silent> <leader>l :set number! list!<cr>
 
 "Split the line below with space, reverse of J
 nnoremap <leader>j v$hdO<Esc>pj
@@ -220,9 +223,10 @@ noremap <leader>r :source $MYVIMRC<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Extra Normal Mode Mapping
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remap - to line end $, like it, easier to press
-noremap - $
 noremap Q q
+
+map <MiddleMouse> <Nop>
+imap <MiddleMouse> <Nop>
 
 " for practicing vim way
 " nnoremap <silent> <up>    <NOP>
@@ -318,8 +322,8 @@ function! s:CloseHiddenBuffers()
     endfor
 endfunction
 
-iab xdate  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
-iab xdate2 <c-r>=strftime("%F")<cr>
+iab xdate <c-r>=strftime("%F")<cr>
+iab xdate2  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 " :HeadPager use visidata command instead
 
@@ -379,7 +383,7 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
-function! LoadRust()
+function! LoadCocBinding()
     " CoC
     map <buffer> <leader>gd <Plug>(coc-definition)
     map <buffer> <leader>gs <Plug>(coc-references)
@@ -405,9 +409,9 @@ function! SetupCodeEnvironment()
     elseif &ft  == 'make'
         setlocal noexpandtab tabstop=8 shiftwidth=8
     elseif &ft  == 'rust'
-        call LoadCoc()
+        call LoadCocBinding()
     elseif &ft  == 'elm'
-        call LoadCoc()
+        call LoadCocBinding()
     endif
 endfunction
 
@@ -495,8 +499,11 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     " :CocCommand rust-analyzer.analyzerStatus
     " npm install -g @elm-tooling/elm-language-server elm elm-test elm-format
     " LSP for Rust with rust-analyzer
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'rust'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['rust', 'elm']}
     """"""""""""""""""""""""""""""
+
+    Plug 'vimwiki/vimwiki'
+    let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
     call plug#end()
     "}} PLUGIN MANAGER END
@@ -527,17 +534,18 @@ function! DisplayReloadTheme()
     if $TERM  =~? '256color'
         set t_Co=256
     endif
-    set number
     " show hidden chars using shortcuts
-    set listchars=tab:␉·,eol:␤,nbsp:▓
-    set nolist
+    " set listchars=tab:␉·,eol:␤,nbsp:▓
+    set listchars=tab:␉·,nbsp:▓
+    set list
+    set number
     " two highlight group nontext & specialkey for listchars
     highlight nontext ctermfg=238 guifg=#414141
     " override color scheme for the listchars "#649a9a
     highlight CursorColumn  guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight CursorColumnNR  guibg=#404040 gui=bold cterm=bold ctermbg=234
-    highlight CursorLine guibg=#404040 gui=bold cterm=bold ctermbg=234
-    highlight CursorLineNR guibg=#404040 gui=bold cterm=bold ctermbg=234
+    highlight CursorLine cterm=bold ctermfg=black ctermbg=cyan
+    highlight CursorLineNR cterm=bold ctermbg=black
 
     highlight QuickFixLine cterm=bold ctermfg=brown ctermbg=black
     highlight QuickFixLine gui=bold guibg=black
@@ -574,14 +582,14 @@ function! DisplayReloadTheme()
         highlight debugPC ctermbg=red ctermfg=white cterm=bold
     endif
 
-    highlight TabLine cterm=NONE ctermfg=252 ctermbg=239
+    highlight TabLine cterm=NONE ctermfg=black ctermbg=white
     highlight TabLine gui=NONE guifg=black guibg=#555555
+
+    highlight TabLineFill cterm=bold ctermfg=black ctermbg=white
+    highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
     highlight TabLineSel cterm=bold ctermfg=white ctermbg=black
     highlight TabLineSel gui=bold guifg=red guibg=#36454F
-
-    highlight TabLineFill cterm=bold ctermfg=243 ctermbg=239
-    highlight TabLineFill gui=NONE guifg=#8F908A guibg=#555555
 
     "DiffText name is misleading, it mean text that is different
     "DiffChange name is misleading, it mean text that is the same
