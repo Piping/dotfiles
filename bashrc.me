@@ -130,12 +130,62 @@ rust-debug() {
     echo -n "$1" | xargs -0 -I{} vim '+:let termdebugger = "rust-gdb" | TermdebugCommand {}'
 }
 
-bind "set completion-ignore-case on"
-export EDITOR=vim
-alias mk.='make -f dev.mk'
-alias cd.='cd /p4factory'
-export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
-
 trap 'SECONDS=0' DEBUG
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w $(git rev-parse --abbrev-ref HEAD 2>/dev/null) ${SECONDS}s \[\033[00m\]\n[$(jobs|wc -l)] \$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+stty -ixon
+
+alias cman='man -M /usr/share/man/zh_CN/'
+alias cd.='cd ~/p4factory'
+alias cd..='cd ~/p4factory/submodules/bf-drivers/'
+alias mk.='make -f dev.mk'
+alias dk='docker'
+alias git.=$'git log --decorate --oneline --graph master $(git branch | awk \x27/\*/ { print $2; }\x27)'
+alias git..='git diff --name-only --relative HEAD~1 | xargs  python2 ~/p4factory/tools/clang-format-check.py -i {}'
+alias git..d='git diff --name-only --relative HEAD~1 | xargs  python2 /p4factory-lite/tools/clang-format-check.py -i {}'
+alias fd.='find . -name '
+export EDITOR=vim
+export PATH=/usr/local/bin:$PATH
+
+code-review() {
+  GH_USER=example GH_PASS=example nvim +'Critiq'
+}
+
+..() {
+  source ~/.bashrc
+}
 
 # vim: set ft=sh :
