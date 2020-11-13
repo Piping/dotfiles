@@ -332,19 +332,16 @@ iab xdate2  <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! LoadCscope()
     let pwd = getcwd()
+    echo expand('%:p:h')
     lcd %:p:h
     set nocscopeverbose
-    if executable('gtags-cscope')
+    let db1 = findfile("GTAGS", ";.")
+    let db2 = findfile("cscope.out", ";.")
+    if (!empty(db1)) && executable('gtags-cscope')
         set cscopeprg=gtags-cscope
-        let db = findfile("GTAGS", ";.")
-        if (!empty(db))
-            exe "cs add " . db . " " . fnamemodify(db,":p:h") . " -a"
-        endif
-    elseif executable('cscope')
-        let db = findfile("cscope.out", ";.")
-        if (!empty(db))
-            exe "cs add " . db . " " . fnamemodify(db,":p:h")
-        endif
+        exe "cs add " . db1 . " " . fnamemodify(db1,":p:h") . " -a"
+    elseif (!empty(db2)) && executable('cscope')
+        exe "cs add " . db2 . " " . fnamemodify(db2,":p:h")
     elseif $CSCOPE_DB != ""
         "add database pointed to by environment variable
         cs add $CSCOPE_DB $CSCOPE_DB_PREFIX
