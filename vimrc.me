@@ -389,8 +389,12 @@ function! LoadCocBinding()
     map <buffer> <leader>gs <Plug>(coc-references)
     map <buffer> <leader>gr <Plug>(coc-rename)
     map <buffer> <leader>gi <Plug>(coc-implementation)
+    map <buffer> ]p <Plug>(coc-diagnostic-next)
+    map <buffer> [p <Plug>(coc-diagnostic-prev)
     map <buffer> <silent> = :call CocAction('format')<cr>
     nnoremap <buffer> <silent> K :call <SID>show_documentation()<cr>
+    command! -nargs=0 Format :call CocAction('format')
+    setlocal formatexpr=CocAction('formatSelected')
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""
@@ -458,7 +462,6 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
 
     """"""""""syntax and colorscheme"""""""""""""""""""
     Plug 'sheerun/vim-polyglot'
-    "Plug 'ErichDonGubler/vim-sublime-monokai'
     """"""""""""""""""""""""""""""""""""""""""""""""""
 
     """"""""""""""""""""""""""""""
@@ -620,7 +623,7 @@ if has("autocmd")
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
         autocmd BufWritePost ~/.Xresources :call system('xrdb -merge ~/.Xresources')
-        autocmd BufWritePre Makefile,vimrc,*.mk,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,vimrc,*.txt,*.js,*.py,*.sh,*.rs :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
         " Save the code folding if we had one
