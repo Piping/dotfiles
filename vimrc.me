@@ -12,8 +12,6 @@ set nocompatible
 
 set mouse=a
 
-set ttymouse=sgr
-
 set modeline
 
 " Ignore case when searching
@@ -108,16 +106,6 @@ set isfname-==
 set nobackup
 set nowb
 set noswapfile
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Turn persistent undo on
-"    means that you can undo even when you close a buffer/vim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-try
-    set undodir=~/.vim/temp_dirs/undodir
-    set undofile
-catch
-endtry
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
@@ -244,7 +232,11 @@ cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 cnoremap <C-Y> <C-R>"
+inoremap <ESC> <ESC>:call IMEKeyboard()<CR>
 
+func! IMEKeyboard()
+    call system('fcitx-remote -c')
+endfun
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vim Built-in Terminal related config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -446,6 +438,17 @@ if has('nvim')
 else
     "nviminfo is not compatable with viminfo
     set viminfo+=n~/.vim/.viminfo
+    set ttymouse=sgr
+
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    " => Turn persistent undo on
+    "    means that you can undo even when you close a buffer/vim
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    try
+        set undodir=~/.vim/temp_dirs/undodir
+        set undofile
+    catch
+    endtry
 endif
 
 " PLUGIN MANAGER START {{
@@ -456,6 +459,11 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     """"""""""""""""""""""""""""""
     Plug 'mhinz/vim-startify'
     """"""""""""""""""""""""""""""
+
+    " Plug 'vim-airline/vim-airline'
+    " Plug 'itchyny/lightline.vim'
+
+    Plug 'NLKNguyen/papercolor-theme'
 
     """"""""""syntax and colorscheme"""""""""""""""""""
     Plug 'sheerun/vim-polyglot'
@@ -528,6 +536,11 @@ nmap gcc          <Plug>CommentaryLine
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! DisplayReloadTheme()
     silent! colorscheme default
+
+    set t_Co=256
+    set background=dark
+    colorscheme PaperColor
+
     " Set the Syntax
     syntax on
     set cursorline
@@ -544,8 +557,9 @@ function! DisplayReloadTheme()
     " override color scheme for the listchars "#649a9a
     highlight CursorColumn  guibg=#404040 gui=bold cterm=bold ctermbg=234
     highlight CursorColumnNR  guibg=#404040 gui=bold cterm=bold ctermbg=234
-    highlight CursorLine cterm=bold ctermfg=black ctermbg=cyan
+    highlight CursorLine cterm=bold ctermfg=black ctermbg=green
     highlight CursorLineNR cterm=bold ctermbg=black
+    " addtional cursor color need to be set in your terminal emulator
 
     highlight QuickFixLine cterm=bold ctermfg=brown ctermbg=black
     highlight QuickFixLine gui=bold guibg=black
@@ -560,6 +574,7 @@ function! DisplayReloadTheme()
     set showcmd      "Always print current keystroke
     set ruler        "Always show current position
     set cmdheight=1  "Height of the command bar
+
     set statusline=
     set statusline+=\ %(第%c列%)
     set statusline+=\ %f\ %r%w         " filename and flags
@@ -567,7 +582,6 @@ function! DisplayReloadTheme()
     set statusline+=%=%<      " force space and start cut if too long
     set statusline+=\ [%{getcwd()}][%{&ft}]    " flags and filetype
     set statusline+=\ [UTF-8:%B][Buf:%n]\  " unicode under cursor
-
     highlight Statusline cterm=bold ctermfg=black ctermbg=white
     highlight Statusline gui=bold guifg=black guibg=#b0dfe5
     highlight StatusLineNC cterm=NONE ctermfg=black ctermbg=grey
@@ -620,7 +634,7 @@ if has("autocmd")
         " Auto reload conffiguration file, clean whitespace for some common code files
         autocmd BufWritePost ~/.vimrc nested source ~/.vimrc | :call DisplayReloadTheme()
         autocmd BufWritePost ~/.Xresources :call system('xrdb -merge ~/.Xresources')
-        autocmd BufWritePre Makefile,vimrc,*.txt,*.js,*.py,*.sh,*.rs :call CleanExtraSpaces()
+        autocmd BufWritePre Makefile,vimrc,*.txt,*.js,*.py,*.sh,*.rs,*.vue :call CleanExtraSpaces()
         " Return to last edit position when opening files (You want this!)
         autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
         " Save the code folding if we had one
@@ -647,3 +661,4 @@ call DisplayReloadTheme()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim: set ft=vim :
+
