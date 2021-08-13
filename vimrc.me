@@ -232,7 +232,7 @@ cnoremap <C-D> <S-Right><C-W>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 cnoremap <C-Y> <C-R>"
-inoremap <ESC> <ESC>:call IMEKeyboard()<CR>
+inoremap <silent> <ESC> <ESC>:call IMEKeyboard()<CR>
 
 func! IMEKeyboard()
     call system('fcitx-remote -c')
