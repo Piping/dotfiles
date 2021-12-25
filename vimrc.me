@@ -537,9 +537,8 @@ nmap gcc          <Plug>CommentaryLine
 function! DisplayReloadTheme()
     silent! colorscheme default
 
-    set t_Co=256
     set background=dark
-    colorscheme PaperColor
+    silent! colorscheme PaperColor
 
     " Set the Syntax
     syntax on
